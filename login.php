@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Registration Form</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
 <body>
     <div class="container">
@@ -33,7 +34,7 @@
         <div class="form-box" id="register-form">
             <form action="login.php" method="post">
                 <h2>Registration</h2>
-                <input type="text" name="idno" placeholder="ID Number" required>
+                <input type="text" name="idno" placeholder="ID Number" oninput="validateIDNO(this)"required>
                 <input type="text" name="lastname" placeholder="Lastname" required>
                 <input type="text" name="firstname" placeholder="Firstname" required>
                 <input type="text" name="midname" placeholder="Middlename" required>

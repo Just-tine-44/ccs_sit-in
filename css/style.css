@@ -12,7 +12,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #0ED2F7, #B2FEFA);
+    background: hsla(0, 0%, 100%, 1);
+
 
 }
 
@@ -26,7 +27,7 @@ body {
     padding: 30px;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); 
     display: none;
 }
 

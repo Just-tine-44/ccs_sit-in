@@ -13,6 +13,35 @@ if (isset($_POST['login'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // The hash and plain-text being combined
+    if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+    
+        // Check if the stored password is hashed
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['email'] = $email;
+            echo "<script>alert('Login Successfully');</script>";
+            header('Location: homepage.php');
+            exit();
+        } else {
+            // Check for plain text password comparison for testing
+            if ($password == $row['password']) {
+                $_SESSION['email'] = $email;
+                echo "<script>
+                alert('Login Successfully');
+                setTimeout(function() {
+                    window.location.href = 'homepage.php';
+                }, 1000); // 1-second delay before redirection
+                </script>";
+                exit();
+            } else {
+                echo "<script>alert('Invalid email or password');</script>";
+            }
+        }
+    } else {
+        echo "<script>alert('Invalid email or password');</script>";
+    }   
+
     // if ($result->num_rows == 1) { // With hashed password
     //     $row = $result->fetch_assoc();
     //     if (password_verify($password, $row['password'])) {
@@ -38,32 +67,8 @@ if (isset($_POST['login'])) {
     //     }
     // } else {
     //     echo "<script>alert('Invalid email or password');</script>";
-    // }
-
-
-    // The hash and plain-text being combined
-    if ($result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-    
-        // Check if the stored password is hashed
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['email'] = $email;
-            header('Location: homepage.php');
-            exit();
-        } else {
-            // Check for plain text password comparison for testing
-            if ($password == $row['password']) {
-                $_SESSION['email'] = $email;
-                header('Location: homepage.php');
-                exit();
-            } else {
-                echo "<script>alert('Invalid email or password');</script>";
-            }
-        }
-    } else {
-        echo "<script>alert('Invalid email or password');</script>";
-    }    
-    
+    // } 
+   
 }
 
 // Registration functionality
@@ -94,9 +99,13 @@ if (isset($_POST['register'])) {
         $result = $stmt->execute();
 
         if ($result) {
-            echo "<script>alert('Registration successful');</script>";
-            header('Location: login.php');
-            exit(); // Ensure redirection works
+            echo "<script>
+                    alert('Registration successful');
+                    setTimeout(function() {
+                        window.location.href = 'login.php';
+                    }, 1000); // 1-second delay before redirection
+                  </script>";
+            exit();
         } else {
             echo "<script>alert('Registration failed');</script>";
         }
