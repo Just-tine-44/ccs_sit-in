@@ -20,9 +20,13 @@ if (isset($_POST['login'])) {
         // Check if the stored password is hashed
         if (password_verify($password, $row['password'])) {
             $_SESSION['email'] = $email;
-            echo "<script>alert('Login Successfully');</script>";
-            header('Location: homepage.php');
-            exit();
+            echo "<script>
+                alert('Login Successfully');
+                setTimeout(function() {
+                    window.location.href = 'homepage.php';
+                }, 100); // .1-second delay before redirection
+                </script>";
+                exit();
         } else {
             // Check for plain text password comparison for testing
             if ($password == $row['password']) {
@@ -31,7 +35,7 @@ if (isset($_POST['login'])) {
                 alert('Login Successfully');
                 setTimeout(function() {
                     window.location.href = 'homepage.php';
-                }, 1000); // 1-second delay before redirection
+                }, 100); // .1-second delay before redirection
                 </script>";
                 exit();
             } else {
@@ -103,7 +107,7 @@ if (isset($_POST['register'])) {
                     alert('Registration successful');
                     setTimeout(function() {
                         window.location.href = 'login.php';
-                    }, 1000); // 1-second delay before redirection
+                    }, 100); // .1-second delay before redirection
                   </script>";
             exit();
         } else {
