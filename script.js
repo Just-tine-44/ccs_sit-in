@@ -8,12 +8,44 @@ function validateIDNO(input) {
 }
 
 
-///// Logout Button
+// ///// Logout Button
+// function logout() {
+//     let confirmLogout = confirm("Are you sure you want to log out?");
+//     if (confirmLogout) {
+//         setTimeout(function() {
+//             window.location.href = 'login.php';
+//         }, 100); // .1-second delay before redirection
+//     }
+// }
+
+/////////Clear the Session
 function logout() {
-    let confirmLogout = confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-        setTimeout(function() {
-            window.location.href = 'login.php';
-        }, 100); // .1-second delay before redirection
-    }
+    fetch('logout.php')
+        .then(response => {
+            if (response.ok) {
+                window.location.href = 'login.php';
+            }
+        });
+}
+
+// Success alert with redirect
+function showSuccessAlert(message, redirectUrl) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: message,
+        showConfirmButton: false,
+        timer: 1500
+    }).then(function() {
+        window.location.href = redirectUrl;
+    });
+}
+
+// Error alert
+function showErrorAlert(message) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message
+    });
 }

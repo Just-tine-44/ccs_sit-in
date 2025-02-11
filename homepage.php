@@ -1,3 +1,13 @@
+<?php
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (!isset($_SESSION['user'])) {
+        header("Location: login.php");
+        exit();
+    }
+    $user = $_SESSION['user'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,32 +19,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-gray-100">
-<nav class="bg-white shadow mb-8">
-    <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
-            <a href="#" class="text-gray-800 font-bold text-xl hover:text-blue-500">Dashboard</a>
-            <div class="flex space-x-4 items-center">
-                <a href="#" class="text-gray-800 hover:text-blue-500">Notifications</a>
-                <a href="#" class="text-gray-800 hover:text-blue-500">Home</a>
-                <a href="#" class="text-gray-800 hover:text-blue-500">Edit Profile</a>
-                <a href="#" class="text-gray-800 hover:text-blue-500">History</a>
-                <a href="#" class="text-gray-800 hover:text-blue-500">Reservation</a>
-                <a href="javascript:void(0);" onclick="logout()" class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">Logout</a>
-            </div>
-        </div>
-    </div>
-</nav>
+<?php include 'navbar.php'; ?>
 <div class="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <div class="bg-white p-6 rounded-lg shadow">
         <h2 class="text-2xl font-bold mb-2 text-center">Student Information</h2>
         <div class="border-b-2 border-black pb-4 mb-4">
             <img src="images/person.jpg" alt="avatar" class="w-32 h-32 mx-auto rounded-full">
         </div>
-        <p class="text-gray-700 mb-2"><i class="fas fa-user"></i> Name: John Doe</p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-book"></i> Course: Computer Science</p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-calendar"></i> Year: 123456</p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-envelope"></i> Email:</p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-home"></i> Address:</p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-user"></i> Name: <?php echo $user['firstname'] . ' ' . $user['lastname']; ?></p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-book"></i> Course: <?php echo $user['course']; ?></p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-calendar"></i> Year: <?php echo $user['level']; ?></p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-envelope"></i> Email: <?php echo $user['email']; ?></p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-home"></i> Address: <?php echo $user['address']; ?></p>
         <p class="text-gray-700 mb-2"><i class="fas fa-clock"></i> Session:</p>
     </div>
     <div class="bg-white p-6 rounded-lg shadow">
@@ -50,15 +46,3 @@
 </div>
 </body>
 </html>
-
-
-<!-- <div class="container mx-auto p-4">
-        <header class="flex justify-between items-center my-8">
-            <h1 class="text-4xl font-bold text-gray-800">Department of the Computer Studies</h1>
-            <a href="javascript:void(0);" onclick="logout()" class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">Logout</a>
-        </header>
-        <main class="text-center">
-            <p class="text-lg text-gray-600">Welcome Students to CCS College</p>
-            <a href="#" class="mt-4 inline-block px-6 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">Get Started</a>
-        </main>
-    </div> -->

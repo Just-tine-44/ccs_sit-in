@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 include 'conn/dbcon.php';  
 
 // Login functionality
@@ -19,7 +21,7 @@ if (isset($_POST['login'])) {
     
         // Check if the stored password is hashed
         if (password_verify($password, $row['password'])) {
-            $_SESSION['email'] = $email;
+            $_SESSION['user'] = $row;
             echo "<script>
                 alert('Login Successfully');
                 setTimeout(function() {
@@ -30,7 +32,7 @@ if (isset($_POST['login'])) {
         } else {
             // Check for plain text password comparison for testing
             if ($password == $row['password']) {
-                $_SESSION['email'] = $email;
+                $_SESSION['user'] = $row;
                 echo "<script>
                 alert('Login Successfully');
                 setTimeout(function() {
@@ -45,8 +47,55 @@ if (isset($_POST['login'])) {
     } else {
         echo "<script>alert('Invalid email or password');</script>";
     }   
+}
 
-    // if ($result->num_rows == 1) { // With hashed password
+// Registration functionality
+if (isset($_POST['register'])) {
+    $idno = $_POST['idno'];
+    $lastname = $_POST['lastname'];
+    $firstname = $_POST['firstname'];
+    $midname = $_POST['midname'];
+    $course = $_POST['course'];
+    $level = $_POST['level'];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
+    $password = $_POST['password']; // Save the password directly without hashing
+    // $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password before saving it
+
+    // Check if the username already exists
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "<script>alert('Username already exists');</script>";
+    } else {
+        // Register the new user
+        $stmt = $conn->prepare("INSERT INTO users (idno, lastname, firstname, midname, course, level, address, email, password) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssssss", $idno, $lastname, $firstname, $midname, $course, $level, $address, $email, $password);
+        $result = $stmt->execute();
+
+        if ($result) {
+            echo "<script>
+                    alert('Registration successful');
+                    setTimeout(function() {
+                        window.location.href = 'login.php';
+                    }, 100); // .1-second delay before redirection
+                  </script>";
+            exit();
+        } else {
+            echo "<script>alert('Registration failed');</script>";
+        }
+    }
+}
+?>
+
+
+
+
+<!-- // if ($result->num_rows == 1) { // With hashed password
     //     $row = $result->fetch_assoc();
     //     if (password_verify($password, $row['password'])) {
     //         $_SESSION['email'] = $email;
@@ -72,47 +121,5 @@ if (isset($_POST['login'])) {
     // } else {
     //     echo "<script>alert('Invalid email or password');</script>";
     // } 
-   
-}
 
-// Registration functionality
-if (isset($_POST['register'])) {
-    $idno = $_POST['idno'];
-    $lastname = $_POST['lastname'];
-    $firstname = $_POST['firstname'];
-    $midname = $_POST['midname'];
-    $course = $_POST['course'];
-    $level = $_POST['level'];
-    $username = $_POST['username'];
-    $password = $_POST['password']; // Save the password directly without hashing
-    // $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password before saving it
-
-    // Check if the username already exists
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        echo "<script>alert('Username already exists');</script>";
-    } else {
-        // Register the new user
-        $stmt = $conn->prepare("INSERT INTO users (idno, lastname, firstname, midname, course, level, email, password) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $idno, $lastname, $firstname, $midname, $course, $level, $username, $password);
-        $result = $stmt->execute();
-
-        if ($result) {
-            echo "<script>
-                    alert('Registration successful');
-                    setTimeout(function() {
-                        window.location.href = 'login.php';
-                    }, 100); // .1-second delay before redirection
-                  </script>";
-            exit();
-        } else {
-            echo "<script>alert('Registration failed');</script>";
-        }
-    }
-}
-?>
+    // $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password before saving it -->
