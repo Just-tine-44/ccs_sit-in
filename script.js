@@ -10,8 +10,10 @@ function validateIDNO(input) {
 
 ///// Logout Button
 function logout() {
-    alert('Logging Out');
-    setTimeout(function() {
-        window.location.href = 'login.php';
-    }, 100); // .1-second delay before redirection
+    let confirmLogout = confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+        setTimeout(function() {
+            window.location.href = 'login.php';
+        }, 100); // .1-second delay before redirection
+    }
 }
