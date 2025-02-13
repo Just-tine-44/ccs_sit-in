@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 04, 2025 at 12:55 PM
+-- Generation Time: Feb 13, 2025 at 04:13 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,8 @@ CREATE TABLE `users` (
   `midname` varchar(50) NOT NULL,
   `course` varchar(50) NOT NULL,
   `level` varchar(50) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `profileImg` varchar(255) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -43,9 +45,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`, `level`, `email`, `password`) VALUES
-(1, '648489', 'Doe', 'John', 'Mark', 'act', '2', 'doe@gmail.com', '$2y$10$PUhoczE3elN6bCZD9siaRec/cBRigQrnb9L2adOUxSpWGh304MaWy'),
-(2, '746461', 'Smith', 'Jane', 'Robert', 'bsit', '1', 'smith@gmail.com', 'rob432');
+INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`, `level`, `address`, `profileImg`, `email`, `password`) VALUES
+(1, '22692693', 'David', 'John', 'I.', 'bsit', '1', 'Pooc, Talisay', NULL, 'doe@gmail.com', '123'),
+(2, '898943', 'Smith', 'Nicole', 'G.', 'bsit', '2', 'Naga, Cebu', NULL, 'nic@gmail.com', '123');
 
 --
 -- Indexes for dumped tables
