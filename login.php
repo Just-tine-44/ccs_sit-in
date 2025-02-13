@@ -8,7 +8,8 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        $query = "SELECT * FROM users WHERE email='$email'";
+        // Prepare the query
+        $query = "SELECT * FROM users WHERE email=?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -21,10 +22,16 @@
                 header("Location: homepage.php");
                 exit();
             } else {
-                echo "<script>alert('Invalid email or password');</script>";
+                echo "<script>
+                    alert('Invalid email or password');
+                    window.location.href = 'login.php';
+                </script>";
             }
         } else {
-            echo "<script>alert('Invalid email or password');</script>";
+            echo "<script>
+                alert('Invalid email or password');
+                window.location.href = 'login.php';
+            </script>";
         }
     }
 ?>
@@ -65,9 +72,22 @@
                 <input type="text" name="midname" placeholder="Middlename" required>
                 <select name="course" required>
                     <option value="" disabled selected>Course</option>
-                    <option value="bsit">BSIT</option>
-                    <option value="bscs">BSCS</option>
-                    <option value="act">ACT</option>
+                    <option value="BSIT">BSIT</option>
+                    <option value="BSCS">BSCS</option>
+                    <option value="ACT">ACT</option>
+                    <option value="BSCE">BSCE</option>
+                    <option value="BSME">BSME</option>
+                    <option value="BSEE">BSEE</option>
+                    <option value="BSIE">BSIE</option>
+                    <option value="BSCompE">BSCompE</option>
+                    <option value="BSA">BSA</option>
+                    <option value="BSBA">BSBA</option>
+                    <option value="BSOA">BSOA</option>
+                    <option value="BEEd">BEEd</option>
+                    <option value="BSEd">BSEd</option> 
+                    <option value="AB PolSci">AB PolSci</option> 
+                    <option value="BSCrim">BSCrim</option> 
+                    <option value="BSHRM">BSHRM</option> 
                 </select>
                 <select name="level" required>
                     <option value="" disabled selected>Year Level</option>

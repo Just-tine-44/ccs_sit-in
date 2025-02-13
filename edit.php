@@ -18,9 +18,19 @@
         $midname = $_POST['midname'];
         $email = $_POST['email'];
         $address = $_POST['address'];
+        $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg'; // Default to existing profile picture
 
-        $stmt = $conn->prepare("UPDATE users SET lastname=?, firstname=?, midname=?, email=?, address=? WHERE idno=?");
-        $stmt->bind_param("ssssss", $lastname, $firstname, $midname, $email, $address, $user['idno']);
+        // Handle profile picture upload
+        if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == UPLOAD_ERR_OK) {
+            $upload_dir = 'images/';
+            $uploaded_file = $upload_dir . basename($_FILES['profile_picture']['name']);
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploaded_file)) {
+                $profileImg = $uploaded_file;
+            }
+        }
+
+        $stmt = $conn->prepare("UPDATE users SET lastname=?, firstname=?, midname=?, email=?, address=?, profileImg=? WHERE idno=?");
+        $stmt->bind_param("sssssss", $lastname, $firstname, $midname, $email, $address, $profileImg, $user['idno']);
         $result = $stmt->execute();
 
         if ($result) {
@@ -30,6 +40,7 @@
             $_SESSION['user']['midname'] = $midname;
             $_SESSION['user']['email'] = $email;
             $_SESSION['user']['address'] = $address;
+            $_SESSION['user']['profileImg'] = $profileImg;
 
             echo "<script>
                     alert('Profile updated successfully');
@@ -58,7 +69,7 @@
     <div class="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <h2 class="text-2xl font-bold mb-4 text-center">Edit Profile</h2>
-            <form action="edit.php" method="post">
+            <form action="edit.php" method="post" enctype="multipart/form-data">
                 <div class="mb-4">
                     <label class="block text-gray-700">ID Number</label>
                     <input type="text" name="idno" value="<?php echo $user['idno']; ?>" class="w-full px-4 py-2 border rounded-lg bg-gray-200" readonly>

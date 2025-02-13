@@ -41,11 +41,17 @@ if (isset($_POST['login'])) {
                 </script>";
                 exit();
             } else {
-                echo "<script>alert('Invalid email or password');</script>";
+                echo "<script>
+                alert('Invalid email or password');
+                window.location.href = 'login.php';
+                </script>";
             }
         }
     } else {
-        echo "<script>alert('Invalid email or password');</script>";
+        echo "<script>
+        alert('Invalid email or password');
+        window.location.href = 'login.php';
+        </script>";
     }   
 }
 
@@ -69,7 +75,10 @@ if (isset($_POST['register'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        echo "<script>alert('Username already exists');</script>";
+        echo "<script>
+        alert('Username already exists');
+        window.location.href = 'login.php';
+        </script>";
     } else {
         // Register the new user
         $stmt = $conn->prepare("INSERT INTO users (idno, lastname, firstname, midname, course, level, address, email, password) 
@@ -86,7 +95,10 @@ if (isset($_POST['register'])) {
                   </script>";
             exit();
         } else {
-            echo "<script>alert('Registration failed');</script>";
+            echo "<script>
+            alert('Registration failed');
+            window.location.href = 'login.php';
+            </script>";
         }
     }
 }
