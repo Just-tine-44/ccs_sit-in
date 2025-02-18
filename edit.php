@@ -1,58 +1,88 @@
 <?php
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    if (!isset($_SESSION['user'])) {
-        header("Location: login.php");
-        exit();
-    }
-    $user = $_SESSION['user'];
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit();
+}
+$user = $_SESSION['user'];
 
-    // Include the connection file
-    include 'connection/conn_login.php';
+// Include the connection file
+include 'connection/conn_login.php';
 
-    // Update profile functionality
-    if (isset($_POST['update'])) {
-        $lastname = $_POST['lastname'];
-        $firstname = $_POST['firstname'];
-        $midname = $_POST['midname'];
-        $email = $_POST['email'];
-        $address = $_POST['address'];
-        $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg'; // Default to existing profile picture
+// Update profile functionality
+if (isset($_POST['update'])) {
+    $lastname = $_POST['lastname'];
+    $firstname = $_POST['firstname'];
+    $midname = $_POST['midname'];
+    $email = $_POST['email'];
+    $address = $_POST['address'];
+    $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg'; // Default to existing profile picture
 
-        // Handle profile picture upload
-        if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == UPLOAD_ERR_OK) {
-            $upload_dir = 'images/';
-            $uploaded_file = $upload_dir . basename($_FILES['profile_picture']['name']);
-            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploaded_file)) {
-                $profileImg = $uploaded_file;
-            }
+    // Handle profile picture upload
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == UPLOAD_ERR_OK) {
+        $upload_dir = 'uploadimg/';
+        $uploaded_file = $upload_dir . basename($_FILES['profile_picture']['name']);
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploaded_file)) {
+            $profileImg = $uploaded_file;
         }
+    }
 
-        $stmt = $conn->prepare("UPDATE users SET lastname=?, firstname=?, midname=?, email=?, address=?, profileImg=? WHERE idno=?");
-        $stmt->bind_param("sssssss", $lastname, $firstname, $midname, $email, $address, $profileImg, $user['idno']);
-        $result = $stmt->execute();
+    $stmt = $conn->prepare("UPDATE users SET lastname=?, firstname=?, midname=?, email=?, address=?, profileImg=? WHERE idno=?");
+    $stmt->bind_param("sssssss", $lastname, $firstname, $midname, $email, $address, $profileImg, $user['idno']);
+    $result = $stmt->execute();
 
-        if ($result) {
-            // Update session data
-            $_SESSION['user']['lastname'] = $lastname;
-            $_SESSION['user']['firstname'] = $firstname;
-            $_SESSION['user']['midname'] = $midname;
-            $_SESSION['user']['email'] = $email;
-            $_SESSION['user']['address'] = $address;
-            $_SESSION['user']['profileImg'] = $profileImg;
+    if ($result) {
+        // Update session data
+        $_SESSION['user']['lastname'] = $lastname;
+        $_SESSION['user']['firstname'] = $firstname;
+        $_SESSION['user']['midname'] = $midname;
+        $_SESSION['user']['email'] = $email;
+        $_SESSION['user']['address'] = $address;
+        $_SESSION['user']['profileImg'] = $profileImg;
 
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        if ($stmt->affected_rows > 0) {
             echo "<script>
-                    alert('Profile updated successfully');
-                    setTimeout(function() {
-                        window.location.href = 'homepage.php';
-                    }, 100); // .1-second delay before redirection
-                  </script>";
-            exit();
+                document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Profile updated successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = 'homepage.php';
+                });
+                });
+              </script>";
         } else {
-            echo "<script>alert('Profile update failed');</script>";
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No changes made',
+                    text: 'You didn\'t make any changes'
+                }).then(() => {
+                    window.location.href = 'edit.php';
+                });
+                });
+              </script>";
         }
-    }
+        exit();
+        } else {
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Profile update failed'
+                });
+            });
+              </script>";
+        }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,11 +90,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
+    <link rel="icon" type="image/png" href="images/ccslogo.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-gray-100">
-<?php include 'navbar.php'; ?>
+<?php include 'navbarWD.php'; ?>
 <div class="container mx-auto p-4 max-w-4xl">
     <div class="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>

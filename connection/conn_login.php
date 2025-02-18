@@ -2,60 +2,113 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-include 'conn/dbcon.php';  
+include 'conn/dbcon.php';
+?>
 
-// Login functionality
+
+<style>
+.swal2-confirm {
+    width: auto !important;
+    padding: 0.625em 2em !important;
+    margin: 0 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+.swal2-actions {
+    width: auto !important;
+    margin: 1.25em auto 0 !important;
+    gap: 0 !important;
+}
+
+.swal2-popup {
+    padding: 0 0 1.25em 0 !important;
+}
+
+.swal2-styled.swal2-confirm::before,
+.swal2-styled.swal2-confirm::after {
+    display: none !important;
+}
+</style>
+
+
+<?php
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Query to find the user
     $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // The hash and plain-text being combined
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
-    
-        // Check if the stored password is hashed
+
+        // Check if the password is hashed
         if (password_verify($password, $row['password'])) {
             $_SESSION['user'] = $row;
+            $_SESSION['just_logged_in'] = true; // Set session variable
             echo "<script>
-                alert('Login Successfully');
-                setTimeout(function() {
-                    window.location.href = 'homepage.php';
-                }, 100); // .1-second delay before redirection
-                </script>";
-                exit();
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Login Successfully',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = 'homepage.php';
+                        });
+                    });
+                  </script>";
         } else {
-            // Check for plain text password comparison for testing
+            // Check for plain text password comparison
             if ($password == $row['password']) {
                 $_SESSION['user'] = $row;
+                $_SESSION['just_logged_in'] = true; // Set session variable
                 echo "<script>
-                alert('Login Successfully');
-                setTimeout(function() {
-                    window.location.href = 'homepage.php';
-                }, 100); // .1-second delay before redirection
-                </script>";
-                exit();
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Login Successfully',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = 'homepage.php';
+                            });
+                        });
+                      </script>";
             } else {
                 echo "<script>
-                alert('Invalid email or password');
-                window.location.href = 'login.php';
-                </script>";
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                title: 'Oops!',
+                                text: 'Invalid email or password',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = 'login.php';
+                            });
+                        });
+                      </script>";
             }
         }
     } else {
         echo "<script>
-        alert('Invalid email or password');
-        window.location.href = 'login.php';
-        </script>";
-    }   
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Invalid email or password',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = 'login.php';
+                    });
+                });
+              </script>";
+    }
 }
 
-// Registration functionality
 if (isset($_POST['register'])) {
     $idno = $_POST['idno'];
     $lastname = $_POST['lastname'];
@@ -65,10 +118,8 @@ if (isset($_POST['register'])) {
     $level = $_POST['level'];
     $address = $_POST['address'];
     $email = $_POST['email'];
-    $password = $_POST['password']; // Save the password directly without hashing
-    // $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password before saving it
+    $password = $_POST['password']; // Store plain text password
 
-    // Check if the username already exists
     $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -76,11 +127,18 @@ if (isset($_POST['register'])) {
 
     if ($result->num_rows > 0) {
         echo "<script>
-        alert('Username already exists');
-        window.location.href = 'login.php';
-        </script>";
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Username already exists',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = 'login.php';
+                    });
+                });
+              </script>";
     } else {
-        // Register the new user
         $stmt = $conn->prepare("INSERT INTO users (idno, lastname, firstname, midname, course, level, address, email, password) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssssss", $idno, $lastname, $firstname, $midname, $course, $level, $address, $email, $password);
@@ -88,50 +146,31 @@ if (isset($_POST['register'])) {
 
         if ($result) {
             echo "<script>
-                    alert('Registration successful');
-                    setTimeout(function() {
-                        window.location.href = 'login.php';
-                    }, 100); // .1-second delay before redirection
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Registration successful',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = 'login.php';
+                        });
+                    });
                   </script>";
-            exit();
         } else {
             echo "<script>
-            alert('Registration failed');
-            window.location.href = 'login.php';
-            </script>";
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Registration failed',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = 'login.php';
+                        });
+                    });
+                  </script>";
         }
     }
 }
 ?>
-
-
-
-
-<!-- // if ($result->num_rows == 1) { // With hashed password
-    //     $row = $result->fetch_assoc();
-    //     if (password_verify($password, $row['password'])) {
-    //         $_SESSION['email'] = $email;
-    //         header('Location: homepage.php'); // Redirect to homepage
-    //         exit(); // Exit after redirection
-    //     } else {
-    //         echo "<script>alert('Invalid email or password');</script>";
-    //     }
-    // } else {
-    //     echo "<script>alert('Invalid email or password');</script>";
-    // }
-
-    // if ($result->num_rows == 1) { // Without hashed password
-    //     $row = $result->fetch_assoc();
-    //     // Compare plain text passwords directly
-    //     if ($password == $row['password']) {
-    //         $_SESSION['email'] = $email;
-    //         header('Location: homepage.php'); // Redirect to homepage
-    //         exit(); // Exit after redirection
-    //     } else {
-    //         echo "<script>alert('Invalid email or password');</script>";
-    //     }
-    // } else {
-    //     echo "<script>alert('Invalid email or password');</script>";
-    // } 
-
-    // $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password before saving it -->

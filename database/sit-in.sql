@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2025 at 04:13 AM
+-- Generation Time: Feb 18, 2025 at 07:49 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,8 +46,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`, `level`, `address`, `profileImg`, `email`, `password`) VALUES
-(1, '22692693', 'David', 'John', 'I.', 'bsit', '1', 'Pooc, Talisay', NULL, 'doe@gmail.com', '123'),
-(2, '898943', 'Smith', 'Nicole', 'G.', 'bsit', '2', 'Naga, Cebu', NULL, 'nic@gmail.com', '123');
+(1, '22692693', 'Doe', 'John', 'C.', 'bsit', '3', 'Talisay City, Cebu', 'images/cat.jpg', 'doe@gmail.com', '123'),
+(2, '21864648', 'Smith', 'David', 'I.', 'bsit', '4', 'Pahina, Cebu City', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
+(3, '48965754', 'Major', 'Mary', 'L.', 'bscs', '1', 'Cordova, lapu-lapu', 'uploadimg/bird.jpg', 'mary@gmail.com', '123'),
+(4, '22889977', 'Michael', 'Bron', 'B.', 'BSEd', '1', 'Talisay City, Cebu', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W');
 
 --
 -- Indexes for dumped tables
@@ -68,7 +70,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

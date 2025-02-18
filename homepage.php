@@ -1,14 +1,29 @@
 <?php
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    if (!isset($_SESSION['user'])) {
-        header("Location: login.php");
-        exit();
-    }
-    $user = $_SESSION['user'];
-    $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit();
+}
+$user = $_SESSION['user'];
+$profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg';
 ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if (isset($_SESSION['just_logged_in'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Welcome!',
+            text: 'Hello <?php echo $user['firstname'] . ' ' . $user['midname'] . ' ' . $user['lastname'] . ' '?>👨‍🎓',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    });
+</script>
+<?php unset($_SESSION['just_logged_in']); endif; ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +31,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
     <script src="script.js"></script>
+    <link rel="icon" type="image/png" href="images/ccslogo.png">
     <link href="css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>

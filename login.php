@@ -1,46 +1,20 @@
 <?php 
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    include 'connection/conn_login.php'; // Include the connection file
-
-    if (isset($_POST['login'])) {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        // Prepare the query
-        $query = "SELECT * FROM users WHERE email=?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            if (password_verify($password, $user['password'])) {
-                $_SESSION['user'] = $user;
-                header("Location: homepage.php");
-                exit();
-            } else {
-                echo "<script>
-                    alert('Invalid email or password');
-                    window.location.href = 'login.php';
-                </script>";
-            }
-        } else {
-            echo "<script>
-                alert('Invalid email or password');
-                window.location.href = 'login.php';
-            </script>";
-        }
-    }
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include 'connection/conn_login.php'; 
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Registration Form</title>
+    <title>Login</title>
+    <link rel="icon" type="image/png" href="images/uclogo.jpg">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>

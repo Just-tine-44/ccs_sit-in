@@ -1,7 +1,7 @@
 <nav class="bg-white shadow mb-8 font-sans">
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
-            <a href="homepage.php" class="text-gray-800 font-bold text-xl hover:text-blue-500 relative">Dashboard</a>
+            <a href="homepage.php" class="text-gray-800 font-bold text-xl hover:text-blue-500 relative">UC-CCS</a>
             <div class="flex space-x-4 items-center">
                 <!-- Notifications Dropdown -->
                 <div class="relative">
