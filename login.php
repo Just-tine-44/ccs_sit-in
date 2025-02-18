@@ -12,7 +12,7 @@ include 'connection/conn_login.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>UC-CCS Login</title>
     <link rel="icon" type="image/png" href="images/uclogo.jpg">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/style.css">
