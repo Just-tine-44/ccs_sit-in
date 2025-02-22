@@ -48,7 +48,7 @@ $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.
         <p class="text-gray-700 mb-2"><i class="fas fa-calendar"></i> Year: <?php echo $user['level']; ?></p>
         <p class="text-gray-700 mb-2"><i class="fas fa-envelope"></i> Email: <?php echo $user['email']; ?></p>
         <p class="text-gray-700 mb-2"><i class="fas fa-home"></i> Address: <?php echo $user['address']; ?></p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-clock"></i> Session:</p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-clock"></i> Session: 30</p>
     </div>
     <div class="bg-white p-6 rounded-lg shadow">
         <h2 class="text-2xl font-bold mb-2 text-center bg-blue-500 text-white p-2 rounded">
