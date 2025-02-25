@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2025 at 06:22 AM
+-- Generation Time: Feb 25, 2025 at 04:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,9 @@ INSERT INTO `stud_session` (`id`, `session`) VALUES
 (1, 30),
 (2, 30),
 (3, 30),
-(4, 30);
+(4, 30),
+(5, 30),
+(6, 30);
 
 -- --------------------------------------------------------
 
@@ -53,7 +55,7 @@ CREATE TABLE `users` (
   `idno` varchar(50) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `firstname` varchar(50) NOT NULL,
-  `midname` varchar(50) NOT NULL,
+  `midname` varchar(50) DEFAULT NULL,
   `course` varchar(50) NOT NULL,
   `level` varchar(50) NOT NULL,
   `address` varchar(255) NOT NULL,
@@ -67,10 +69,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`, `level`, `address`, `profileImg`, `email`, `password`) VALUES
-(1, '22692693', 'Doe', 'John', 'A.', 'bsit', '3', 'Talisay City, Cebu', 'uploadimg/profile_67b9fe602d5b9.jpg', 'doe@gmail.com', '123'),
+(1, '22692693', 'Doe', 'John', 'D.', 'bsit', '3', 'Talisay City, Cebu', 'uploadimg/profile_67bd972925704.jpg', 'doe@gmail.com', '123'),
 (2, '21864648', 'Smith', 'David', 'C.', 'bsit', '4', 'Pahina, Cebu City', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
-(3, '48965754', 'Major', 'Mary', 'L.', 'bscs', '1', 'Cordova, lapu-lapu', 'uploadimg/bird.jpg', 'mary@gmail.com', '123'),
-(4, '22889977', 'Michael', 'Bron', 'C.', 'BSEd', '1', 'Talisay City, Cebu', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W');
+(3, '48965754', 'Major', 'Mary', 'L.', 'bscs', '1', 'Cordova, lapu-lapu', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
+(4, '22889977', 'Michael', 'Bron', 'C.', 'BSEd', '1', 'Talisay City, Cebu', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
+(5, '33669944', 'Tatum', 'Lebron', 'P.', 'BSCompE', '2', 'Boston, USA', 'uploadimg/profile_67bdb7495cebd.jpg', 'tatum@gmail.com', '123'),
+(6, '11556677', 'Doncic', 'Max', 'P.', 'AB PolSci', '2', 'Colon Street', 'images/person.jpg', 'max@gmail.com', '123');
 
 --
 -- Indexes for dumped tables
@@ -94,10 +98,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `stud_session`
+--
+ALTER TABLE `stud_session`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
