@@ -49,6 +49,20 @@ if (isset($_POST['login'])) {
         if (password_verify($password, $row['password'])) {
             $_SESSION['user'] = $row;
             $_SESSION['just_logged_in'] = true; // Set session variable
+
+            // Fetch the session information
+            $stmt = $conn->prepare("SELECT session FROM stud_session WHERE id=?");
+            $stmt->bind_param("i", $row['id']);
+            $stmt->execute();
+            $session_result = $stmt->get_result();
+
+            if ($session_result->num_rows > 0) {
+                $stud_session = $session_result->fetch_assoc();
+                $_SESSION['stud_session'] = $stud_session;
+            } else {
+                $_SESSION['stud_session'] = ['session' => 'N/A'];
+            }
+
             echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -66,6 +80,20 @@ if (isset($_POST['login'])) {
             if ($password == $row['password']) {
                 $_SESSION['user'] = $row;
                 $_SESSION['just_logged_in'] = true; // Set session variable
+
+                // Fetch the session information
+                $stmt = $conn->prepare("SELECT session FROM stud_session WHERE id=?");
+                $stmt->bind_param("i", $row['id']);
+                $stmt->execute();
+                $session_result = $stmt->get_result();
+
+                if ($session_result->num_rows > 0) {
+                    $stud_session = $session_result->fetch_assoc();
+                    $_SESSION['stud_session'] = $stud_session;
+                } else {
+                    $_SESSION['stud_session'] = ['session' => 'N/A'];
+                }
+
                 echo "<script>
                         document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({

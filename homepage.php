@@ -8,6 +8,7 @@ if (!isset($_SESSION['user'])) {
 }
 $user = $_SESSION['user'];
 $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg';
+$stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : ['session' => 'N/A'];
 ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php if (isset($_SESSION['just_logged_in'])): ?>
@@ -38,29 +39,86 @@ $profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.
 <body class="bg-gray-100">
 <?php include 'navbar.php'; ?>
 <div class="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2 text-center bg-blue-500 text-white p-2 rounded">Student Information</h2>
-        <div class="border-b-2 border-black pb-4 mb-4">
-            <img src="<?php echo $profileImg; ?>" alt="Profile Pic" class="w-32 h-32 mx-auto rounded-full">
+        <!-- Student Information Card with header at the top -->
+    <div class="container mx-auto">
+        <!-- Blue header bar outside the scrollable content -->
+        <div class="bg-blue-500 p-2 text-white font-bold rounded-t-lg text-center text-2xl">
+            Student Information
         </div>
-        <p class="text-gray-700 mb-2"><i class="fas fa-user"></i> Name: <?php echo $user['firstname'] . ' ' . $user['midname'] . ' ' . $user['lastname']; ?></p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-book"></i> Course: <?php echo $user['course']; ?></p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-calendar"></i> Year: <?php echo $user['level']; ?></p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-envelope"></i> Email: <?php echo $user['email']; ?></p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-home"></i> Address: <?php echo $user['address']; ?></p>
-        <p class="text-gray-700 mb-2"><i class="fas fa-clock"></i> Session: 30</p>
+        
+        <!-- Content area -->
+        <div class="bg-white p-6 rounded-b-lg shadow">
+            <div class="border-b-2 border-black pb-4 mb-4">
+            <img src="<?php echo $profileImg; ?>" alt="Profile Pic" class="w-32 h-32 mx-auto rounded-full">
+            </div>
+            <p class="text-gray-700 mb-2"><i class="fas fa-user"></i> Name: <?php echo $user['firstname'] . ' ' . $user['midname'] . ' ' . $user['lastname']; ?></p>
+            <p class="text-gray-700 mb-2"><i class="fas fa-book"></i> Course: <?php echo $user['course']; ?></p>
+            <p class="text-gray-700 mb-2"><i class="fas fa-calendar"></i> Year: <?php echo $user['level']; ?></p>
+            <p class="text-gray-700 mb-2"><i class="fas fa-envelope"></i> Email: <?php echo $user['email']; ?></p>
+            <p class="text-gray-700 mb-2"><i class="fas fa-home"></i> Address: <?php echo $user['address']; ?></p>
+            <p class="text-gray-700 mb-2"><i class="fas fa-clock"></i> Session: <?php echo $stud_session['session']; ?></p>
+        </div>
     </div>
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2 text-center bg-blue-500 text-white p-2 rounded">
+
+    <!-- Announcements Card with header at the top -->
+    <div class="container mx-auto mt-4">
+        <!-- Blue header bar outside the scrollable content -->
+        <div class="bg-blue-500 p-2 text-white font-bold rounded-t-lg text-center text-2xl">
             <i class="fas fa-bullhorn"></i> Announcements
-        </h2>
-        <p class="text-gray-700">No new announcements.</p>
+        </div>
+        
+        <!-- Content area with fixed height and overflow scrolling -->
+        <div class="bg-white p-6 rounded-b-lg shadow h-64 overflow-y-auto">
+            <p class="text-gray-700">No new announcements.</p>
+        </div>
     </div>
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2 text-center bg-blue-500 text-white p-2 rounded">Rules and Regulations</h2>
-        <p class="text-gray-700">1. Attend all classes.</p>
-        <p class="text-gray-700">2. Submit assignments on time.</p>
-        <p class="text-gray-700">3. Maintain discipline.</p>
+
+    <div class="container mx-auto">
+        <!-- Blue header bar outside the scrollable content -->
+        <div class="text-xl font-bold mb-2 text-center bg-blue-500 text-white p-3 m-9 rounded sticky top-0 w-full" style="margin: 0;">
+            Rules and Regulation
+        </div>
+        
+        <!-- Scrollable content area with university name at top -->
+        <div class="bg-white p-6 rounded-b-lg shadow overflow-y-auto w-full" style="max-height: 460px;">
+            <div class="text-center mb-6">
+            <h2 class="text-xl font-bold">University of Cebu</h2>
+            <p class="font-bold">COLLEGE OF INFORMATION & COMPUTER STUDIES</p>
+            </div>
+            
+            <!-- Rest of your content -->
+            <h3 class="text-xl font-bold mb-2">LABORATORY RULES AND REGULATIONS</h3>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">To avoid embarrassment and maintain camaraderie with your friends and superiors at our laboratories, please observe the following:</p>
+            
+            <!-- Numbered rules (1-12) -->
+            <p class="text-gray-700 mb-4" style="text-align: justify;">1. Maintain silence, proper decorum, and discipline inside the laboratory. Mobile phones, walkmans and other personal pieces of equipment must be switched off.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">2. Games are not allowed inside the lab. This includes computer-related games, card games and other games that may disturb the operation of the lab.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">3. Surfing the Internet is allowed only with the permission of the instructor. Downloading and installing of software are strictly prohibited.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">4. Getting access to other websites not related to the course (especially pornographic and illicit sites) is strictly prohibited.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">5. Deleting computer files and changing the set-up of the computer is a major offense.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">6. Observe computer time usage carefully. A fifteen-minute allowance is given for each use. Otherwise, the unit will be given to those who wish to "sit-in".</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">7. Observe proper decorum while inside the laboratory.</p>
+            <ul class="list-disc pl-5 text-gray-700 mb-4" style="text-align: justify;">
+                <li class="mb-2">Do not get inside the lab unless the instructor is present.</li>
+                <li class="mb-2">All bags, knapsacks, and the likes must be deposited at the counter.</li>
+                <li class="mb-2">Follow the seating arrangement of your instructor.</li>
+                <li class="mb-2">At the end of class, all software programs must be closed.</li>
+                <li class="mb-2">Return all chairs to their proper places after using.</li>
+            </ul>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">8. Chewing gum, eating, drinking, smoking, and other forms of vandalism are prohibited inside the lab.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">9. Anyone causing a continual disturbance will be asked to leave the lab. Acts or gestures offensive to the members of the community, including public display of physical intimacy, are not tolerated.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">10. Persons exhibiting hostile or threatening behavior such as yelling, swearing, or disregarding requests made by lab personnel will be asked to leave the lab.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">11. For serious offense, the lab personnel may call the Civil Security Office (CSU) for assistance.</p>
+            <p class="text-gray-700 mb-4" style="text-align: justify;">12. Any technical problem or difficulty must be addressed to the laboratory supervisor, student assistant or instructor immediately.</p>
+            <!-- Include the rest of your numbered rules here -->
+            
+            <!-- Disciplinary action section -->
+            <h3 class="text-xl font-bold mb-2">DISCIPLINARY ACTION</h3>
+            <ul class="list-disc pl-5 text-gray-700 mb-4" style="text-align: justify;">
+            <li class="mb-2">First Offense - The Head or the Dean or OIC recommends to the Guidance Center for a suspension from classes for each offender.</li>
+            <li class="mb-2">Second and Subsequent Offenses - A recommendation for a heavier sanction will be endorsed to the Guidance Center.</li>
+            </ul>
+        </div>
     </div>
 </div>
 </body>
