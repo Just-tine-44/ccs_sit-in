@@ -148,6 +148,7 @@ if (isset($_POST['register'])) {
     $email = $_POST['email'];
     $password = $_POST['password']; // Store plain text password
 
+    // Check if the email already exists
     $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -167,12 +168,21 @@ if (isset($_POST['register'])) {
                 });
               </script>";
     } else {
+        // Insert new user
         $stmt = $conn->prepare("INSERT INTO users (idno, lastname, firstname, midname, course, level, address, email, password) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssssss", $idno, $lastname, $firstname, $midname, $course, $level, $address, $email, $password);
         $result = $stmt->execute();
 
         if ($result) {
+            // Get the last inserted user ID
+            $last_id = $conn->insert_id;
+
+            // Insert into stud_session
+            $stmt2 = $conn->prepare("INSERT INTO stud_session (id, session) VALUES (?, 30)");
+            $stmt2->bind_param("i", $last_id);
+            $stmt2->execute();
+
             echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -201,4 +211,5 @@ if (isset($_POST['register'])) {
         }
     }
 }
+
 ?>

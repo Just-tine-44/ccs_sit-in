@@ -43,7 +43,7 @@ include 'connection/conn_login.php';
                 <input type="text" name="idno" placeholder="ID Number" oninput="validateIDNO(this)" required>
                 <input type="text" name="lastname" placeholder="Lastname" required>
                 <input type="text" name="firstname" placeholder="Firstname" required>
-                <input type="text" name="midname" placeholder="Middlename" required>
+                <input type="text" name="midname" placeholder="Middlename">
                 <select name="course" required>
                     <option value="" disabled selected>Course</option>
                     <option value="BSIT">BSIT</option>
