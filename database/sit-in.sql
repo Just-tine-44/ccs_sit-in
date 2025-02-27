@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2025 at 04:19 PM
+-- Generation Time: Feb 27, 2025 at 06:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -73,7 +73,7 @@ INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`,
 (2, '21864648', 'Smith', 'David', 'C.', 'bsit', '4', 'Pahina, Cebu City', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
 (3, '48965754', 'Major', 'Mary', 'L.', 'bscs', '1', 'Cordova, lapu-lapu', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
 (4, '22889977', 'Michael', 'Bron', 'C.', 'BSEd', '1', 'Talisay City, Cebu', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
-(5, '33669944', 'Tatum', 'Lebron', 'P.', 'BSCompE', '2', 'Boston, USA', 'uploadimg/profile_67bdb7495cebd.jpg', 'tatum@gmail.com', '123'),
+(5, '33669944', 'Tatum', 'Lebron', 'L.', 'BSCompE', '2', 'Boston, USA', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', '123'),
 (6, '11556677', 'Doncic', 'Max', 'P.', 'AB PolSci', '2', 'Colon Street', 'images/person.jpg', 'max@gmail.com', '123');
 
 --

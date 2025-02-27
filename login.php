@@ -33,6 +33,10 @@ include 'connection/conn_login.php';
                     <button type="submit" name="login">Login</button>
                     <p>Don't have an account yet? <a href="#" onclick="showForm('register-form')">Register</a></p>
                 </div>
+
+                <div style="text-align: right;">
+                    <a href="admin/admin_login.php" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Admin</a>
+                </div>
             </form>
         </div>
 

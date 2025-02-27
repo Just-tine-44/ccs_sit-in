@@ -21,7 +21,7 @@
                 if (result.isConfirmed) {
                     window.location.href = 'logout.php?confirm=true';
                 } else {
-                    window.location.href = 'index.php'; // Redirect to another page if not confirmed
+                    window.location.href = 'homepage.php';
                 }
             });
         });
@@ -35,7 +35,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] == 'true') {
         session_start();
     }
     session_destroy();
-    header("Location: login.php");
+    header("Location: index.php");
     exit();
 }
 ?>
