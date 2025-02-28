@@ -24,6 +24,19 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
 </script>
 <?php unset($_SESSION['just_logged_in']); endif; ?>
 
+<?php
+include('conn/dbcon.php'); // Adjust the path as necessary
+
+// Fetch announcements from the database
+$announcements = [];
+$result = $conn->query("SELECT * FROM announcements ORDER BY post_date DESC");
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $announcements[] = $row;
+    }
+}
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -46,26 +59,40 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
         </div>
         <div class="bg-white p-6 rounded-b-lg shadow">
             <div class="border-b-2 border-black pb-4 mb-4">
-                <img src="<?php echo $profileImg; ?>" alt="Profile Pic" class="w-32 h-32 mx-auto rounded-full">
+                <img src="<?php echo $profileImg; ?>" alt="Profile Pic" class="w-32 h-32 mx-auto rounded-full" style="max-height: 460px;">
             </div>
-            <p class="text-gray-700 mb-2"><i class="fas fa-user"></i> Name: <?php echo $user['firstname'] . ' ' . $user['midname'] . ' ' . $user['lastname']; ?></p>
-            <p class="text-gray-700 mb-2"><i class="fas fa-book"></i> Course: <?php echo $user['course']; ?></p>
-            <p class="text-gray-700 mb-2"><i class="fas fa-calendar"></i> Year: <?php echo $user['level']; ?></p>
-            <p class="text-gray-700 mb-2"><i class="fas fa-envelope"></i> Email: <?php echo $user['email']; ?></p>
-            <p class="text-gray-700 mb-2"><i class="fas fa-home"></i> Address: <?php echo $user['address']; ?></p>
-            <p class="text-gray-700 mb-2"><i class="fas fa-clock"></i> Session: <?php echo $stud_session['session']; ?></p>
+            <p class="text-gray-700 mb-4 pb-1"><i class="fas fa-user"></i> Name: <?php echo $user['firstname'] . ' ' . $user['midname'] . ' ' . $user['lastname']; ?></p>
+            <p class="text-gray-700 mb-4 pb-1"><i class="fas fa-book"></i> Course: <?php echo $user['course']; ?></p>
+            <p class="text-gray-700 mb-4 pb-1"><i class="fas fa-calendar"></i> Year: <?php echo $user['level']; ?></p>
+            <p class="text-gray-700 mb-4 pb-1"><i class="fas fa-envelope"></i> Email: <?php echo $user['email']; ?></p>
+            <p class="text-gray-700 mb-3 pb-1"><i class="fas fa-home"></i> Address: <?php echo $user['address']; ?></p>
+            <p class="text-gray-700 mb-2 pb-1"><i class="fas fa-clock"></i> Session: <?php echo $stud_session['session']; ?></p>
         </div>
     </div>
 
     <!-- Announcements Card (Slightly Bigger) -->
     <div class="container mx-auto md:col-span-2 lg:col-span-3">
-        <div class="bg-blue-500 p-2 text-white font-bold rounded-t-lg text-center text-2xl">
+        <div class="bg-blue-500 p-3 text-white font-bold rounded-t-lg text-center text-xl">
             <i class="fas fa-bullhorn"></i> Announcements
         </div>
-        <div class="bg-white p-6 rounded-b-lg shadow h-64 overflow-y-auto">
-            <p class="text-gray-700">No new announcements.</p>
+        <div class="bg-white p-4 rounded-b-lg shadow h-[550px] overflow-y-auto" style="max-height: 460px;">
+            <?php if (empty($announcements)): ?>
+                <p class="text-gray-500 text-center">No new announcements.</p>
+            <?php else: ?>
+                <?php foreach ($announcements as $announcement): ?>
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm mb-3 border border-gray-300">
+                        <p class="text-gray-600 font-semibold">
+                            <?php echo $announcement['admin_name']; ?> | 
+                            <?php echo date('Y-M-d h:i A', strtotime($announcement['post_date'])); ?>
+                        </p>
+                        <p class="text-gray-700 mt-2 text-justify"><?php echo $announcement['message']; ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
+
+
 
     <!-- Rules and Regulation Card (Reduced width slightly) -->
     <div class="container mx-auto md:col-span-4 lg:col-span-3">
@@ -111,3 +138,25 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
 </div>
 </body>
 </html>
+
+<style>
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px; /* Thin scrollbar */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #e5e7eb; /* Light gray track */
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #a0aec0; /* Default gray */
+        border-radius: 10px;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #3b82f6, #1d4ed8); /* Blue gradient */
+    }
+</style>
