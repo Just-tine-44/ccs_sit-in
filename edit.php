@@ -84,7 +84,7 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
                             </div>
                             <div>
                                 <label class="block text-gray-700 font-medium mb-2">Address:</label>
-                                <input type="text" name="address" value="<?php echo $user['address']; ?>" class="w-full border px-4 py-2 rounded-full border-gray-200" required>
+                                <input type="text" name="address" value="<?php echo isset($user['address']) ? htmlspecialchars($user['address']) : ''; ?>" class="w-full border px-4 py-2 rounded-full border-gray-200" required>
                             </div>
                         </div>
                     </div>

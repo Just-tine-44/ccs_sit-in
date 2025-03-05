@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2025 at 06:01 AM
+-- Generation Time: Mar 05, 2025 at 06:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,49 @@ SET time_zone = "+00:00";
 --
 -- Database: `sit-in`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL,
+  `username` varchar(200) NOT NULL,
+  `password` varchar(1020) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `username`, `password`) VALUES
+(1, 'admin', 'admin123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `announcements`
+--
+
+CREATE TABLE `announcements` (
+  `announcement_id` int(11) NOT NULL,
+  `admin_name` varchar(200) NOT NULL,
+  `post_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `message` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `announcements`
+--
+
+INSERT INTO `announcements` (`announcement_id`, `admin_name`, `post_date`, `message`) VALUES
+(2, 'CCS-Admin', '2025-03-04 17:38:40', 'System maintenance is scheduled for this Friday from 8:00 PM to 10:00 PM.'),
+(3, 'CCS-Admin', '2025-03-04 17:40:12', 'All users must update their profiles with their latest student ID numbers.'),
+(4, 'CCS-Admin', '2025-03-04 17:41:05', 'Reminder: All students must log their sit-in sessions properly.'),
+(5, 'CCS-Admin', '2025-03-04 17:41:14', 'Sit-in schedules for next week are now available. Book your slots in advance. Thank You.'),
+(6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions.');
 
 -- --------------------------------------------------------
 
@@ -69,16 +112,29 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`, `level`, `address`, `profileImg`, `email`, `password`) VALUES
-(1, '22692693', 'Doe', 'John', 'D.', 'bsit', '3', 'Talisay City, Cebu', 'uploadimg/profile_67bd972925704.jpg', 'doe@gmail.com', '123'),
-(2, '21864648', 'Smith', 'David', 'C.', 'bsit', '4', 'Pahina, Cebu City', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
-(3, '48965754', 'Major', 'Mary', 'L.', 'bscs', '1', 'Cordova, lapu-lapu', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
-(4, '22889977', 'Michael', 'Bron', 'C.', 'BSEd', '1', 'Talisay City, Cebu', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
-(5, '33669944', 'Tatum', 'Lebron', 'L.', 'BSCompE', '2', 'Boston, USA', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', '123'),
-(6, '11556677', 'Doncic', 'Max', 'P.', 'AB PolSci', '2', 'Colon Street', 'images/person.jpg', 'max@gmail.com', '123');
+(1, '22692693', 'Does', 'John', 'D.', 'BSCS', '1st Year', 'Talisay City', 'uploadimg/profile_67bd972925704.jpg', 'doe@gmail.com', '123'),
+(2, '21864648', 'Smith', 'David', 'C.', 'BSIT', '4th Year', 'Cordova, Lapu-lapu', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
+(3, '48965754', 'Major', 'Mary', 'L.', 'BSIT', '1st Year', 'Pahina, Cebu City', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
+(4, '22889977', 'Michaels', 'Bron', 'C.', 'BSCS', '1st Year', 'Basak, Pardo', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
+(5, '33669944', 'Tatums', 'Lebron', 'L.', 'BSCompE', '2nd Year', 'Cebu, Boston', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', '123'),
+(6, '11556677', 'Doncics', 'Maxie', 'D.', 'BSCS', '1st Year', 'Sibonga, Cebu', 'images/person.jpg', 'max@gmail.com', '123');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`announcement_id`);
 
 --
 -- Indexes for table `stud_session`
@@ -96,6 +152,18 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `announcements`
+--
+ALTER TABLE `announcements`
+  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `stud_session`

@@ -3,13 +3,13 @@
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
              <!-- Left: Title -->
-             <a href="#" class="text-lg font-semibold">
+             <a href="admin_home.php" class="text-lg font-semibold">
                 College of Computer Studies Admin
             </a>
             <div class="flex space-x-4 items-center">                
-                <a href="#" class="text-gray-800 hover:text-blue-500 relative">Home</a>
+                <a href="admin_home.php" class="text-gray-800 hover:text-blue-500 relative">Home</a>
                 <a href="#" class="text-gray-800 hover:text-blue-500 relative">Search</a>
-                <a href="#" class="text-gray-800 hover:text-blue-500 relative">Students</a>
+                <a href="admin_student_list.php" class="text-gray-800 hover:text-blue-500 relative">Students</a>
                 <a href="#" class="text-gray-800 hover:text-blue-500 relative">Sit-in</a>
                 <a href="#" class="text-gray-800 hover:text-blue-500 relative">View Sit-in Records</a>
                 <a href="#" class="text-gray-800 hover:text-blue-500 relative">Sit-in Reports</a>
