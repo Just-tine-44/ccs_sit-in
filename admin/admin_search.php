@@ -220,8 +220,3 @@
     </script>
 </body>
 </html>
-
-<!-- In admin search a functionality, in here is the admin will search a registered student, 
-after it search, there will be pop-up of student_id, Full Name, Course and Year reaming 
-session, also a purpose and laboratory (available), 
-make it beautiful and modern using tailwind (which is already i have in local) -->
