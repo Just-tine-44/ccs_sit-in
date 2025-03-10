@@ -1,6 +1,6 @@
 <?php 
     include("navbar_admin.php");
-    session_start();
+
     
     // Check if admin is logged in
     if (!isset($_SESSION['admin'])) {
