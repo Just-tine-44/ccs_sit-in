@@ -40,11 +40,11 @@ session_start();
                     <i class="fas fa-user-graduate mr-2 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Students</span>
                 </a>
-                <a href="#" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                <a href="sit_in.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-chair mr-2 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Sit-in</span>
                 </a>
-                <a href="#" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                <a href="records.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-history mr-2 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Records</span>
                 </a>

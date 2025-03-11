@@ -31,17 +31,36 @@ if(isset($_POST['add_student'])) {
         $_SESSION['message'] = "Student ID or email already exists";
         $_SESSION['msg_type'] = "error";
     } else {
-        // Insert new student
-        $insertQuery = "INSERT INTO users (idno, lastname, firstname, midname, course, level, address, email, password) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($insertQuery);
-        $stmt->bind_param("sssssssss", $idno, $lastname, $firstname, $midname, $course, $level, $address, $email, $password);
+        // Start transaction to ensure both operations complete or fail together
+        $conn->begin_transaction();
         
-        if($stmt->execute()) {
+        try {
+            // Insert new student
+            $insertQuery = "INSERT INTO users (idno, lastname, firstname, midname, course, level, address, email, password) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($insertQuery);
+            $stmt->bind_param("sssssssss", $idno, $lastname, $firstname, $midname, $course, $level, $address, $email, $password);
+            $stmt->execute();
+            
+            // Get the inserted user's ID
+            $userId = $conn->insert_id;
+            
+            // Insert default session for the new student
+            $sessionInsertQuery = "INSERT INTO stud_session (id, session) VALUES (?, 30)";
+            $sessionStmt = $conn->prepare($sessionInsertQuery);
+            $sessionStmt->bind_param("i", $userId);
+            $sessionStmt->execute();
+            
+            // If we got here, both operations succeeded, so commit the transaction
+            $conn->commit();
+            
             $_SESSION['message'] = "Student added successfully";
             $_SESSION['msg_type'] = "success";
-        } else {
-            $_SESSION['message'] = "Error: Could not add student";
+        } catch (Exception $e) {
+            // An error occurred, roll back the transaction
+            $conn->rollback();
+            
+            $_SESSION['message'] = "Error: Could not add student: " . $e->getMessage();
             $_SESSION['msg_type'] = "error";
         }
     }

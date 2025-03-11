@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 06:42 AM
+-- Generation Time: Mar 11, 2025 at 06:06 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -62,7 +62,35 @@ INSERT INTO `announcements` (`announcement_id`, `admin_name`, `post_date`, `mess
 (3, 'CCS-Admin', '2025-03-04 17:40:12', 'All users must update their profiles with their latest student ID numbers.'),
 (4, 'CCS-Admin', '2025-03-04 17:41:05', 'Reminder: All students must log their sit-in sessions properly.'),
 (5, 'CCS-Admin', '2025-03-04 17:41:14', 'Sit-in schedules for next week are now available. Book your slots in advance. Thank You.'),
-(6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions.');
+(6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions. Thank u'),
+(7, 'CCS-Admin', '2025-03-11 04:55:08', 'Goodluck CSS');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `curr_sit_in`
+--
+
+CREATE TABLE `curr_sit_in` (
+  `sit_in_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `laboratory` varchar(100) NOT NULL,
+  `purpose` varchar(255) NOT NULL,
+  `check_in_time` datetime NOT NULL DEFAULT current_timestamp(),
+  `check_out_time` datetime DEFAULT NULL,
+  `status` enum('active','completed') DEFAULT 'active'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `curr_sit_in`
+--
+
+INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `check_in_time`, `check_out_time`, `status`) VALUES
+(1, 1, 'CCS Lab 1', 'PHP PROGRAMMING', '2025-03-11 12:33:11', '2025-03-11 12:49:16', 'completed'),
+(2, 7, 'CCS Lab 2', 'Java Programming', '2025-03-11 12:43:30', '2025-03-11 12:49:18', 'completed'),
+(3, 7, 'CCS Lab 2', 'Research', '2025-03-11 12:52:12', '2025-03-11 12:52:23', 'completed'),
+(4, 7, 'CCS Lab 1', 'Research', '2025-03-11 12:54:21', '2025-03-11 12:54:26', 'completed'),
+(5, 7, 'CCS Lab 1', 'Java Programming', '2025-03-11 12:56:21', '2025-03-11 12:56:41', 'completed');
 
 -- --------------------------------------------------------
 
@@ -80,12 +108,13 @@ CREATE TABLE `stud_session` (
 --
 
 INSERT INTO `stud_session` (`id`, `session`) VALUES
-(1, 30),
+(1, 29),
 (2, 30),
 (3, 30),
 (4, 30),
 (5, 30),
-(6, 30);
+(6, 30),
+(7, 28);
 
 -- --------------------------------------------------------
 
@@ -117,7 +146,8 @@ INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`,
 (3, '48965754', 'Major', 'Mary', 'L.', 'BSIT', '1st Year', 'Pahina, Cebu City', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
 (4, '22889977', 'Michaels', 'Bron', 'C.', 'BSCS', '1st Year', 'Basak, Pardo', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
 (5, '33669944', 'Tatums', 'Lebron', 'L.', 'BSCompE', '2nd Year', 'Cebu, Boston', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', '123'),
-(6, '11556677', 'Doncics', 'Maxie', 'D.', 'BSCS', '1st Year', 'Sibonga, Cebu', 'images/person.jpg', 'max@gmail.com', '123');
+(6, '11556677', 'Doncics', 'Maxie', 'D.', 'BSCS', '1st Year', 'Sibonga, Cebu', 'images/person.jpg', 'max@gmail.com', '123'),
+(7, '22596886', 'Paldo', 'Rovic', 'U', 'BSCompE', '2nd Year', 'Pahina, Cebu City', NULL, 'rovic@gmail.com', '$2y$10$/cXM5mHYxMgHnH1oyyjrNuCGf5Y7nU8V3.sDnFbgvCdZyf9XGPRG6');
 
 --
 -- Indexes for dumped tables
@@ -137,6 +167,13 @@ ALTER TABLE `announcements`
   ADD PRIMARY KEY (`announcement_id`);
 
 --
+-- Indexes for table `curr_sit_in`
+--
+ALTER TABLE `curr_sit_in`
+  ADD PRIMARY KEY (`sit_in_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `stud_session`
 --
 ALTER TABLE `stud_session`
@@ -147,7 +184,8 @@ ALTER TABLE `stud_session`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `idno` (`idno`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -163,23 +201,35 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `curr_sit_in`
+--
+ALTER TABLE `curr_sit_in`
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `stud_session`
 --
 ALTER TABLE `stud_session`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `curr_sit_in`
+--
+ALTER TABLE `curr_sit_in`
+  ADD CONSTRAINT `curr_sit_in_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `stud_session`

@@ -318,7 +318,7 @@
             <form action="./conn_back/student_process.php" method="POST">
                 <div class="mb-4">
                     <label for="id_number" class="block text-gray-700 font-medium mb-1">ID Number</label>
-                    <input type="text" id="id_number" name="id_number" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="idno" name="idno" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
