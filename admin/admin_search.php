@@ -1,118 +1,12 @@
-<?php
-include '../conn/dbcon.php';
-
-// Initialize variables
-$searchResults = [];
-$searchPerformed = false;
-$laboratories = ["CCS Lab 1", "CCS Lab 2", "CCS Lab 3", "CCS Lab 4", "CCS Lab 5"];
-
-// Handle search
-if (isset($_GET['search_term']) && !empty($_GET['search_term'])) {
-    $searchPerformed = true;
-    $searchTerm = "%" . $_GET['search_term'] . "%";
-    
-    // Search for students by ID or name
-    $query = "SELECT u.id, u.idno, u.firstname, u.midname, u.lastname, u.course, u.level, 
-                    u.email, u.profileImg, ss.session as remaining_sessions,
-                    (SELECT MAX(check_in_time) FROM curr_sit_in WHERE user_id = u.id) as last_sit_in
-              FROM users u 
-              LEFT JOIN stud_session ss ON u.id = ss.id 
-              WHERE u.idno LIKE ? OR 
-                    u.firstname LIKE ? OR 
-                    u.lastname LIKE ? OR 
-                    CONCAT(u.firstname, ' ', u.lastname) LIKE ? OR
-                    CONCAT(u.lastname, ', ', u.firstname) LIKE ?";
-    
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssss", $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $searchResults[] = $row;
-        }
-    }
-}
-
-// Handle the sit-in registration form submission
-if (isset($_POST['register_sit_in'])) {
-    $user_id = $_POST['user_id'];
-    $laboratory = $_POST['laboratory'];
-    $purpose = $_POST['purpose'];
-    
-    // First check if the user already has an active sit-in session
-    $checkQuery = "SELECT * FROM curr_sit_in WHERE user_id = ? AND status = 'active'";
-    $checkStmt = $conn->prepare($checkQuery);
-    $checkStmt->bind_param("i", $user_id);
-    $checkStmt->execute();
-    $checkResult = $checkStmt->get_result();
-    
-    if ($checkResult->num_rows > 0) {
-        $_SESSION['message'] = "This student already has an active sit-in session!";
-        $_SESSION['msg_type'] = "warning";
-    } else {
-        // Check if the student has any remaining sessions
-        $sessionQuery = "SELECT session FROM stud_session WHERE id = ? AND session > 0";
-        $sessionStmt = $conn->prepare($sessionQuery);
-        $sessionStmt->bind_param("i", $user_id);
-        $sessionStmt->execute();
-        $sessionResult = $sessionStmt->get_result();
-        
-        if ($sessionResult->num_rows > 0) {
-            // Insert new sit-in record without decrementing session count
-            $insertQuery = "INSERT INTO curr_sit_in (user_id, laboratory, purpose) VALUES (?, ?, ?)";
-            $insertStmt = $conn->prepare($insertQuery);
-            $insertStmt->bind_param("iss", $user_id, $laboratory, $purpose);
-            
-            if ($insertStmt->execute()) {
-                $_SESSION['message'] = "Sit-in session registered successfully";
-                $_SESSION['msg_type'] = "success";
-            } else {
-                $_SESSION['message'] = "Error registering sit-in session";
-                $_SESSION['msg_type'] = "error";
-            }
-        } else {
-            $_SESSION['message'] = "Student has no remaining sessions";
-            $_SESSION['msg_type'] = "error";
-        }
-    }
-    
-    // Redirect to the same page to prevent form resubmission
-    header("Location: admin_search.php?search_term=" . urlencode($_POST['search_term']));
-    exit();
-}
-
-// Get lab availability
-$labAvailability = [];
-foreach ($laboratories as $lab) {
-    $availQuery = "SELECT COUNT(*) as count FROM curr_sit_in WHERE laboratory = ? AND status = 'active'";
-    $availStmt = $conn->prepare($availQuery);
-    $availStmt->bind_param("s", $lab);
-    $availStmt->execute();
-    $availResult = $availStmt->get_result();
-    $count = $availResult->fetch_assoc()['count'];
-    
-    // Assuming each lab has 20 computers
-    $available = 20 - $count;
-    $labAvailability[$lab] = $available;
-}
-
-// Get recent searches (would normally be stored in session or database)
-$recentSearches = [
-    ['type' => 'name', 'value' => 'John Doe'],
-    ['type' => 'name', 'value' => 'Maria Santos'],
-    ['type' => 'id', 'value' => '2023-1234']
-];
-?>
-
 <?php include("navbar_admin.php"); ?>
+<?php include("./conn_back/search_process.php"); ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include("icon.php"); ?>
     <title>Student Search - Admin Panel</title>
     <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -188,13 +82,24 @@ $recentSearches = [
                 </div>
                 
                 <div class="flex flex-wrap gap-3">
-                    <?php foreach ($recentSearches as $recent): ?>
-                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer hover:bg-gray-200 transition-colors duration-200"
-                          onclick="document.getElementById('search_term').value='<?php echo $recent['value']; ?>'; document.getElementById('searchForm').submit();">
-                        <i class="fas fa-history mr-1 text-gray-500"></i>
-                        Recent: <?php echo htmlspecialchars($recent['value']); ?>
-                    </span>
-                    <?php endforeach; ?>
+                    <!-- Recent Searches section in admin_search.php -->
+                    <?php if (!empty($recentSearches)): ?>
+                        <div class="flex flex-wrap gap-3 mt-4">
+                            <?php foreach($recentSearches as $search): ?>
+                                <a href="?search_term=<?= urlencode($search['value']) ?>" 
+                                class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer hover:bg-gray-200 transition-colors duration-200 flex items-center">
+                                    <i class="fas fa-history mr-1 text-gray-500"></i>
+                                    <?= $search['type'] === 'id' ? 'ID: ' : '' ?><?= htmlspecialchars($search['value']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                            
+                            <?php if(count($recentSearches) > 0): ?>
+                                <button onclick="clearRecentSearches()" class="px-3 py-1 text-sm text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash-alt mr-1"></i> Clear
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -214,10 +119,30 @@ $recentSearches = [
                             <div class="md:w-1/3">
                                 <div class="bg-gray-50 rounded-xl p-6 text-center">
                                     <div class="w-24 h-24 rounded-full bg-blue-100 mx-auto mb-4 overflow-hidden">
-                                        <?php 
-                                            $profileImg = !empty($student['profileImg']) ? $student['profileImg'] : '../images/person.jpg';
-                                        ?>
-                                        <img src="<?php echo $profileImg; ?>" alt="Student" class="w-full h-full object-cover">
+                                    <?php
+                                    // Clean, production-ready image path logic
+                                    if (!empty($student['profileImg'])) {
+                                        // Check if the stored path already contains "uploadimg/"
+                                        if (strpos($student['profileImg'], 'uploadimg/') === 0) {
+                                            // Path already includes uploadimg/ folder - just add ../ to go up one directory
+                                            $profileImg = '../' . $student['profileImg'];
+                                        } 
+                                        else if (strpos($student['profileImg'], '../') === 0 || 
+                                                strpos($student['profileImg'], '/') === 0 || 
+                                                strpos($student['profileImg'], 'http') === 0) {
+                                            // Path already has protocol or root indicators
+                                            $profileImg = $student['profileImg'];
+                                        } 
+                                        else {
+                                            // No special path indicators, add the full path
+                                            $profileImg = '../uploadimg/' . $student['profileImg'];
+                                        }
+                                    } else {
+                                        // Default image if no profile image is set
+                                        $profileImg = '../images/person.jpg';
+                                    }
+                                    ?>
+                                    <img src="<?php echo $profileImg; ?>" alt="Student" class="w-full h-full object-cover" onerror="this.src='../images/person.jpg';">
                                     </div>
                                     <h3 class="text-xl font-bold text-gray-800"><?php echo htmlspecialchars($student['firstname'] . ' ' . $student['lastname']); ?></h3>
                                     <p class="text-blue-600 font-medium"><?php echo htmlspecialchars($student['idno']); ?></p>
@@ -294,10 +219,11 @@ $recentSearches = [
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" for="purpose">Purpose</label>
                                                 <select id="purpose" name="purpose" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                                                     <option value="">Select Purpose</option>
-                                                    <option value="Research">Research</option>
-                                                    <option value="Assignment">Assignment</option>
-                                                    <option value="Project">Project</option>
-                                                    <option value="Study">Study</option>
+                                                    <option value="C Programming">C Programming</option>
+                                                    <option value="Java Programming">Java Programming</option>
+                                                    <option value="C#">C#</option>
+                                                    <option value="PHP">PHP</option>
+                                                    <option value="ASP.Net">ASP.Net</option>
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </div>
@@ -308,7 +234,7 @@ $recentSearches = [
                                                     <option value="">Select Laboratory</option>
                                                     <?php foreach ($laboratories as $lab): ?>
                                                         <option value="<?php echo $lab; ?>">
-                                                            <?php echo $lab; ?> (Available: <?php echo $labAvailability[$lab]; ?> PCs)
+                                                            <?php echo $lab; ?>
                                                         </option>
                                                     <?php endforeach; ?>
                                                 </select>
@@ -318,7 +244,7 @@ $recentSearches = [
                                         <div class="flex justify-end">
                                             <button type="submit" name="register_sit_in" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300 flex items-center">
                                                 <i class="fas fa-check-circle mr-2"></i>
-                                                Register Sit-in
+                                                Time - In
                                             </button>
                                         </div>
                                     </form>
@@ -352,6 +278,17 @@ $recentSearches = [
             document.getElementById('search_term').focus();
             <?php endif; ?>
         });
+
+        function clearRecentSearches() {
+            // Use fetch API to call a PHP script that clears recent searches
+            fetch('./conn_back/clear_recent_searches.php', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload the page to reflect changes
+                        window.location.reload();
+                    }
+                });
+        }
     </script>
 </body>
 </html>

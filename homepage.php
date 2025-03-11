@@ -101,6 +101,10 @@ if ($result->num_rows > 0) {
         </div>
         <div class="bg-white p-6 rounded-b-lg shadow overflow-y-auto w-full" style="max-height: 460px;">
             <div class="text-center mb-6">
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <img src="images/uclogo.jpg" alt="UC Logo" style="width: 120px; height: auto;">
+                    <img src="images/ccslogo.png" alt="CCS Logo" style="width: 120px; height: auto;">
+                </div>
                 <h2 class="text-xl font-bold">University of Cebu</h2>
                 <p class="font-bold">COLLEGE OF INFORMATION & COMPUTER STUDIES</p>
             </div>

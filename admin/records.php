@@ -1,91 +1,4 @@
-<?php
-include '../conn/dbcon.php';
-
-// Initialize variables for filtering
-$filterLab = isset($_GET['laboratory']) ? $_GET['laboratory'] : '';
-$filterDate = isset($_GET['date']) ? $_GET['date'] : '';
-$filterStatus = isset($_GET['status']) ? $_GET['status'] : '';
-$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
-
-// Prepare base query
-$query = "SELECT s.sit_in_id, s.user_id, s.laboratory, s.purpose, s.check_in_time, s.check_out_time, s.status,
-                 u.idno, u.firstname, u.midname, u.lastname, u.course, u.level
-          FROM curr_sit_in s
-          JOIN users u ON s.user_id = u.id
-          WHERE 1=1";
-
-// Add filters to query
-$params = [];
-$types = "";
-
-if (!empty($filterLab)) {
-    $query .= " AND s.laboratory = ?";
-    $params[] = $filterLab;
-    $types .= "s";
-}
-
-if (!empty($filterDate)) {
-    $query .= " AND DATE(s.check_in_time) = ?";
-    $params[] = $filterDate;
-    $types .= "s";
-}
-
-if (!empty($filterStatus)) {
-    $query .= " AND s.status = ?";
-    $params[] = $filterStatus;
-    $types .= "s";
-}
-
-if (!empty($searchTerm)) {
-    $searchTerm = "%$searchTerm%";
-    $query .= " AND (u.idno LIKE ? OR u.firstname LIKE ? OR u.lastname LIKE ? OR CONCAT(u.firstname, ' ', u.lastname) LIKE ?)";
-    $params[] = $searchTerm;
-    $params[] = $searchTerm;
-    $params[] = $searchTerm;
-    $params[] = $searchTerm;
-    $types .= "ssss";
-}
-
-// Add ordering
-$query .= " ORDER BY s.check_in_time DESC";
-
-// Prepare and execute the query
-$stmt = $conn->prepare($query);
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
-}
-$stmt->execute();
-$result = $stmt->get_result();
-
-// Get statistics for dashboard
-$statsQuery = "SELECT 
-                COUNT(*) as total_sessions,
-                COUNT(CASE WHEN status = 'active' THEN 1 END) as active_sessions,
-                COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_sessions,
-                COUNT(DISTINCT user_id) as unique_students,
-                SUM(CASE WHEN check_out_time IS NOT NULL 
-                    THEN TIMESTAMPDIFF(MINUTE, check_in_time, check_out_time) 
-                    ELSE 0 END) as total_minutes
-               FROM curr_sit_in";
-$statsResult = $conn->query($statsQuery);
-$stats = $statsResult->fetch_assoc();
-
-// Get list of laboratories for filter
-$labQuery = "SELECT DISTINCT laboratory FROM curr_sit_in ORDER BY laboratory";
-$labResult = $conn->query($labQuery);
-$laboratories = [];
-while ($row = $labResult->fetch_assoc()) {
-    $laboratories[] = $row['laboratory'];
-}
-
-// Get dates for filter (unique dates from check_in_time)
-$dateQuery = "SELECT DISTINCT DATE(check_in_time) as date FROM curr_sit_in ORDER BY date DESC";
-$dateResult = $conn->query($dateQuery);
-$dates = [];
-while ($row = $dateResult->fetch_assoc()) {
-    $dates[] = $row['date'];
-}
-?>
+<?php include("./conn_back/records_process.php"); ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,11 +6,50 @@ while ($row = $dateResult->fetch_assoc()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Records | CCS Sit-In System</title>
+    <?php include("icon.php"); ?>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #c5c5c5;
+        border-radius: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #a0a0a0;
+    }
+    
+
+    #recordsTable tbody tr {
+        height: 64px;
+    }
+    
+  
+    #recordsTable thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: #f9fafb; 
+    }
+</style>
+<style>
+    /* Calculate: 8 rows × row height (64px) + header height (53px) = 565px */
+    .max-h-\[500px\] {
+        max-height: 565px;
+    }
+</style>
 <body class="bg-gray-100">
     <?php include 'navbar_admin.php'; ?>
     
@@ -163,12 +115,12 @@ while ($row = $dateResult->fetch_assoc()) {
             <form method="GET" action="" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <!-- Laboratory Filter -->
                 <div>
-                    <label for="laboratory" class="block text-sm font-medium text-gray-700 mb-1">Laboratory</label>
+                    <label for="laboratory" class="block text-sm font-medium text-gray-700 mb-1">Room</label>
                     <select name="laboratory" id="laboratory" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">All Laboratories</option>
+                        <option value="">All Rooms</option>
                         <?php foreach($laboratories as $lab): ?>
                             <option value="<?php echo $lab; ?>" <?php echo ($filterLab == $lab) ? 'selected' : ''; ?>>
-                                <?php echo $lab; ?>
+                                Room <?php echo $lab; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -218,75 +170,77 @@ while ($row = $dateResult->fetch_assoc()) {
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <?php if ($result->num_rows > 0): ?>
-                    <table class="min-w-full divide-y divide-gray-200" id="recordsTable">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course & Year</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Laboratory</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-In</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-Out</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <?php while ($row = $result->fetch_assoc()): ?>
-                                <?php 
-                                    // Calculate duration
-                                    $duration = "N/A";
-                                    if ($row['check_out_time']) {
-                                        $checkIn = new DateTime($row['check_in_time']);
-                                        $checkOut = new DateTime($row['check_out_time']);
-                                        $interval = $checkIn->diff($checkOut);
-                                        $hours = $interval->h + ($interval->days * 24);
-                                        $minutes = $interval->i;
-                                        $duration = $hours . "h " . $minutes . "m";
-                                    }
-                                ?>
+                    <div class="max-h-[500px] overflow-y-auto custom-scrollbar">
+                        <table class="min-w-full divide-y divide-gray-200" id="recordsTable">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo htmlspecialchars($row['idno']); ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            <?php echo htmlspecialchars($row['lastname'] . ', ' . $row['firstname'] . ' ' . ($row['midname'] ? $row['midname'][0] . '.' : '')); ?>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo htmlspecialchars($row['course'] . ' - ' . $row['level']); ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            <?php echo htmlspecialchars($row['laboratory']); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo date('M d, Y g:i A', strtotime($row['check_in_time'])); ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo $row['check_out_time'] ? date('M d, Y g:i A', strtotime($row['check_out_time'])) : 'Still Active'; ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo $duration; ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            <?php echo $row['status'] == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'; ?>">
-                                            <?php echo ucfirst($row['status']); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
-                                        <div class="max-w-xs truncate" title="<?php echo htmlspecialchars($row['purpose']); ?>">
-                                            <?php echo htmlspecialchars($row['purpose']); ?>
-                                        </div>
-                                    </td>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course & Year</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Laboratory</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time-In</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time-Out</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <?php while ($row = $result->fetch_assoc()): ?>
+                                    <?php 
+                                        // Calculate duration
+                                        $duration = "N/A";
+                                        if ($row['check_out_time']) {
+                                            $checkIn = new DateTime($row['check_in_time']);
+                                            $checkOut = new DateTime($row['check_out_time']);
+                                            $interval = $checkIn->diff($checkOut);
+                                            $hours = $interval->h + ($interval->days * 24);
+                                            $minutes = $interval->i;
+                                            $duration = $hours . "h " . $minutes . "m";
+                                        }
+                                    ?>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo htmlspecialchars($row['idno']); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                <?php echo htmlspecialchars($row['lastname'] . ', ' . $row['firstname'] . ' ' . ($row['midname'] ? $row['midname'][0] . '.' : '')); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo htmlspecialchars($row['course'] . ' - ' . $row['level']); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                <?php echo htmlspecialchars($row['laboratory']); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            <div class="max-w-xs truncate" title="<?php echo htmlspecialchars($row['purpose']); ?>">
+                                                <?php echo htmlspecialchars($row['purpose']); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo date('M d, Y g:i A', strtotime($row['check_in_time'])); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo $row['check_out_time'] ? date('M d, Y g:i A', strtotime($row['check_out_time'])) : 'Still Active'; ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo $duration; ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                <?php echo $row['status'] == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'; ?>">
+                                                <?php echo ucfirst($row['status']); ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php else: ?>
                     <div class="text-center py-10">
                         <div class="w-20 h-20 mx-auto flex items-center justify-center bg-gray-100 rounded-full">
@@ -296,21 +250,6 @@ while ($row = $dateResult->fetch_assoc()) {
                         <p class="mt-1 text-sm text-gray-500">Try changing your search filters</p>
                     </div>
                 <?php endif; ?>
-            </div>
-        </div>
-        
-        <!-- Charts Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <!-- Laboratory Usage Chart -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Laboratory Usage</h3>
-                <canvas id="labChart" height="200"></canvas>
-            </div>
-            
-            <!-- Daily Sessions Chart -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Daily Activity</h3>
-                <canvas id="activityChart" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -346,93 +285,6 @@ while ($row = $dateResult->fetch_assoc()) {
             downloadLink.click();
             document.body.removeChild(downloadLink);
         }
-
-        // Load charts after page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Lab usage chart data - you would populate this from backend
-            const labChartCtx = document.getElementById('labChart').getContext('2d');
-            const labChart = new Chart(labChartCtx, {
-                type: 'pie',
-                data: {
-                    labels: <?php 
-                        $labCountQuery = "SELECT laboratory, COUNT(*) as count 
-                                         FROM curr_sit_in 
-                                         GROUP BY laboratory 
-                                         ORDER BY count DESC";
-                        $labCountResult = $conn->query($labCountQuery);
-                        $labLabels = [];
-                        $labData = [];
-                        while ($row = $labCountResult->fetch_assoc()) {
-                            $labLabels[] = $row['laboratory'];
-                            $labData[] = $row['count'];
-                        }
-                        echo json_encode($labLabels);
-                    ?>,
-                    datasets: [{
-                        data: <?php echo json_encode($labData); ?>,
-                        backgroundColor: [
-                            'rgba(54, 162, 235, 0.7)',
-                            'rgba(255, 99, 132, 0.7)',
-                            'rgba(255, 206, 86, 0.7)',
-                            'rgba(75, 192, 192, 0.7)',
-                            'rgba(153, 102, 255, 0.7)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        }
-                    }
-                }
-            });
-            
-            // Daily activity chart
-            const activityChartCtx = document.getElementById('activityChart').getContext('2d');
-            const activityChart = new Chart(activityChartCtx, {
-                type: 'bar',
-                data: {
-                    labels: <?php 
-                        $dateActivityQuery = "SELECT DATE(check_in_time) as date, COUNT(*) as count 
-                                           FROM curr_sit_in 
-                                           GROUP BY DATE(check_in_time) 
-                                           ORDER BY date DESC 
-                                           LIMIT 7";
-                        $dateActivityResult = $conn->query($dateActivityQuery);
-                        $dateLabels = [];
-                        $dateData = [];
-                        while ($row = $dateActivityResult->fetch_assoc()) {
-                            $dateLabels[] = date('M d', strtotime($row['date']));
-                            $dateData[] = $row['count'];
-                        }
-                        $dateLabels = array_reverse($dateLabels);
-                        $dateData = array_reverse($dateData);
-                        echo json_encode($dateLabels);
-                    ?>,
-                    datasets: [{
-                        label: 'Number of Sessions',
-                        data: <?php echo json_encode($dateData); ?>,
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        }
-                    }
-                }
-            });
-        });
     </script>
 </body>
 </html>

@@ -2,6 +2,8 @@
 // filepath: c:\xampp\htdocs\login\admin\navbar_admin.php
 // Start with PHP code, no HTML output
 session_start();
+
+ob_start();
 ?>
 <!-- filepath: c:\xampp\htdocs\login\admin\navbar_admin.php -->
 <link href="../css/tailwind.min.css" rel="stylesheet">

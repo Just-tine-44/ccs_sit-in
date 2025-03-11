@@ -13,6 +13,7 @@
     }
 
     include('./conn_back/postannounce.php');
+    include('./conn_back/dashboard_stats.php');
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <?php include("icon.php"); ?>
     <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -35,7 +37,27 @@
             </div>
             <div class="mt-3 md:mt-0">
                 <p class="text-sm text-gray-500"><?php echo date('l, F j, Y'); ?></p>
+                <p class="text-sm text-gray-500 font-mono" id="running-time"></p>
             </div>
+
+            <script>
+            function updateTime() {
+                const now = new Date();
+                let hours = now.getHours();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                
+                document.getElementById('running-time').textContent = 
+                    `${hours}:${minutes}:${seconds} ${ampm}`;
+            }
+
+            // Update immediately, then every second
+            updateTime();
+            setInterval(updateTime, 1000);
+            </script>
         </div>
         
         <!-- Stats Cards Row -->
@@ -45,16 +67,22 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm font-medium text-gray-500">Total Students</p>
-                        <p class="text-2xl font-bold text-gray-800">214</p>
+                        <p class="text-2xl font-bold text-gray-800"><?php echo number_format($dashboardStats['total_students']); ?></p>
                     </div>
                     <div class="bg-blue-100 p-3 rounded-lg">
                         <i class="fas fa-user-graduate text-blue-500"></i>
                     </div>
                 </div>
                 <div class="flex items-center mt-2">
-                    <span class="text-green-500 text-sm font-medium">
-                        <i class="fas fa-arrow-up mr-1"></i>12%
-                    </span>
+                    <?php if ($dashboardStats['student_percent_change'] >= 0): ?>
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up mr-1"></i><?php echo $dashboardStats['student_percent_change']; ?>%
+                        </span>
+                    <?php else: ?>
+                        <span class="text-red-500 text-sm font-medium">
+                            <i class="fas fa-arrow-down mr-1"></i><?php echo abs($dashboardStats['student_percent_change']); ?>%
+                        </span>
+                    <?php endif; ?>
                     <span class="text-gray-500 text-sm ml-2">Since last month</span>
                 </div>
             </div>
@@ -64,16 +92,22 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm font-medium text-gray-500">Currently Sit-in</p>
-                        <p class="text-2xl font-bold text-gray-800">45</p>
+                        <p class="text-2xl font-bold text-gray-800"><?php echo number_format($dashboardStats['active_sit_ins']); ?></p>
                     </div>
                     <div class="bg-green-100 p-3 rounded-lg">
                         <i class="fas fa-chair text-green-500"></i>
                     </div>
                 </div>
                 <div class="flex items-center mt-2">
-                    <span class="text-green-500 text-sm font-medium">
-                        <i class="fas fa-arrow-up mr-1"></i>8%
-                    </span>
+                    <?php if ($dashboardStats['active_percent_change'] >= 0): ?>
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up mr-1"></i><?php echo $dashboardStats['active_percent_change']; ?>%
+                        </span>
+                    <?php else: ?>
+                        <span class="text-red-500 text-sm font-medium">
+                            <i class="fas fa-arrow-down mr-1"></i><?php echo abs($dashboardStats['active_percent_change']); ?>%
+                        </span>
+                    <?php endif; ?>
                     <span class="text-gray-500 text-sm ml-2">From yesterday</span>
                 </div>
             </div>
@@ -83,16 +117,22 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm font-medium text-gray-500">Total Sit-in</p>
-                        <p class="text-2xl font-bold text-gray-800">3,450</p>
+                        <p class="text-2xl font-bold text-gray-800"><?php echo number_format($dashboardStats['total_sit_ins']); ?></p>
                     </div>
                     <div class="bg-yellow-100 p-3 rounded-lg">
                         <i class="fas fa-history text-yellow-500"></i>
                     </div>
                 </div>
                 <div class="flex items-center mt-2">
-                    <span class="text-green-500 text-sm font-medium">
-                        <i class="fas fa-arrow-up mr-1"></i>23%
-                    </span>
+                    <?php if ($dashboardStats['semester_percent_change'] >= 0): ?>
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up mr-1"></i><?php echo $dashboardStats['semester_percent_change']; ?>%
+                        </span>
+                    <?php else: ?>
+                        <span class="text-red-500 text-sm font-medium">
+                            <i class="fas fa-arrow-down mr-1"></i><?php echo abs($dashboardStats['semester_percent_change']); ?>%
+                        </span>
+                    <?php endif; ?>
                     <span class="text-gray-500 text-sm ml-2">This semester</span>
                 </div>
             </div>
@@ -102,16 +142,22 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-sm font-medium text-gray-500">Sessions Today</p>
-                        <p class="text-2xl font-bold text-gray-800">142</p>
+                        <p class="text-2xl font-bold text-gray-800"><?php echo number_format($dashboardStats['sessions_today']); ?></p>
                     </div>
                     <div class="bg-purple-100 p-3 rounded-lg">
                         <i class="fas fa-calendar-day text-purple-500"></i>
                     </div>
                 </div>
                 <div class="flex items-center mt-2">
-                    <span class="text-red-500 text-sm font-medium">
-                        <i class="fas fa-arrow-down mr-1"></i>5%
-                    </span>
+                    <?php if ($dashboardStats['today_percent_change'] >= 0): ?>
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up mr-1"></i><?php echo $dashboardStats['today_percent_change']; ?>%
+                        </span>
+                    <?php else: ?>
+                        <span class="text-red-500 text-sm font-medium">
+                            <i class="fas fa-arrow-down mr-1"></i><?php echo abs($dashboardStats['today_percent_change']); ?>%
+                        </span>
+                    <?php endif; ?>
                     <span class="text-gray-500 text-sm ml-2">From yesterday</span>
                 </div>
             </div>
@@ -126,9 +172,9 @@
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="font-bold text-gray-800 text-lg">Student Distribution</h2>
                         <div class="flex space-x-2">
-                            <button class="px-3 py-1 text-sm rounded-md bg-blue-50 text-blue-600 font-medium">Weekly</button>
-                            <button class="px-3 py-1 text-sm rounded-md text-gray-500 hover:bg-gray-100">Monthly</button>
-                            <button class="px-3 py-1 text-sm rounded-md text-gray-500 hover:bg-gray-100">Yearly</button>
+                            <button id="weekly-btn" class="distribution-filter px-3 py-1 text-sm rounded-md bg-blue-50 text-blue-600 font-medium" data-period="weekly">Weekly</button>
+                            <button id="monthly-btn" class="distribution-filter px-3 py-1 text-sm rounded-md text-gray-500 hover:bg-gray-100" data-period="monthly">Monthly</button>
+                            <button id="yearly-btn" class="distribution-filter px-3 py-1 text-sm rounded-md text-gray-500 hover:bg-gray-100" data-period="yearly">Yearly</button>
                         </div>
                     </div>
                     <div class="h-72">
@@ -145,25 +191,30 @@
                             <canvas id="pieChart"></canvas>
                         </div>
                         <div class="grid grid-cols-2 gap-2 mt-4">
-                            <div class="flex items-center">
+                            <div class="flex items-center" title="College of Computer Studies">
                                 <div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                                <span class="text-xs text-gray-600">CCS Students</span>
+                                <span class="text-xs text-gray-600">CCS</span>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center" title="College of Engineering">
                                 <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                                <span class="text-xs text-gray-600">COE Students</span>
+                                <span class="text-xs text-gray-600">COE</span>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center" title="College of Education">
                                 <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-                                <span class="text-xs text-gray-600">COED Students</span>
+                                <span class="text-xs text-gray-600">COED</span>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center" title="College of Business Administration">
                                 <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                                <span class="text-xs text-gray-600">Other Colleges</span>
+                                <span class="text-xs text-gray-600">CBA</span>
+                            </div>
+                            <div class="flex items-center" title="College of Arts and Social Sciences">
+                                <div class="w-3 h-3 rounded-full bg-purple-500 mr-2"></div>
+                                <span class="text-xs text-gray-600">CASS</span>
                             </div>
                         </div>
                     </div>
                     
+
                     <!-- Session Usage -->
                     <div class="bg-white rounded-xl shadow-sm p-5">
                         <h2 class="font-bold text-gray-800 text-lg mb-4">Session Usage</h2>
@@ -171,37 +222,37 @@
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span class="font-medium text-gray-700">Morning</span>
-                                    <span class="text-gray-600">78%</span>
+                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Morning']['percentage'] ?? 0; ?>%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 78%"></div>
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Morning']['percentage'] ?? 0; ?>%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span class="font-medium text-gray-700">Afternoon</span>
-                                    <span class="text-gray-600">95%</span>
+                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Afternoon']['percentage'] ?? 0; ?>%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: 95%"></div>
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Afternoon']['percentage'] ?? 0; ?>%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span class="font-medium text-gray-700">Evening</span>
-                                    <span class="text-gray-600">45%</span>
+                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Evening']['percentage'] ?? 0; ?>%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 45%"></div>
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Evening']['percentage'] ?? 0; ?>%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span class="font-medium text-gray-700">Weekend</span>
-                                    <span class="text-gray-600">25%</span>
+                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Weekend']['percentage'] ?? 0; ?>%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-yellow-600 h-2 rounded-full" style="width: 25%"></div>
+                                    <div class="bg-yellow-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Weekend']['percentage'] ?? 0; ?>%"></div>
                                 </div>
                             </div>
                         </div>
@@ -341,13 +392,15 @@
         // Student Categories Pie Chart
         const ctx = document.getElementById('pieChart');
         if (ctx) {
+            const collegeData = <?php echo json_encode($dashboardStats['collegeData'] ?? []); ?>;
+            
             new Chart(ctx.getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['CCS', 'COE', 'COED', 'Others'],
+                    labels: collegeData.labels || ['CCS', 'COE', 'COED', 'CBA', 'CASS'],
                     datasets: [{
-                        data: [35, 25, 20, 20],
-                        backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981'],
+                        data: collegeData.data || [30, 25, 15, 20, 10],
+                        backgroundColor: collegeData.colors || ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6'],
                         borderWidth: 0,
                         borderRadius: 4
                     }]
@@ -358,6 +411,17 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const dataset = context.dataset;
+                                    const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                                    const value = dataset.data[context.dataIndex];
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${context.label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
                     },
                     cutout: '70%'
@@ -366,24 +430,56 @@
         }
 
         // Student Year Level Chart
-        const studentYearLevelCtx = document.getElementById('studentYearLevelChart');
-        if (studentYearLevelCtx) {
-            new Chart(studentYearLevelCtx.getContext('2d'), {
+        // Student Distribution Chart variables
+        let studentDistributionChart;
+        const chartData = <?php echo json_encode($dashboardStats['studentDistribution'] ?? []); ?>;
+        let currentPeriod = 'weekly'; // Default period
+
+        function updateDistributionChart(period) {
+            // Get the relevant data for the selected period
+            const data = chartData[period] || { 
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                data: [12, 19, 15, 25, 22, 14, 7]  // Fallback demo data
+            };
+            
+            // Update button styling
+            document.querySelectorAll('.distribution-filter').forEach(btn => {
+                if (btn.dataset.period === period) {
+                    btn.classList.add('bg-blue-50', 'text-blue-600');
+                    btn.classList.remove('text-gray-500', 'hover:bg-gray-100');
+                } else {
+                    btn.classList.remove('bg-blue-50', 'text-blue-600');
+                    btn.classList.add('text-gray-500', 'hover:bg-gray-100');
+                }
+            });
+            
+            // If chart already exists, destroy it first
+            if (studentDistributionChart) {
+                studentDistributionChart.destroy();
+            }
+            
+            // Create a new chart with the updated data
+            const ctx = document.getElementById('studentYearLevelChart').getContext('2d');
+            
+            studentDistributionChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Freshmen', 'Sophomore', 'Junior', 'Senior'],
+                    labels: data.labels || [],
                     datasets: [{
-                        label: 'Students',
-                        data: [65, 84, 74, 43],
+                        label: 'Sit-in Sessions',
+                        data: data.data || [],
                         backgroundColor: [
                             'rgba(79, 70, 229, 0.7)',
+                            'rgba(79, 70, 229, 0.6)',
                             'rgba(79, 70, 229, 0.5)',
+                            'rgba(79, 70, 229, 0.4)',
                             'rgba(79, 70, 229, 0.3)',
-                            'rgba(79, 70, 229, 0.2)'
+                            'rgba(79, 70, 229, 0.2)',
+                            'rgba(79, 70, 229, 0.1)'
                         ],
                         borderWidth: 0,
                         borderRadius: 4,
-                        barThickness: 24
+                        barThickness: period === 'yearly' ? 16 : 24
                     }]
                 },
                 options: {
@@ -392,6 +488,16 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    return context.parsed.y + ' sit-in sessions';
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -400,6 +506,9 @@
                             grid: {
                                 display: true,
                                 drawBorder: false
+                            },
+                            ticks: {
+                                precision: 0
                             }
                         },
                         x: {
@@ -412,6 +521,22 @@
                 }
             });
         }
+
+        // Add event listeners for period filters
+        document.getElementById('weekly-btn').addEventListener('click', function() {
+            updateDistributionChart('weekly');
+        });
+
+        document.getElementById('monthly-btn').addEventListener('click', function() {
+            updateDistributionChart('monthly');
+        });
+
+        document.getElementById('yearly-btn').addEventListener('click', function() {
+            updateDistributionChart('yearly');
+        });
+
+        // Initialize the chart with weekly data
+        updateDistributionChart('weekly');
 
         // Custom scrollbar behavior
         const announcementScroll = document.getElementById('announcementScroll');

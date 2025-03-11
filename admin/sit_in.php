@@ -1,92 +1,11 @@
-<?php
-include '../conn/dbcon.php';
-
-// Handle student checkout/timeout
-if (isset($_POST['checkout'])) {
-    $sit_in_id = $_POST['sit_in_id'];
-    
-    // Get the sit-in record to update
-    $query = "SELECT * FROM curr_sit_in WHERE sit_in_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $sit_in_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        $sit_in = $result->fetch_assoc();
-        $user_id = $sit_in['user_id'];
-        
-        // Start transaction to ensure both operations succeed or fail together
-        $conn->begin_transaction();
-        
-        try {
-            // 1. Update sit-in record to mark as completed
-            $updateQuery = "UPDATE curr_sit_in SET check_out_time = NOW(), status = 'completed' WHERE sit_in_id = ?";
-            $updateStmt = $conn->prepare($updateQuery);
-            $updateStmt->bind_param("i", $sit_in_id);
-            $updateStmt->execute();
-            
-            // 2. Decrement the session count
-            $decrementQuery = "UPDATE stud_session SET session = session - 1 WHERE id = ? AND session > 0";
-            $decrementStmt = $conn->prepare($decrementQuery);
-            $decrementStmt->bind_param("i", $user_id);
-            $decrementStmt->execute();
-            
-            // If everything succeeds, commit the transaction
-            $conn->commit();
-            
-            $_SESSION['message'] = "Student checked out and session count updated successfully";
-            $_SESSION['msg_type'] = "success";
-        } catch (Exception $e) {
-            // If any error occurs, rollback the transaction
-            $conn->rollback();
-            
-            $_SESSION['message'] = "Error: " . $e->getMessage();
-            $_SESSION['msg_type'] = "error";
-        }
-    } else {
-        $_SESSION['message'] = "Sit-in record not found";
-        $_SESSION['msg_type'] = "error";
-    }
-    
-    // Redirect to prevent form resubmission
-    header("Location: sit_in.php");
-    exit();
-}
-
-// Get all active sit-in sessions with student info
-$query = "SELECT s.sit_in_id, s.user_id, s.laboratory, s.purpose, s.check_in_time, 
-                 u.idno, u.firstname, u.midname, u.lastname, u.course, u.level, 
-                 ss.session as remaining_sessions
-          FROM curr_sit_in s
-          JOIN users u ON s.user_id = u.id
-          JOIN stud_session ss ON u.id = ss.id
-          WHERE s.status = 'active'
-          ORDER BY s.check_in_time DESC";
-$result = $conn->query($query);
-
-// Get active sit-in count for each lab
-$labCounts = [];
-$countQuery = "SELECT laboratory, COUNT(*) as count FROM curr_sit_in WHERE status = 'active' GROUP BY laboratory";
-$countResult = $conn->query($countQuery);
-
-if ($countResult->num_rows > 0) {
-    while ($row = $countResult->fetch_assoc()) {
-        $labCounts[$row['laboratory']] = $row['count'];
-    }
-}
-
-// Get total active sit-ins
-$totalQuery = "SELECT COUNT(*) as total FROM curr_sit_in WHERE status = 'active'";
-$totalResult = $conn->query($totalQuery);
-$totalActive = $totalResult->fetch_assoc()['total'];
-?>
+<?php include("./conn_back/sit-in_process.php"); ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include("icon.php"); ?>
     <title>Current Sit-In Sessions</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -96,10 +15,10 @@ $totalActive = $totalResult->fetch_assoc()['total'];
     <?php include 'navbar_admin.php'; ?>
     
     <div class="container mx-auto px-4 py-8">
-        <!-- Stats Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <!-- Stats Section - First Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <!-- Total active sit-ins -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
+            <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-blue-500">
                 <h3 class="text-lg font-semibold text-blue-600">Total Active</h3>
                 <div class="flex items-center mt-2">
                     <span class="text-3xl font-bold text-gray-800"><?php echo $totalActive; ?></span>
@@ -107,18 +26,37 @@ $totalActive = $totalResult->fetch_assoc()['total'];
                 </div>
             </div>
             
-            <!-- Per Laboratory Stats -->
             <?php 
-            $labList = ["CCS Lab 1", "CCS Lab 2", "CCS Lab 3", "CCS Lab 4"];
-            $colors = ["green", "purple", "yellow", "red"];
+            $labList = ["524", "526", "528", "530", "542"];
+            $colors = ["green", "purple", "yellow", "red", "blue"];
             
-            for ($i = 0; $i < count($labList); $i++) {
+            // First row - labs 524 and 526
+            for ($i = 0; $i < 2; $i++) {
                 $lab = $labList[$i];
-                $color = $colors[$i];
+                $color = isset($colors[$i]) ? $colors[$i] : "gray";
                 $count = isset($labCounts[$lab]) ? $labCounts[$lab] : 0;
                 ?>
-                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-<?php echo $color; ?>-500">
-                    <h3 class="text-lg font-semibold text-<?php echo $color; ?>-600"><?php echo $lab; ?></h3>
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-<?php echo $color; ?>-500">
+                    <h3 class="text-lg font-semibold text-<?php echo $color; ?>-600">Room <?php echo $lab; ?></h3>
+                    <div class="flex items-center mt-2">
+                        <span class="text-3xl font-bold text-gray-800"><?php echo $count; ?></span>
+                        <span class="ml-2 text-sm text-gray-500">students</span>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+
+        <!-- Stats Section - Second Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <?php 
+            // Last 3 labs - 528, 530, 542
+            for ($i = 2; $i < 5; $i++) {
+                $lab = $labList[$i];
+                $color = isset($colors[$i]) ? $colors[$i] : "gray";
+                $count = isset($labCounts[$lab]) ? $labCounts[$lab] : 0;
+                ?>
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-<?php echo $color; ?>-500">
+                    <h3 class="text-lg font-semibold text-<?php echo $color; ?>-600">Room <?php echo $lab; ?></h3>
                     <div class="flex items-center mt-2">
                         <span class="text-3xl font-bold text-gray-800"><?php echo $count; ?></span>
                         <span class="ml-2 text-sm text-gray-500">students</span>
@@ -169,7 +107,7 @@ $totalActive = $totalResult->fetch_assoc()['total'];
                                     Laboratory
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Check-In Time
+                                   Time-In
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Purpose
@@ -217,10 +155,11 @@ $totalActive = $totalResult->fetch_assoc()['total'];
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to check out this student?');">
+                                        <form method="POST" action="" class="inline" id="checkout-form-<?php echo $row['sit_in_id']; ?>">
                                             <input type="hidden" name="sit_in_id" value="<?php echo $row['sit_in_id']; ?>">
-                                            <button type="submit" name="checkout" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-lg transition-colors">
-                                                <i class="fas fa-sign-out-alt mr-1"></i> Check Out
+                                            <input type="hidden" name="checkout" value="1">
+                                            <button type="button" onclick="confirmTimeout(<?php echo $row['sit_in_id']; ?>)" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-lg transition-colors">
+                                                <i class="fas fa-sign-out-alt mr-1"></i> Timeout
                                             </button>
                                         </form>
                                     </td>
@@ -254,16 +193,16 @@ $totalActive = $totalResult->fetch_assoc()['total'];
     </div>
 
     <script>
-        // Confirm before checking out a student
-        function confirmCheckout(sitInId) {
+        // Confirm before timing out a student
+        function confirmTimeout(sitInId) {
             Swal.fire({
-                title: 'Check Out Student?',
-                text: "This will mark the student as checked out and end their sit-in session.",
+                title: 'Time Out Student?',
+                text: "This will mark the student as timed out and end their sit-in session.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, check out'
+                confirmButtonText: 'Yes, time out'
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('checkout-form-' + sitInId).submit();

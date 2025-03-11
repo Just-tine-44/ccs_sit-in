@@ -17,7 +17,7 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-gray-100">
-    <?php include 'navbarWD.php'; ?>
+    <?php include 'navbar.php'; ?>
     <div class="container mx-auto p-6 max-w-6xl">
         <div class="bg-white p-8 rounded-lg shadow">
             <h2 class="text-2xl font-bold mb-8 text-center">Edit Profile</h2>
