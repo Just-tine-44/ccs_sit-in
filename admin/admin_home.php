@@ -14,6 +14,7 @@
 
     include('./conn_back/postannounce.php');
     include('./conn_back/dashboard_stats.php');
+    date_default_timezone_set('Asia/Manila');
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +58,17 @@
             // Update immediately, then every second
             updateTime();
             setInterval(updateTime, 1000);
+            </script>
+            <script>
+            function updateDate() {
+                const now = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+            }
+
+
+            updateDate();
+            setInterval(updateDate, 60000);
             </script>
         </div>
         
@@ -216,44 +228,170 @@
                     
 
                     <!-- Session Usage -->
-                    <div class="bg-white rounded-xl shadow-sm p-5">
-                        <h2 class="font-bold text-gray-800 text-lg mb-4">Session Usage</h2>
-                        <div class="space-y-4">
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-medium text-gray-700">Morning</span>
-                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Morning']['percentage'] ?? 0; ?>%</span>
+                    <!-- Session Usage (Redesigned) -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5 pb-3 flex justify-between items-center border-b border-gray-100">
+                            <h2 class="font-bold text-gray-800 text-lg flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                Session Usage
+                            </h2>
+                            <div class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                                This month
+                            </div>
+                        </div>
+                        
+                        <div class="p-5 space-y-6">
+                            <!-- Morning Sessions -->
+                            <div class="relative overflow-hidden">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-blue-500 mr-2 flex-shrink-0"></div>
+                                        <h3 class="font-medium text-gray-700 flex items-center text-sm">
+                                            Morning
+                                            <span class="ml-2 text-xs text-gray-400">(6AM - 12PM)</span>
+                                        </h3>
+                                    </div>
+                                    <span class="text-sm font-semibold text-blue-600"><?php echo $dashboardStats['sessionUsage']['Morning']['percentage'] ?? 0; ?>%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Morning']['percentage'] ?? 0; ?>%"></div>
+                                
+                                <div class="relative">
+                                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500 transform origin-left scale-x-100" 
+                                            style="width: <?php echo $dashboardStats['sessionUsage']['Morning']['percentage'] ?? 0; ?>%">
+                                        </div>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-full opacity-10 flex items-center justify-between px-1 pointer-events-none">
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-1 flex justify-between text-xs text-gray-400">
+                                    <div>0</div>
+                                    <div><?php echo $dashboardStats['sessionUsage']['Morning']['count'] ?? 0; ?> sessions</div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-medium text-gray-700">Afternoon</span>
-                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Afternoon']['percentage'] ?? 0; ?>%</span>
+                            
+                            <!-- Afternoon Sessions -->
+                            <div class="relative overflow-hidden">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-green-500 mr-2 flex-shrink-0"></div>
+                                        <h3 class="font-medium text-gray-700 flex items-center text-sm">
+                                            Afternoon
+                                            <span class="ml-2 text-xs text-gray-400">(12PM - 6PM)</span>
+                                        </h3>
+                                    </div>
+                                    <span class="text-sm font-semibold text-green-600"><?php echo $dashboardStats['sessionUsage']['Afternoon']['percentage'] ?? 0; ?>%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Afternoon']['percentage'] ?? 0; ?>%"></div>
+                                
+                                <div class="relative">
+                                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-500 transform origin-left scale-x-100" 
+                                            style="width: <?php echo $dashboardStats['sessionUsage']['Afternoon']['percentage'] ?? 0; ?>%">
+                                        </div>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-full opacity-10 flex items-center justify-between px-1 pointer-events-none">
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-1 flex justify-between text-xs text-gray-400">
+                                    <div>0</div>
+                                    <div><?php echo $dashboardStats['sessionUsage']['Afternoon']['count'] ?? 0; ?> sessions</div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-medium text-gray-700">Evening</span>
-                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Evening']['percentage'] ?? 0; ?>%</span>
+                            
+                            <!-- Evening Sessions -->
+                            <div class="relative overflow-hidden">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-purple-500 mr-2 flex-shrink-0"></div>
+                                        <h3 class="font-medium text-gray-700 flex items-center text-sm">
+                                            Evening
+                                            <span class="ml-2 text-xs text-gray-400">(6PM - 10PM)</span>
+                                        </h3>
+                                    </div>
+                                    <span class="text-sm font-semibold text-purple-600"><?php echo $dashboardStats['sessionUsage']['Evening']['percentage'] ?? 0; ?>%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-purple-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Evening']['percentage'] ?? 0; ?>%"></div>
+                                
+                                <div class="relative">
+                                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-purple-400 to-purple-600 rounded-full transition-all duration-500 transform origin-left scale-x-100" 
+                                            style="width: <?php echo $dashboardStats['sessionUsage']['Evening']['percentage'] ?? 0; ?>%">
+                                        </div>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-full opacity-10 flex items-center justify-between px-1 pointer-events-none">
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-1 flex justify-between text-xs text-gray-400">
+                                    <div>0</div>
+                                    <div><?php echo $dashboardStats['sessionUsage']['Evening']['count'] ?? 0; ?> sessions</div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-medium text-gray-700">Weekend</span>
-                                    <span class="text-gray-600"><?php echo $dashboardStats['sessionUsage']['Weekend']['percentage'] ?? 0; ?>%</span>
+                            
+                            <!-- Weekend Sessions -->
+                            <div class="relative overflow-hidden">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2 flex-shrink-0"></div>
+                                        <h3 class="font-medium text-gray-700 flex items-center text-sm">
+                                            Weekend
+                                            <span class="ml-2 text-xs text-gray-400">(Sat & Sun)</span>
+                                        </h3>
+                                    </div>
+                                    <span class="text-sm font-semibold text-yellow-600"><?php echo $dashboardStats['sessionUsage']['Weekend']['percentage'] ?? 0; ?>%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-yellow-600 h-2 rounded-full" style="width: <?php echo $dashboardStats['sessionUsage']['Weekend']['percentage'] ?? 0; ?>%"></div>
+                                
+                                <div class="relative">
+                                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full transition-all duration-500 transform origin-left scale-x-100" 
+                                            style="width: <?php echo $dashboardStats['sessionUsage']['Weekend']['percentage'] ?? 0; ?>%">
+                                        </div>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-full opacity-10 flex items-center justify-between px-1 pointer-events-none">
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                        <div class="w-0.5 h-1/2 bg-gray-400"></div>
+                                    </div>
                                 </div>
+                                
+                                <div class="mt-1 flex justify-between text-xs text-gray-400">
+                                    <div>0</div>
+                                    <div><?php echo $dashboardStats['sessionUsage']['Weekend']['count'] ?? 0; ?> sessions</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Total sessions:</span>
+                                <span class="font-semibold text-gray-800">
+                                    <?php
+                                        $total = 0;
+                                        if (isset($dashboardStats['sessionUsage'])) {
+                                            foreach ($dashboardStats['sessionUsage'] as $session) {
+                                                $total += isset($session['count']) ? $session['count'] : 0;
+                                            }
+                                        }
+                                        echo $total;
+                                    ?>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -289,7 +427,7 @@
                                 <p class="text-gray-500">No announcements available at the moment.</p>
                             </div>
                         <?php else: ?>
-                            <div class="max-h-96 overflow-y-auto custom-scrollbar pr-1" id="announcementScroll">
+                            <div class="announcements-container overflow-y-auto custom-scrollbar pr-1" id="announcementScroll">
                                 <?php foreach ($announcements as $announcement): 
                                     // Properly escape messages for both HTML and JavaScript
                                     $safe_id = htmlspecialchars($announcement['announcement_id'] ?? '');
@@ -615,6 +753,10 @@
 
     .custom-scrollbar.scrolling::-webkit-scrollbar-thumb {
         background: #3b82f6;
+    }
+
+    .announcements-container {
+    max-height: 530px; 
     }
     </style>
 </body>

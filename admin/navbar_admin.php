@@ -8,6 +8,10 @@ ob_start();
 <!-- filepath: c:\xampp\htdocs\login\admin\navbar_admin.php -->
 <link href="../css/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 
 <nav class="bg-white shadow-sm sticky top-0 z-50">
     <div class="container mx-auto px-4">
@@ -65,7 +69,7 @@ ob_start();
                 
                 <!-- User menu -->
                 <div class="relative ml-0 md:ml-2 mt-2 md:mt-0">
-                    <button onclick="logout()" class="flex items-center justify-center space-x-1 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <button onclick="confirmLogout()" class="flex items-center justify-center space-x-1 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Logout</span>
                     </button>
@@ -99,8 +103,51 @@ ob_start();
         });
     });
     
+    // SweetAlert2 logout confirmation
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Confirm Logout',
+            text: 'Are you sure you want to logout from the admin panel?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EF4444',
+            cancelButtonColor: '#9CA3AF',
+            confirmButtonText: 'Yes, Logout',
+            cancelButtonText: 'Cancel',
+            footer: '<small class="text-gray-500"><i class="fas fa-info-circle mr-1"></i> CCS-ADMIN PANEL</small>',
+            backdrop: true,
+            allowOutsideClick: true,
+            customClass: {
+                popup: 'rounded-lg',
+                header: 'border-b border-gray-100',
+                confirmButton: 'focus:outline-none focus:ring-2 focus:ring-red-500 rounded-md',
+                cancelButton: 'focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-md'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed logout
+                logout();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                window.location.href = 'admin_home.php';
+            }
+        });
+    }
+    
     function logout() {
-        window.location.href = '../logout.php';
+        // Show a loading state while processing logout
+        Swal.fire({
+            title: 'Logging out...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+                setTimeout(() => {
+                    window.location.href = '../index.php';
+                }, 800);
+            }
+        });
     }
 </script>
 
@@ -108,5 +155,10 @@ ob_start();
     /* Remove margin after navbar */
     nav.mb-8 {
         margin-bottom: 0 !important;
+    }
+    
+    /* SweetAlert customization */
+    .swal2-popup {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     }
 </style>
