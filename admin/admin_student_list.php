@@ -197,88 +197,393 @@
         <?php endif; ?>
     </div>
 
-    <!-- Add Student Modal -->
-    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden z-50">
-        <div class="bg-white p-4 rounded-lg shadow-lg w-full max-w-md mx-auto mt-2 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold">Add New Student</h2>
-                <button onclick="closeAddModal()" class="text-gray-500 hover:text-gray-700">
+    <!-- Add Student Modal - HCI Optimized -->
+    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden z-50"
+        role="dialog" 
+        aria-labelledby="addStudentTitle" 
+        aria-describedby="addStudentDescription">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl mx-auto my-8 overflow-hidden">
+            <div class="flex justify-between items-center px-5 py-3 border-b border-gray-200">
+                <h2 id="addStudentTitle" class="text-lg font-semibold text-gray-800">Add New Student</h2>
+                <button onclick="closeAddModal()" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded" aria-label="Close modal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <form action="./conn_back/student_process.php" method="POST">
-                <div class="mb-4">
-                    <label for="id_number" class="block text-gray-700 font-medium mb-1">ID Number</label>
-                    <input type="text" id="idno" name="idno" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+            <p id="addStudentDescription" class="sr-only">Form to add a new student to the system</p>
+            <form id="addStudentForm" action="./conn_back/student_process.php" method="POST" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
+                    <!-- Personal Information Column -->
                     <div>
-                        <label for="firstname" class="block text-gray-700 font-medium mb-1">First Name</label>
-                        <input type="text" id="firstname" name="firstname" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                            <i class="fas fa-user mr-2"></i> Personal Information
+                        </h3>
+                        
+                        <div class="mb-3">
+                            <label for="idno" class="block text-gray-700 text-sm font-medium mb-1">
+                                ID Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="idno" name="idno" required 
+                                pattern="[0-9]+" title="Please enter a valid numeric ID"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                aria-required="true">
+                            <p class="text-xs text-gray-500 mt-1">Enter student's numeric ID number</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label for="firstname" class="block text-gray-700 text-sm font-medium mb-1">
+                                    First Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="firstname" name="firstname" required 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    aria-required="true">
+                            </div>
+                            
+                            <div>
+                                <label for="lastname" class="block text-gray-700 text-sm font-medium mb-1">
+                                    Last Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="lastname" name="lastname" required 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    aria-required="true">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="midname" class="block text-gray-700 text-sm font-medium mb-1">
+                                Middle Name <span class="text-gray-400">(Optional)</span>
+                            </label>
+                            <input type="text" id="midname" name="midname" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="block text-gray-700 text-sm font-medium mb-1">
+                                Email <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                aria-required="true"
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                title="Please enter a valid email address">
+                            <p class="text-xs text-gray-500 mt-1">Must be a valid email address</p>
+                        </div>
                     </div>
+                    
+                    <!-- Academic Information Column -->
                     <div>
-                        <label for="lastname" class="block text-gray-700 font-medium mb-1">Last Name</label>
-                        <input type="text" id="lastname" name="lastname" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                            <i class="fas fa-graduation-cap mr-2"></i> Academic & Additional Info
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label for="level" class="block text-gray-700 text-sm font-medium mb-1">
+                                    Year Level <span class="text-red-500">*</span>
+                                </label>
+                                <select id="level" name="level" required 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        aria-required="true">
+                                    <option value="" disabled selected>Select Level</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="course" class="block text-gray-700 text-sm font-medium mb-1">
+                                    Course <span class="text-red-500">*</span>
+                                </label>
+                                <select id="course" name="course" required 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        aria-required="true">
+                                    <option value="" disabled selected>Select Course</option>
+                                    <optgroup label="College of Computer Studies">
+                                        <option value="BSIT">BSIT - BS Information Technology</option>
+                                        <option value="BSCS">BSCS - BS Computer Science</option>
+                                        <option value="ACT">ACT - Associate in Computer Technology</option>
+                                    </optgroup>
+                                    <optgroup label="College of Engineering">
+                                        <option value="BSCE">BSCE - BS Civil Engineering</option>
+                                        <option value="BSME">BSME - BS Mechanical Engineering</option>
+                                        <option value="BSEE">BSEE - BS Electrical Engineering</option>
+                                        <option value="BSIE">BSIE - BS Industrial Engineering</option>
+                                        <option value="BSCompE">BSCompE - BS Computer Engineering</option>
+                                    </optgroup>
+                                    <optgroup label="College of Business">
+                                        <option value="BSA">BSA - BS Accountancy</option>
+                                        <option value="BSBA">BSBA - BS Business Administration</option>
+                                        <option value="BSOA">BSOA - BS Office Administration</option>
+                                        <option value="BSHRM">BSHRM - BS Hotel & Restaurant Management</option>
+                                    </optgroup>
+                                    <optgroup label="College of Arts & Sciences">
+                                        <option value="BEEd">BEEd - BS Elementary Education</option>
+                                        <option value="BSEd">BSEd - BS Secondary Education</option>
+                                        <option value="AB PolSci">AB PolSci - Bachelor of Arts in Political Science</option>
+                                        <option value="BSCrim">BSCrim - BS Criminology</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="block text-gray-700 text-sm font-medium mb-1">
+                                Address <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="address" name="address" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                aria-required="true">
+                        </div>
+                        
+                        <div class="mb-3 relative">
+                            <label for="password" class="block text-gray-700 text-sm font-medium mb-1">
+                                Password <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" required minlength="6"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 pr-10"
+                                    aria-required="true">
+                                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center" tabindex="-1" aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye text-gray-500"></i>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Password must be at least 6 characters</p>
+                            <div class="password-strength-meter mt-2 hidden">
+                                <div class="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="passwordStrength" class="h-1 bg-red-500 transition-all duration-300 ease-in-out" style="width: 0%"></div>
+                                </div>
+                                <p id="passwordStrengthText" class="text-xs mt-1 text-gray-500">Password strength: <span>Weak</span></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mb-4">
-                    <label for="midname" class="block text-gray-700 font-medium mb-1">Middle Name (Optional)</label>
-                    <input type="text" id="midname" name="midname" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                    <div>
-                        <label for="level" class="block text-gray-700 font-medium mb-1">Year Level</label>
-                        <select id="level" name="level" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" disabled>Select Year Level</option>
-                            <option value="1st Year">1st Year</option>
-                            <option value="2nd Year">2nd Year</option>
-                            <option value="3rd Year">3rd Year</option>
-                            <option value="4th Year">4th Year</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="course" class="block text-gray-700 font-medium mb-1">Course</label>
-                        <select id="course" name="course" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" disabled>Select Course</option>
-                            <option value="BSIT">BSIT</option>
-                            <option value="BSCS">BSCS</option>
-                            <option value="ACT">ACT</option>
-                            <option value="BSCE">BSCE</option>
-                            <option value="BSME">BSME</option>
-                            <option value="BSEE">BSEE</option>
-                            <option value="BSIE">BSIE</option>
-                            <option value="BSCompE">BSCompE</option>
-                            <option value="BSA">BSA</option>
-                            <option value="BSBA">BSBA</option>
-                            <option value="BSOA">BSOA</option>
-                            <option value="BEEd">BEEd</option>
-                            <option value="BSEd">BSEd</option> 
-                            <option value="AB PolSci">AB PolSci</option> 
-                            <option value="BSCrim">BSCrim</option> 
-                            <option value="BSHRM">BSHRM</option> 
-                        </select>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
-                    <input type="email" id="email" name="email" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="mb-3">
-                    <label for="address" class="block text-gray-700 font-medium mb-1">Address</label>
-                    <input type="text" id="address" name="address" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
-                    <input type="password" id="password" name="password" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
+                
                 <input type="hidden" name="session" value="30">
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeAddModal()" class="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">Cancel</button>
-                    <button type="submit" name="add_student" class="px-4 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Student</button>
+                
+                <div class="px-5 py-3 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-medium text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i> Fields marked with <span class="text-red-500">*</span> are required
+                        </span>
+                    </div>
+                    <div class="flex items-center">
+                        <button type="button" onclick="closeAddModal()" class="px-4 py-1.5 mr-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            Cancel
+                        </button>
+                        <button type="submit" name="add_student" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-user-plus mr-1"></i> Add Student
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password toggle visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordField = document.getElementById('password');
+            
+            if (togglePassword && passwordField) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    
+                    // Toggle eye icon
+                    const eyeIcon = this.querySelector('i');
+                    eyeIcon.classList.toggle('fa-eye');
+                    eyeIcon.classList.toggle('fa-eye-slash');
+                });
+            }
+            
+            // Password strength meter
+            const passwordStrengthBar = document.getElementById('passwordStrength');
+            const passwordStrengthText = document.getElementById('passwordStrengthText').querySelector('span');
+            const passwordStrengthMeter = document.querySelector('.password-strength-meter');
+            
+            if (passwordField && passwordStrengthBar) {
+                passwordField.addEventListener('input', function() {
+                    const password = this.value;
+                    let strength = 0;
+                    
+                    if (password.length > 0) {
+                        passwordStrengthMeter.classList.remove('hidden');
+                        
+                        // Calculate password strength
+                        if (password.length >= 8) strength += 25;
+                        if (password.match(/[a-z]+/)) strength += 25;
+                        if (password.match(/[A-Z]+/)) strength += 25;
+                        if (password.match(/[0-9]+/)) strength += 15;
+                        if (password.match(/[^a-zA-Z0-9]+/)) strength += 10;
+                        
+                        // Update strength meter
+                        passwordStrengthBar.style.width = strength + '%';
+                        
+                        // Update text and color
+                        if (strength < 30) {
+                            passwordStrengthBar.className = 'h-1 bg-red-500 transition-all duration-300 ease-in-out';
+                            passwordStrengthText.textContent = 'Weak';
+                            passwordStrengthText.className = 'text-red-500';
+                        } else if (strength < 60) {
+                            passwordStrengthBar.className = 'h-1 bg-yellow-500 transition-all duration-300 ease-in-out';
+                            passwordStrengthText.textContent = 'Moderate';
+                            passwordStrengthText.className = 'text-yellow-600';
+                        } else {
+                            passwordStrengthBar.className = 'h-1 bg-green-500 transition-all duration-300 ease-in-out';
+                            passwordStrengthText.textContent = 'Strong';
+                            passwordStrengthText.className = 'text-green-600';
+                        }
+                    } else {
+                        passwordStrengthMeter.classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Form validation
+            const addStudentForm = document.getElementById('addStudentForm');
+            
+            if (addStudentForm) {
+                addStudentForm.addEventListener('submit', function(event) {
+                    // Remove previous error messages
+                    document.querySelectorAll('.error-message').forEach(el => el.remove());
+                    document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+                    
+                    let hasErrors = false;
+                    
+                    // Check ID Number - should be numeric
+                    const idno = document.getElementById('idno');
+                    if (idno && !/^\d+$/.test(idno.value)) {
+                        showError(idno, 'ID Number must contain only digits');
+                        hasErrors = true;
+                    }
+                    
+                    // Check email format
+                    const email = document.getElementById('email');
+                    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                        showError(email, 'Please enter a valid email address');
+                        hasErrors = true;
+                    }
+                    
+                    // Check password length
+                    const password = document.getElementById('password');
+                    if (password && password.value.length < 6) {
+                        showError(password, 'Password must be at least 6 characters');
+                        hasErrors = true;
+                    }
+                    
+                    // Validate select fields are chosen
+                    const level = document.getElementById('level');
+                    if (level && level.selectedIndex === 0) {
+                        showError(level, 'Please select a year level');
+                        hasErrors = true;
+                    }
+                    
+                    const course = document.getElementById('course');
+                    if (course && course.selectedIndex === 0) {
+                        showError(course, 'Please select a course');
+                        hasErrors = true;
+                    }
+                    
+                    if (hasErrors) {
+                        event.preventDefault();
+                        
+                        // Find first error and focus it
+                        const firstError = document.querySelector('.border-red-500');
+                        if (firstError) {
+                            firstError.focus();
+                        }
+                    }
+                });
+            }
+            
+            function showError(element, message) {
+                // Add red border to the element
+                element.classList.add('border-red-500');
+                
+                // Create error message
+                const errorDiv = document.createElement('p');
+                errorDiv.className = 'error-message text-red-500 text-xs mt-1';
+                errorDiv.innerText = message;
+                
+                // Insert after the element
+                element.parentNode.insertBefore(errorDiv, element.nextSibling);
+            }
+        });
+        
+        // Keyboard navigation and focus trap for modal
+        function openAddModal() {
+            const modal = document.getElementById('addModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Focus first form element after modal is shown
+            setTimeout(() => {
+                const firstInput = modal.querySelector('input, select, button:not([aria-label="Close modal"])');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+                
+                // Set up focus trap
+                trapFocus(modal);
+            }, 50);
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+            document.getElementById('addModal').classList.remove('flex');
+            
+            // Clear form fields (optional)
+            document.getElementById('addStudentForm').reset();
+            
+            // Remove any validation errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+            
+            // Hide password strength meter
+            document.querySelector('.password-strength-meter').classList.add('hidden');
+        }
+
+        function trapFocus(element) {
+            // Get all focusable elements
+            const focusableElements = element.querySelectorAll(
+                'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            
+            if (focusableElements.length === 0) return;
+            
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            
+            // Handle keyboard navigation
+            element.addEventListener('keydown', function(e) {
+                // Close modal on Escape key
+                if (e.key === 'Escape') {
+                    closeAddModal();
+                    return;
+                }
+                
+                // Trap Tab navigation within modal
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        // If shift + tab and on first element, move to last
+                        if (document.activeElement === firstElement) {
+                            e.preventDefault();
+                            lastElement.focus();
+                        }
+                    } else {
+                        // If tab and on last element, move to first
+                        if (document.activeElement === lastElement) {
+                            e.preventDefault();
+                            firstElement.focus();
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 
     <!-- Edit Student Modal -->
     <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden z-50">

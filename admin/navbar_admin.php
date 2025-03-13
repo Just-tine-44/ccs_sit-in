@@ -4,6 +4,13 @@
 session_start();
 
 ob_start();
+
+// Check if admin is logged in
+ if (!isset($_SESSION['admin']) || $_SESSION['login_success'] !== true) {
+    // Redirect to login page
+    header("Location: admin_login.php");
+    exit();
+}
 ?>
 <!-- filepath: c:\xampp\htdocs\login\admin\navbar_admin.php -->
 <link href="../css/tailwind.min.css" rel="stylesheet">
@@ -54,7 +61,7 @@ ob_start();
                     <i class="fas fa-history mr-2 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Records</span>
                 </a>
-                <a href="#" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                <a href="admin_reports.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-chart-bar mr-2 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Reports</span>
                 </a>
