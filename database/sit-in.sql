@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2025 at 04:12 PM
+-- Generation Time: Mar 13, 2025 at 06:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,7 +64,8 @@ INSERT INTO `announcements` (`announcement_id`, `admin_name`, `post_date`, `mess
 (5, 'CCS-Admin', '2025-03-04 17:41:14', 'Sit-in schedules for next week are now available. Book your slots in advance. Thank You.'),
 (6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions. Thank u'),
 (7, 'CCS-Admin', '2025-03-11 04:55:08', 'Goodluck CSS. Thanks'),
-(8, 'CCS-Admin', '2025-03-11 11:24:37', 'Attention students and faculty! 🎉 We are thrilled to announce the launch of the Sit-in Lab System, created to simplify and enhance the process of attending laboratory sessions. Thank you for your support!');
+(8, 'CCS-Admin', '2025-03-11 11:24:37', 'Attention students and faculty! 🎉 We are thrilled to announce the launch of the Sit-in Lab System, created to simplify and enhance the process of attending laboratory sessions. Thank you for your support!'),
+(9, 'CCS-Admin', '2025-03-13 04:03:13', 'GOODLUCK');
 
 -- --------------------------------------------------------
 
@@ -100,7 +101,35 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 (11, 6, '524', 'C Programming', '2025-03-11 19:16:42', '2025-03-11 19:17:13', 'completed'),
 (12, 5, '530', 'Other', '2025-03-11 21:49:54', '2025-03-11 21:50:09', 'completed'),
 (13, 3, '530', 'C#', '2025-03-11 21:52:42', '2025-03-11 21:53:35', 'completed'),
-(14, 5, '528', 'PHP', '2025-03-11 21:55:17', '2025-03-11 21:57:28', 'completed');
+(14, 5, '528', 'PHP', '2025-03-11 21:55:17', '2025-03-11 21:57:28', 'completed'),
+(15, 1, '526', 'C#', '2025-03-13 11:10:26', '2025-03-13 11:11:04', 'completed'),
+(16, 1, '526', 'C Programming', '2025-03-13 12:02:33', '2025-03-13 12:02:48', 'completed'),
+(17, 1, '530', 'ASP.Net', '2025-03-13 12:05:20', '2025-03-13 12:05:58', 'completed'),
+(18, 1, '524', 'PHP', '2025-03-13 12:38:40', '2025-03-13 12:39:10', 'completed');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sit_in_ratings`
+--
+
+CREATE TABLE `sit_in_ratings` (
+  `rating_id` int(11) NOT NULL,
+  `sit_in_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` int(1) NOT NULL,
+  `feedback` text DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sit_in_ratings`
+--
+
+INSERT INTO `sit_in_ratings` (`rating_id`, `sit_in_id`, `user_id`, `rating`, `feedback`, `created_at`) VALUES
+(1, 17, 1, 5, 'Its very nice and Good', '2025-03-13 12:29:01'),
+(2, 16, 1, 4, 'Very good and Nice', '2025-03-13 12:33:11'),
+(3, 15, 1, 1, 'Ana alexus', '2025-03-13 12:53:05');
 
 -- --------------------------------------------------------
 
@@ -184,6 +213,14 @@ ALTER TABLE `curr_sit_in`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `sit_in_ratings`
+--
+ALTER TABLE `sit_in_ratings`
+  ADD PRIMARY KEY (`rating_id`),
+  ADD KEY `sit_in_id` (`sit_in_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `stud_session`
 --
 ALTER TABLE `stud_session`
@@ -211,13 +248,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `announcement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `sit_in_ratings`
+--
+ALTER TABLE `sit_in_ratings`
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `stud_session`
@@ -240,6 +283,13 @@ ALTER TABLE `users`
 --
 ALTER TABLE `curr_sit_in`
   ADD CONSTRAINT `curr_sit_in_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sit_in_ratings`
+--
+ALTER TABLE `sit_in_ratings`
+  ADD CONSTRAINT `sit_in_ratings_ibfk_1` FOREIGN KEY (`sit_in_id`) REFERENCES `curr_sit_in` (`sit_in_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sit_in_ratings_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `stud_session`

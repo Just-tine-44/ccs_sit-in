@@ -1,466 +1,265 @@
-<?php ?>
+<?php
+    include("connection/history_process.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session History | CCS Lab System</title>
+    <title>My Sit-In History</title>
     <link rel="icon" type="image/png" href="images/ccslogo.png">
-    <!-- Tailwind CSS -->
     <link href="css/tailwind.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .history-table th {
-            position: relative;
-        }
-        
-        .history-table th::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            transform: scaleX(0);
-            background: linear-gradient(90deg, #3182ce, #7f9cf5);
-            transition: transform 0.3s ease;
-        }
-        
-        .history-table th:hover::after {
-            transform: scaleX(1);
-        }
-        
-        .feedback-btn {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .feedback-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255,255,255,0.2);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-            z-index: 1;
-        }
-        
-        .feedback-btn:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-        
-        .feedback-btn i,
-        .feedback-btn span {
-            position: relative;
-            z-index: 2;
-        }
-        
-        /* Custom scrollbar for table container */
-        .table-container::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        .table-container::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-        
-        .table-container::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        
-        .table-container::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Include navbar at the top of the page -->
-    <header class="w-full">
-        <?php include 'navbar.php'; ?>
-    </header>
-
-    <div class="container mx-auto px-4 py-6">
-        <!-- Header with search bar -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Session History</h1>
-                <p class="text-sm text-gray-500 mt-1">View your previous lab sessions and provide feedback</p>
-            </div>
-            
-            <div class="flex flex-col sm:flex-row gap-3">
-                <!-- Search input -->
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Search by lab or purpose..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64 transition-all duration-200" />
-                    <div class="absolute left-3 top-2.5 text-gray-400">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
-                
-                <!-- Filter dropdown -->
-                <div class="relative">
-                    <select id="filterSelect" class="appearance-none bg-white pl-4 pr-10 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-                        <option value="all">All Time</option>
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="semester">This Semester</option>
-                    </select>
-                    <div class="absolute right-3 top-2.5 text-gray-400 pointer-events-none">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body class="bg-gray-100">
+    <?php include 'navbar.php'; ?>
+    
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">My Sit-In History</h1>
         
-        <!-- Stats Cards -->
+        <?php if (isset($_SESSION['message'])): ?>
+            <script>
+                Swal.fire({
+                    icon: '<?php echo $_SESSION['msg_type']; ?>',
+                    title: '<?php echo $_SESSION['message']; ?>',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            </script>
+            <?php
+            unset($_SESSION['message']);
+            unset($_SESSION['msg_type']);
+            ?>
+        <?php endif; ?>
+        
+        <!-- Statistics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-blue-500 transform transition-transform hover:scale-[1.02] duration-300">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Total Sessions</p>
-                        <p class="text-2xl font-bold text-gray-800">24</p>
-                    </div>
-                    <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                        <i class="fas fa-desktop"></i>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-                        <i class="fas fa-arrow-up"></i> 12% from last month
-                    </span>
+            <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
+                <h3 class="text-lg font-semibold text-blue-600">Total Sessions</h3>
+                <div class="flex items-center mt-2">
+                    <span class="text-3xl font-bold text-gray-800"><?php echo $stats['total_sessions']; ?></span>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-500 transform transition-transform hover:scale-[1.02] duration-300">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Most Used Lab</p>
-                        <p class="text-xl font-bold text-gray-800">Programming Lab</p>
-                    </div>
-                    <div class="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-500">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <span class="text-xs text-gray-500">
-                        8 sessions this month
-                    </span>
+            <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+                <h3 class="text-lg font-semibold text-green-600">Total Hours</h3>
+                <div class="flex items-center mt-2">
+                    <span class="text-3xl font-bold text-gray-800"><?php echo $totalHours; ?></span>
+                    <span class="ml-2 text-sm text-gray-500">hrs <?php echo $remainingMinutes; ?> min</span>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-purple-500 transform transition-transform hover:scale-[1.02] duration-300">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Pending Feedback</p>
-                        <p class="text-2xl font-bold text-gray-800">3</p>
-                    </div>
-                    <div class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
-                        <i class="fas fa-comment-dots"></i>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <a href="#" class="text-xs text-purple-600 hover:underline">
-                        View all pending feedback
-                    </a>
+            <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500">
+                <h3 class="text-lg font-semibold text-yellow-600">Rated Sessions</h3>
+                <div class="flex items-center mt-2">
+                    <span class="text-3xl font-bold text-gray-800"><?php echo $stats['rated_sessions']; ?></span>
+                    <span class="ml-2 text-sm text-gray-500">of <?php echo $stats['completed_sessions']; ?> completed</span>
                 </div>
             </div>
         </div>
         
-        <!-- Main table -->
+        <!-- History Table -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
-                <h2 class="font-bold text-gray-700">Recent Sessions</h2>
-                <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                    Showing 10 of 24 entries
-                </span>
+            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-lg font-semibold text-gray-800">Session History</h2>
             </div>
             
-            <div class="table-container overflow-x-auto">
-                <table class="w-full history-table">
-                    <thead>
-                        <tr class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
-                            <th class="px-6 py-3 font-medium">ID Number</th>
-                            <th class="px-6 py-3 font-medium">Name</th>
-                            <th class="px-6 py-3 font-medium">Sit-In Purpose</th>
-                            <th class="px-6 py-3 font-medium">Laboratory</th>
-                            <th class="px-6 py-3 font-medium">Login</th>
-                            <th class="px-6 py-3 font-medium">Logout</th>
-                            <th class="px-6 py-3 font-medium">Date</th>
-                            <th class="px-6 py-3 font-medium">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <!-- Row 1 -->
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-4 text-sm text-gray-800 font-medium">2020-00001</td>
-                            <td class="px-6 py-4 text-sm text-gray-800">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-2">JD</div>
-                                    John Doe
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Programming Assignment</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
-                                    Programming Lab
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">09:30 AM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">11:45 AM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Mar 13, 2025</td>
-                            <td class="px-6 py-4">
-                                <button class="feedback-btn bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-indigo-700 transition-colors duration-200">
-                                    <i class="fas fa-comment-alt mr-1"></i>
-                                    <span>Feedback</span>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Row 2 -->
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-4 text-sm text-gray-800 font-medium">2020-00001</td>
-                            <td class="px-6 py-4 text-sm text-gray-800">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-2">JD</div>
-                                    John Doe
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Database Project</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-green-50 text-green-700">
-                                    Database Lab
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">02:15 PM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">04:30 PM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Mar 12, 2025</td>
-                            <td class="px-6 py-4">
-                                <button class="feedback-btn bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-indigo-700 transition-colors duration-200">
-                                    <i class="fas fa-comment-alt mr-1"></i>
-                                    <span>Feedback</span>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Row 3 -->
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-4 text-sm text-gray-800 font-medium">2020-00001</td>
-                            <td class="px-6 py-4 text-sm text-gray-800">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-2">JD</div>
-                                    John Doe
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Multimedia Editing</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-purple-50 text-purple-700">
-                                    Multimedia Lab
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">10:00 AM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">12:30 PM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Mar 10, 2025</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-500">
-                                    Submitted
-                                </span>
-                            </td>
-                        </tr>
-                        
-                        <!-- Row 4 -->
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-4 text-sm text-gray-800 font-medium">2020-00001</td>
-                            <td class="px-6 py-4 text-sm text-gray-800">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-2">JD</div>
-                                    John Doe
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Web Development</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-orange-50 text-orange-700">
-                                    Web Lab
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">01:00 PM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">03:15 PM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Mar 8, 2025</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-500">
-                                    Submitted
-                                </span>
-                            </td>
-                        </tr>
-                        
-                        <!-- Row 5 -->
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-4 text-sm text-gray-800 font-medium">2020-00001</td>
-                            <td class="px-6 py-4 text-sm text-gray-800">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-2">JD</div>
-                                    John Doe
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Network Assignment</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
-                                    Network Lab
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">09:00 AM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">11:30 AM</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Mar 5, 2025</td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-500">
-                                    Submitted
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
-                <div class="hidden sm:block">
-                    <p class="text-sm text-gray-500">
-                        Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">24</span> results
-                    </p>
+            <?php if ($historyResult->num_rows > 0): ?>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Laboratory</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time-In</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time-Out</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <?php while ($row = $historyResult->fetch_assoc()): ?>
+                                <?php 
+                                    // Calculate duration
+                                    $duration = "N/A";
+                                    if ($row['check_out_time']) {
+                                        $checkIn = new DateTime($row['check_in_time']);
+                                        $checkOut = new DateTime($row['check_out_time']);
+                                        $interval = $checkIn->diff($checkOut);
+                                        $hours = $interval->h + ($interval->days * 24);
+                                        $minutes = $interval->i;
+                                        $duration = $hours . "h " . $minutes . "m";
+                                    }
+                                ?>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            <?php echo htmlspecialchars($row['laboratory']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo htmlspecialchars($row['purpose']); ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo date('M d, Y g:i A', strtotime($row['check_in_time'])); ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo $row['check_out_time'] ? date('M d, Y g:i A', strtotime($row['check_out_time'])) : 'Still Active'; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo $duration; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            <?php echo $row['status'] == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'; ?>">
+                                            <?php echo ucfirst($row['status']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php if ($row['status'] == 'completed'): ?>
+                                            <?php if ($row['rating']): ?>
+                                                <div class="flex items-center">
+                                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                        <i class="fas fa-star <?php echo $i <= $row['rating'] ? 'text-yellow-500' : 'text-gray-300'; ?>"></i>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <span class="text-gray-400">Not rated</span>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <span class="text-gray-400">N/A</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <?php if ($row['status'] == 'completed'): ?>
+                                            <button 
+                                                onclick="openRatingModal(
+                                                    <?php echo $row['sit_in_id']; ?>, 
+                                                    '<?php echo htmlspecialchars($row['purpose']); ?>', 
+                                                    '<?php echo htmlspecialchars($row['laboratory']); ?>',
+                                                    <?php echo $row['rating'] ? $row['rating'] : 0; ?>,
+                                                    '<?php echo htmlspecialchars($row['feedback'] ?? ''); ?>'
+                                                )" 
+                                                class="text-blue-600 hover:text-blue-900"
+                                            >
+                                                <?php echo $row['rating'] ? 'Edit Rating' : 'Rate Session'; ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="flex space-x-2">
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
+            <?php else: ?>
+                <div class="py-8 text-center">
+                    <div class="inline-flex rounded-full bg-gray-100 p-4">
+                        <div class="rounded-full stroke-gray-500 bg-gray-200 p-4">
+                            <svg class="w-8 h-8" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2C7.373 2 2 7.373 2 14C2 20.627 7.373 26 14 26C20.627 26 26 20.627 26 14C26 7.373 20.627 2 14 2ZM14 24C8.486 24 4 19.514 4 14C4 8.486 8.486 4 14 4C19.514 4 24 8.486 24 14C24 19.514 19.514 24 14 24Z" fill="#A1A1AA"/>
+                                <path d="M14 10C14.5523 10 15 9.55228 15 9C15 8.44772 14.5523 8 14 8C13.4477 8 13 8.44772 13 9C13 9.55228 13.4477 10 14 10Z" fill="#A1A1AA"/>
+                                <path d="M13 12C13 11.4477 13.4477 11 14 11C14.5523 11 15 11.4477 15 12V19C15 19.5523 14.5523 20 14 20C13.4477 20 13 19.5523 13 19V12Z" fill="#A1A1AA"/>
+                            </svg>
+                        </div>
+                    </div>
                     
-                    <button class="px-3 py-1 border rounded-md bg-blue-50 text-blue-600 font-medium">1</button>
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">3</button>
-                    <span class="px-3 py-1 text-gray-500">...</span>
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">5</button>
-                    
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+                    <h2 class="mt-4 text-lg font-medium text-gray-900">No history found</h2>
+                    <p class="mt-2 text-sm text-gray-500">You haven't had any sit-in sessions yet.</p>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
     
-    <!-- Feedback Modal (Hidden by default) -->
-    <div id="feedbackModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
-            <div class="p-5 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="font-bold text-lg text-gray-800">Session Feedback</h3>
-                <button id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+    <!-- Rating Modal -->
+    <div id="ratingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden animate__animated animate__fadeIn">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-lg font-bold text-gray-800">Rate Your Experience</h3>
+                <button onclick="closeRatingModal()" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="p-5">
-                <form>
+            
+            <form id="ratingForm" method="POST" action="">
+                <div class="p-6">
+                    <input type="hidden" id="modal-sit-in-id" name="sit_in_id">
+                    <input type="hidden" id="rating" name="rating" value="0">
+                    
                     <div class="mb-4">
-                        <p class="text-sm text-gray-600 mb-2">How would you rate this session?</p>
-                        <div class="flex space-x-2 text-2xl">
-                            <button type="button" class="text-gray-300 hover:text-yellow-500 transition-colors duration-200">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button type="button" class="text-gray-300 hover:text-yellow-500 transition-colors duration-200">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button type="button" class="text-gray-300 hover:text-yellow-500 transition-colors duration-200">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button type="button" class="text-gray-300 hover:text-yellow-500 transition-colors duration-200">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button type="button" class="text-gray-300 hover:text-yellow-500 transition-colors duration-200">
-                                <i class="fas fa-star"></i>
-                            </button>
+                        <p class="text-gray-700 mb-1"><strong>Purpose:</strong> <span id="modal-purpose"></span></p>
+                        <p class="text-gray-700"><strong>Laboratory:</strong> <span id="modal-lab"></span></p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Your Rating:</label>
+                        <div class="flex space-x-2">
+                            <span class="cursor-pointer text-gray-300" onclick="setRating(1)"><i class="fas fa-star"></i></span>
+                            <span class="cursor-pointer text-gray-300" onclick="setRating(2)"><i class="fas fa-star"></i></span>
+                            <span class="cursor-pointer text-gray-300" onclick="setRating(3)"><i class="fas fa-star"></i></span>
+                            <span class="cursor-pointer text-gray-300" onclick="setRating(4)"><i class="fas fa-star"></i></span>
+                            <span class="cursor-pointer text-gray-300" onclick="setRating(5)"><i class="fas fa-star"></i></span>
                         </div>
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-sm text-gray-600 mb-2">Comments</label>
-                        <textarea class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" rows="4" placeholder="Share your experience with this lab session..."></textarea>
+                        <label for="feedback" class="block text-gray-700 mb-2">Feedback (Optional):</label>
+                        <textarea id="feedback" name="feedback" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm text-gray-600 mb-2">Suggestions for Improvement</label>
-                        <textarea class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" rows="2" placeholder="Any suggestions to improve the lab facilities or experience?"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="p-4 bg-gray-50 rounded-b-xl flex justify-end space-x-3">
-                <button id="cancelFeedback" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                    Cancel
-                </button>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                    Submit Feedback
-                </button>
-            </div>
+                </div>
+                
+                <div class="px-6 py-4 bg-gray-50 flex justify-end rounded-b-lg">
+                    <button type="button" onclick="closeRatingModal()" class="mr-2 px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        Cancel
+                    </button>
+                    <button type="submit" name="submit_rating" class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                        Submit Rating
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        // Wait for the DOM to be fully loaded before attaching event listeners
+        function setRating(rating) {
+            document.getElementById('rating').value = rating;
+            
+            const stars = document.querySelectorAll('#ratingForm .fa-star');
+            stars.forEach((star, index) => {
+                star.parentElement.classList.remove('text-yellow-500');
+                star.parentElement.classList.add('text-gray-300');
+                
+                if (index < rating) {
+                    star.parentElement.classList.remove('text-gray-300');
+                    star.parentElement.classList.add('text-yellow-500');
+                }
+            });
+        }
+        
+        function openRatingModal(sitInId, purpose, laboratory, rating, feedback) {
+            document.getElementById('modal-sit-in-id').value = sitInId;
+            document.getElementById('modal-purpose').textContent = purpose;
+            document.getElementById('modal-lab').textContent = laboratory;
+            document.getElementById('feedback').value = feedback;
+            setRating(rating);
+            
+            document.getElementById('ratingModal').classList.remove('hidden');
+        }
+        
+        function closeRatingModal() {
+            document.getElementById('ratingModal').classList.add('hidden');
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality (just UI for now)
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
-                    // UI feedback for search (to be implemented later)
-                    console.log('Searching for: ' + e.target.value);
-                });
-            }
-            
-            // Feedback modal toggle
-            const feedbackButtons = document.querySelectorAll('.feedback-btn');
-            const feedbackModal = document.getElementById('feedbackModal');
-            const modalContent = document.getElementById('modalContent');
-            const closeModal = document.getElementById('closeModal');
-            const cancelFeedback = document.getElementById('cancelFeedback');
-            
-            if (feedbackButtons.length > 0 && feedbackModal && modalContent) {
-                feedbackButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        feedbackModal.classList.remove('hidden');
-                        setTimeout(() => {
-                            modalContent.classList.remove('scale-95', 'opacity-0');
-                            modalContent.classList.add('scale-100', 'opacity-100');
-                        }, 10);
-                    });
-                });
-                
-                const hideModal = () => {
-                    modalContent.classList.remove('scale-100', 'opacity-100');
-                    modalContent.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        feedbackModal.classList.add('hidden');
-                    }, 300);
-                };
-                
-                if (closeModal) {
-                    closeModal.addEventListener('click', hideModal);
+            // Close modal when clicking outside
+            document.getElementById('ratingModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeRatingModal();
                 }
-                
-                if (cancelFeedback) {
-                    cancelFeedback.addEventListener('click', hideModal);
-                }
-                
-                feedbackModal.addEventListener('click', function(e) {
-                    if (e.target === feedbackModal) {
-                        hideModal();
-                    }
-                });
-            }
+            });
             
             // Initialize star rating functionality
             const starButtons = document.querySelectorAll('.fa-star');
@@ -485,4 +284,3 @@
     </script>
 </body>
 </html>
-  
