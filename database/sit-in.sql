@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2025 at 06:02 AM
+-- Generation Time: Mar 13, 2025 at 02:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -129,7 +129,12 @@ CREATE TABLE `sit_in_ratings` (
 INSERT INTO `sit_in_ratings` (`rating_id`, `sit_in_id`, `user_id`, `rating`, `feedback`, `created_at`) VALUES
 (1, 17, 1, 5, 'Its very nice and Good', '2025-03-13 12:29:01'),
 (2, 16, 1, 4, 'Very good and Nice', '2025-03-13 12:33:11'),
-(3, 15, 1, 1, 'Ana alexus', '2025-03-13 12:53:05');
+(3, 15, 1, 1, 'Ana alexus', '2025-03-13 12:53:05'),
+(4, 9, 7, 5, 'Very Good', '2025-03-13 17:39:37'),
+(5, 4, 7, 4, 'Thank u So much', '2025-03-13 17:39:47'),
+(6, 6, 7, 3, 'Love it', '2025-03-13 17:41:57'),
+(7, 5, 7, 3, 'Great', '2025-03-13 17:42:07'),
+(8, 2, 7, 3, 'HAHAHAHAHHA', '2025-03-13 17:42:26');
 
 -- --------------------------------------------------------
 
@@ -153,7 +158,8 @@ INSERT INTO `stud_session` (`id`, `session`) VALUES
 (4, 30),
 (5, 30),
 (6, 30),
-(7, 30);
+(7, 30),
+(8, 30);
 
 -- --------------------------------------------------------
 
@@ -186,7 +192,8 @@ INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`,
 (4, '22889977', 'Michaels', 'Bron', 'C.', 'BSCS', '1st Year', 'Basak, Pardo', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
 (5, '33669944', 'Tatums', 'Lebron', 'L.', 'BSCompE', '2nd Year', 'Cebu, Boston', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', '123'),
 (6, '11556677', 'Doncics', 'Maxie', 'D.', 'BSCS', '1st Year', 'Sibonga, Cebu', 'images/person.jpg', 'max@gmail.com', '123'),
-(7, '22596886', 'PaldoGodz', 'Rovic', 'T.', 'BSCompE', '2nd Year', 'Pahina, Cebu City', NULL, 'rovic@gmail.com', '$2y$10$/cXM5mHYxMgHnH1oyyjrNuCGf5Y7nU8V3.sDnFbgvCdZyf9XGPRG6');
+(7, '22596886', 'PaldoGodz', 'Rovic', 'T.', 'BSCompE', '2nd Year', 'Pahina, Cebu City', NULL, 'rovic@gmail.com', '$2y$10$/cXM5mHYxMgHnH1oyyjrNuCGf5Y7nU8V3.sDnFbgvCdZyf9XGPRG6'),
+(8, '55442211', 'Steph', 'Kevin', 'B.', 'AB PolSci', '1', 'Mandaue Cebu', NULL, 'step@gmail.com', '123');
 
 --
 -- Indexes for dumped tables
@@ -260,19 +267,19 @@ ALTER TABLE `curr_sit_in`
 -- AUTO_INCREMENT for table `sit_in_ratings`
 --
 ALTER TABLE `sit_in_ratings`
-  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `stud_session`
 --
 ALTER TABLE `stud_session`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
