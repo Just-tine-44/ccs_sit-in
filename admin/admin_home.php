@@ -1,10 +1,12 @@
 <?php 
-    include("navbar_admin.php"); 
+    session_start();
 
-    if (!isset($_SESSION['admin'])) {
+    if (!isset($_SESSION['admin']) || empty($_SESSION['admin'])) {
         header("Location: admin_login.php");
         exit();
     }
+
+    include("navbar_admin.php"); 
 
     $showAlert = false;
     if (isset($_SESSION['login_success'])) {

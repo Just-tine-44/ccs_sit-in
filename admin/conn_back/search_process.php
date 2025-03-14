@@ -1,7 +1,9 @@
 <?php
-// Make sure session is started 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+session_start();
+
+if (!isset($_SESSION['admin']) || empty($_SESSION['admin'])) {
+    header("Location: admin_login.php");
+    exit();
 }
 
 include(__DIR__ . '/../../conn/dbcon.php');

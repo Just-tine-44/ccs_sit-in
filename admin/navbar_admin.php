@@ -1,17 +1,3 @@
-<?php
-// filepath: c:\xampp\htdocs\login\admin\navbar_admin.php
-// Start with PHP code, no HTML output
-session_start();
-
-ob_start();
-
-// Check if admin is logged in
- if (!isset($_SESSION['admin']) || $_SESSION['login_success'] !== true) {
-    // Redirect to login page
-    header("Location: admin_login.php");
-    exit();
-}
-?>
 <!-- filepath: c:\xampp\htdocs\login\admin\navbar_admin.php -->
 <link href="../css/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -151,7 +137,7 @@ ob_start();
             didOpen: () => {
                 Swal.showLoading();
                 setTimeout(() => {
-                    window.location.href = '../index.php';
+                    window.location.href = 'logout_admin.php';
                 }, 800);
             }
         });

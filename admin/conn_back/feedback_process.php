@@ -1,5 +1,11 @@
 <?php
-// filepath: /c:/xampp/htdocs/ccs_sit-in/admin/sit-in_feedback.php
+session_start();
+
+if (!isset($_SESSION['admin']) || empty($_SESSION['admin'])) {
+    header("Location: admin_login.php");
+    exit();
+}
+
 include '../conn/dbcon.php';
 
 

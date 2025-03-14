@@ -1,7 +1,9 @@
 <?php 
-// Start session if not already started
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+session_start();
+
+if (!isset($_SESSION['admin']) || empty($_SESSION['admin'])) {
+    header("Location: admin_login.php");
+    exit();
 }
 
 // Database connection
