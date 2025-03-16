@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2025 at 02:59 PM
+-- Generation Time: Mar 16, 2025 at 02:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,9 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', 'admin123');
+(1, 'admin', 'admin123'),
+(2, 'admin-536', '123'),
+(3, 'admin-542', '123');
 
 -- --------------------------------------------------------
 
@@ -65,7 +67,7 @@ INSERT INTO `announcements` (`announcement_id`, `admin_name`, `post_date`, `mess
 (6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions. Thank u'),
 (7, 'CCS-Admin', '2025-03-11 04:55:08', 'Goodluck CSS. Thanks'),
 (8, 'CCS-Admin', '2025-03-11 11:24:37', 'Attention students and faculty! 🎉 We are thrilled to announce the launch of the Sit-in Lab System, created to simplify and enhance the process of attending laboratory sessions. Thank you for your support!'),
-(9, 'CCS-Admin', '2025-03-13 04:03:13', 'GOODLUCK');
+(9, 'CCS-Admin', '2025-03-13 04:03:13', 'GOODLUCK, TIDERT');
 
 -- --------------------------------------------------------
 
@@ -203,8 +205,7 @@ INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`,
 -- Indexes for table `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `announcements`
@@ -249,7 +250,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `announcements`
