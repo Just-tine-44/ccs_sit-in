@@ -1,4 +1,5 @@
 <?php 
+session_start();
 // Regular login is handled by logAdm.php
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['create_admin'])) {
     include "./conn_back/logAdm.php";
@@ -26,9 +27,9 @@ $show_add_admin = isset($_GET['add_admin']) && $_GET['add_admin'] == 'true';
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <!-- Back button (simple) -->
-    <a href="../login.php" class="absolute top-6 left-6 text-gray-500 hover:text-gray-700 flex items-center gap-2">
-        <i class="fas fa-arrow-left"></i>
-        <span>Back</span>
+    <a href="logout_admin.php" class="absolute top-6 left-6 text-gray-500 hover:text-gray-700 flex items-center gap-2">
+        <i class="fas fa-home"></i>
+        <span>Back to Main</span>
     </a>
     
     <!-- Clean, minimal container -->
