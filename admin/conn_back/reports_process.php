@@ -1,8 +1,9 @@
 <?php 
 session_start();
 
-if (!isset($_SESSION['admin']) || empty($_SESSION['admin'])) {
-    header("Location: admin_login.php");
+if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) || 
+    !isset($_SESSION['auth_verified']) || $_SESSION['auth_verified'] !== true) {
+    header("Location: ../login.php");
     exit();
 }
 

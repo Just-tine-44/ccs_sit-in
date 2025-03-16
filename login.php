@@ -85,5 +85,142 @@ include 'connection/conn_login.php';
         </div>
     </div>
     <script src="script.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Find the admin link
+    const adminLink = document.querySelector('a[href="admin/admin_login.php"]');
+    
+    // Add click event listener
+    adminLink.addEventListener('click', function(e) {
+        // Prevent default navigation
+        e.preventDefault();
+        
+        // Show authentication prompt
+        Swal.fire({
+            title: 'Admin Authentication',
+            input: 'password',
+            inputPlaceholder: 'Enter authentication code',
+            inputAttributes: {
+                autocapitalize: 'off',
+                autocorrect: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Verify',
+            showLoaderOnConfirm: true,
+            background: '#fff',
+            customClass: {
+                input: 'swal-input',
+                confirmButton: 'swal-confirm-button',
+                cancelButton: 'swal-cancel-button'
+            },
+            preConfirm: async (code) => {
+                try {
+                    // Send the code to a verification endpoint
+                    const response = await fetch('verify_admin_code.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ code: code })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        return Swal.showValidationMessage(
+                            `Invalid authentication code`
+                        );
+                    }
+                    return data;
+                } catch (error) {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    );
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show a small toast-like notification in the top-right corner
+                Swal.fire({
+                    title: 'Access Granted',
+                    icon: 'success',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1100,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'swal-toast-popup'
+                    }
+                }).then(() => {
+                    // Redirect after success message
+                    window.location.href = 'admin/admin_login.php';
+                });
+            }
+        });
+    });
+});
+</script>
+
+<style>
+/* Toast popup styling */
+.swal-toast-popup {
+    padding: 0.75rem !important;
+    width: 200px !important;
+    font-size: 14px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+    border-left: 4px solid #28a745 !important;
+}
+.swal-toast-popup .swal2-title {
+    margin: 0 !important;
+    font-size: 16px !important;
+}
+.swal-toast-popup .swal2-icon {
+    margin: 0.25rem auto !important;
+    font-size: 20px !important;
+    width: 1.75em !important;
+    height: 1.75em !important;
+}
+.swal-toast-popup .swal2-icon .swal2-icon-content {
+    font-size: 1.25rem !important;
+}
+
+/* Admin authentication form styling */
+.swal-input {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 4px !important;
+    padding: 10px !important;
+    box-shadow: none !important;
+    transition: border-color 0.3s !important;
+}
+.swal-input:focus {
+    border-color: #3085d6 !important;
+    box-shadow: 0 0 0 3px rgba(48, 133, 214, 0.2) !important;
+}
+.swal-confirm-button {
+    background-color: #3085d6 !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    padding: 10px 24px !important;
+}
+.swal2-cancel.swal-cancel-button {
+    background-color: #dc3545 !important; /* Red background */
+    color: white !important;
+    border: 1px solid #c82333 !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    padding: 10px 24px !important;
+    box-shadow: none !important;
+    width: auto !important;
+    transition: background-color 0.15s ease-in-out !important;
+}
+
+.swal2-cancel.swal-cancel-button:hover {
+    background-color: #bd2130 !important; /* Darker red on hover */
+    border-color: #bd2130 !important;
+}
+</style>
 </body>
 </html>
