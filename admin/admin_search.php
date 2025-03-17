@@ -208,7 +208,7 @@
                                 <div class="bg-blue-50 rounded-xl p-5">
                                     <h3 class="font-bold text-gray-800 mb-4 flex items-center">
                                         <i class="fas fa-chair text-blue-500 mr-2"></i> 
-                                        Register New Sit-in Session
+                                        New Sit-in Session
                                     </h3>
                                     
                                     <form id="sitInForm" method="POST" action="" class="space-y-4">
