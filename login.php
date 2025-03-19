@@ -134,10 +134,10 @@ include 'connection/conn_login.php';
                                 <label for="level" class="block text-xs font-medium text-gray-700 mb-1">Year</label>
                                 <select id="level" name="level" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2" required>
                                     <option value="" disabled selected>Select</option>
-                                    <option value="1">1st Year</option>
-                                    <option value="2">2nd Year</option>
-                                    <option value="3">3rd Year</option>
-                                    <option value="4">4th Year</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
                                 </select>
                             </div>
                         </div>
