@@ -305,13 +305,17 @@ include 'connection/conn_login.php';
                         },
                         preConfirm: async (code) => {
                             try {
-                                const response = await fetch('verify_admin_code.php', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({ code: code })
-                                });
+                                // Show loader for at least 800ms for better user experience
+                                const [response] = await Promise.all([
+                                    fetch('verify_admin_code.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ code: code })
+                                    }),
+                                    new Promise(resolve => setTimeout(resolve, 800)) // Minimum delay of 800ms
+                                ]);
                                 
                                 const data = await response.json();
                                 
