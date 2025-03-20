@@ -11,7 +11,7 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
-    <link rel="icon" type="image/png" href="images/ccslogo.png">
+    <link rel="icon" type="image/png" href="images/wbccs.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -85,6 +85,11 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
                             <div>
                                 <label class="block text-gray-700 font-medium mb-2">Address:</label>
                                 <input type="text" name="address" value="<?php echo isset($user['address']) ? htmlspecialchars($user['address']) : ''; ?>" class="w-full border px-4 py-2 rounded-full border-gray-200" required>
+                            </div>
+                            <div class="col-span-2 mt-4 flex justify-end">
+                                <a href="password_edit.php" class="inline-flex items-center px-4 py-1.5 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300 transition duration-200">
+                                    <i class="fas fa-lock mr-1"></i> Change Password
+                                </a>
                             </div>
                         </div>
                     </div>

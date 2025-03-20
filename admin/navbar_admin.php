@@ -13,7 +13,6 @@ $titles = [
     'records.php' => 'Activity Records',
     'admin_reports.php' => 'System Reports',
     'sit-in_feedback.php' => 'Student Feedback',
-    // Add more pages as needed
 ];
 
 // Define page icons
@@ -25,7 +24,6 @@ $pageIcons = [
     'records.php' => 'fa-history',
     'admin_reports.php' => 'fa-chart-bar',
     'sit-in_feedback.php' => 'fa-comment-alt',
-    // Add more icons as needed
 ];
 
 // Set the page title if it exists in our map
@@ -54,7 +52,7 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
                         <i class="fas <?php echo $icon; ?> text-xl"></i>
                     </div>
                     <div class="flex flex-col">
-                        <span class="text-lg font-bold text-gray-800"><?php echo $pageTitle; ?></span>
+                        <span class="text-base font-bold text-gray-800"><?php echo $pageTitle; ?></span>
                         <span class="hidden md:inline-block text-xs font-normal text-gray-500">
                             <?php echo ($currentFile === 'admin_home.php') ? 'Dashboard Overview' : 'CCS Administration'; ?>
                         </span>
@@ -67,39 +65,39 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
             </div>
             
             <!-- Navigation Links -->
-            <div id="nav-links" class="hidden md:flex md:items-center md:space-x-1 lg:space-x-4 flex-col md:flex-row w-full md:w-auto mt-4 md:mt-0">
-                <a href="admin_home.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-home mr-2 text-gray-400 group-hover:text-blue-500"></i>
+            <div id="nav-links" class="hidden md:flex md:items-center md:space-x-0.5 lg:space-x-2 flex-col md:flex-row w-full md:w-auto mt-4 md:mt-0">
+                <a href="admin_home.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-home mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Home</span>
                 </a>
 
-                <a href="admin_search.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-search mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="admin_search.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-search mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Search</span>
                 </a>
 
-                <a href="admin_student_list.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-user-graduate mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="admin_student_list.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-user-graduate mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Students</span>
                 </a>
-                <a href="sit_in.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-chair mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="sit_in.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-chair mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Sit-in</span>
                 </a>
-                <a href="records.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-history mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="records.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-history mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Records</span>
                 </a>
-                <a href="admin_reports.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-chart-bar mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="admin_reports.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-chart-bar mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Reports</span>
                 </a>
-                <a href="sit-in_feedback.php" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-comment-alt mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="sit-in_feedback.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-comment-alt mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Feedback</span>
                 </a>
-                <a href="#" class="nav-link group px-3 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-calendar-check mr-2 text-gray-400 group-hover:text-blue-500"></i>
+                <a href="#" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-calendar-check mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Reservation</span>
                 </a>
                 

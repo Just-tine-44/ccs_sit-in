@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session History | CCS Lab System</title>
-    <link rel="icon" type="image/png" href="images/ccslogo.png">
+    <link rel="icon" type="image/png" href="images/wbccs.png">
     <!-- Tailwind CSS -->
     <link href="css/tailwind.min.css" rel="stylesheet">
     <!-- Font Awesome -->
