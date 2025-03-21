@@ -203,9 +203,10 @@ $weeklyData = [0, 0, 0, 0, 0, 0, 0]; // Default zeros for each day
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         // DAYOFWEEK returns 1 for Sunday, 2 for Monday, etc.
-        // We want 0 for Monday, 1 for Tuesday, etc., so we adjust:
-        $dayIndex = ($row['day_number'] % 7) - 1;
-        if ($dayIndex < 0) $dayIndex = 6; // Sunday becomes 6
+        // Our array is [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+        // So we need to convert: 1->6, 2->0, 3->1, 4->2, 5->3, 6->4, 7->5
+        $day_number = (int)$row['day_number'];
+        $dayIndex = ($day_number == 1) ? 6 : $day_number - 2;
         $weeklyData[$dayIndex] = (int)$row['student_count'];
     }
 } else {
