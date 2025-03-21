@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 16, 2025 at 02:36 AM
+-- Generation Time: Mar 21, 2025 at 01:58 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -107,7 +107,8 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 (15, 1, '526', 'C#', '2025-03-13 11:10:26', '2025-03-13 11:11:04', 'completed'),
 (16, 1, '526', 'C Programming', '2025-03-13 12:02:33', '2025-03-13 12:02:48', 'completed'),
 (17, 1, '530', 'ASP.Net', '2025-03-13 12:05:20', '2025-03-13 12:05:58', 'completed'),
-(18, 1, '524', 'PHP', '2025-03-13 12:38:40', '2025-03-13 12:39:10', 'completed');
+(18, 1, '524', 'PHP', '2025-03-13 12:38:40', '2025-03-13 12:39:10', 'completed'),
+(19, 10, '530', 'C#', '2025-03-21 07:38:11', '2025-03-21 07:42:17', 'completed');
 
 -- --------------------------------------------------------
 
@@ -131,7 +132,7 @@ CREATE TABLE `sit_in_ratings` (
 INSERT INTO `sit_in_ratings` (`rating_id`, `sit_in_id`, `user_id`, `rating`, `feedback`, `created_at`) VALUES
 (1, 17, 1, 5, 'Its very nice and Good', '2025-03-13 12:29:01'),
 (2, 16, 1, 4, 'Very good and Nice', '2025-03-13 12:33:11'),
-(3, 15, 1, 1, 'Ana alexus', '2025-03-13 12:53:05'),
+(3, 15, 1, 3, 'Ana alexus', '2025-03-13 12:53:05'),
 (4, 9, 7, 5, 'Very Good', '2025-03-13 17:39:37'),
 (5, 4, 7, 4, 'Thank u So much', '2025-03-13 17:39:47'),
 (6, 6, 7, 3, 'Love it', '2025-03-13 17:41:57'),
@@ -161,7 +162,10 @@ INSERT INTO `stud_session` (`id`, `session`) VALUES
 (5, 30),
 (6, 30),
 (7, 30),
-(8, 30);
+(8, 30),
+(9, 30),
+(10, 30),
+(11, 30);
 
 -- --------------------------------------------------------
 
@@ -192,10 +196,13 @@ INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`,
 (2, '21864648', 'Smith', 'David', 'C.', 'BSIT', '4th Year', 'Cordova, Lapu-lapu', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
 (3, '48965754', 'Major', 'Mary', 'L.', 'BSIT', '1st Year', 'Pahina, Cebu City', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
 (4, '22889977', 'Michaels', 'Bron', 'C.', 'BSCS', '1st Year', 'Basak, Pardo', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
-(5, '33669944', 'Tatums', 'Lebron', 'L.', 'BSCompE', '2nd Year', 'Cebu, Boston', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', '123'),
+(5, '33669944', 'Tatum', 'Lebron', 'L.', 'BSCompE', '2nd Year', 'Cebu, Boston', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', 'Piggy123@'),
 (6, '11556677', 'Doncics', 'Maxie', 'D.', 'BSCS', '1st Year', 'Sibonga, Cebu', 'images/person.jpg', 'max@gmail.com', '123'),
-(7, '22596886', 'PaldoGodz', 'Rovic', 'T.', 'BSCompE', '2nd Year', 'Pahina, Cebu City', NULL, 'rovic@gmail.com', '$2y$10$/cXM5mHYxMgHnH1oyyjrNuCGf5Y7nU8V3.sDnFbgvCdZyf9XGPRG6'),
-(8, '55442211', 'Steph', 'Kevin', 'B.', 'AB PolSci', '1', 'Mandaue Cebu', NULL, 'step@gmail.com', '123');
+(7, '22596886', 'PaldoGodz', 'Rovic', 'T.', 'BSCompE', '2nd Year', 'Pahina, Cebu City', NULL, 'rovic@gmail.com', 'Paldo123@'),
+(8, '55442211', 'Steph', 'Kevin', 'B.', 'AB PolSci', '1', 'Mandaue Cebu', NULL, 'step@gmail.com', '123'),
+(9, '44883311', 'Byrce', 'Paul', 'P', 'BSEE', '2', 'Cleveland, USA', NULL, 'paul@gmail.com', '123paul@'),
+(10, '14556678', 'Bryant', 'Alexander', 'R.', 'BSCrim', '2nd Year', 'Bulacao, Cebu City', NULL, 'alexander@gmail.com', 'Ball@123'),
+(11, '99884422', 'Wade', 'Chris', 'J.', 'BSEE', '2nd Year', 'Mambaling, Basak', NULL, 'chris@gmail.com', 'chris@J123');
 
 --
 -- Indexes for dumped tables
@@ -262,7 +269,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`
@@ -274,13 +281,13 @@ ALTER TABLE `sit_in_ratings`
 -- AUTO_INCREMENT for table `stud_session`
 --
 ALTER TABLE `stud_session`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
