@@ -238,44 +238,56 @@
             checkPasswordMatch();
         }
 
-        // Now modify the password match function to enable the button even for medium strength
+        // Replace your checkPasswordMatch function with this improved version:
         function checkPasswordMatch() {
             const password = document.getElementById('new_password').value;
             const confirmPassword = document.getElementById('confirm_password').value;
             const passwordMatch = document.getElementById('password-match');
             const submitBtn = document.getElementById('submit-btn');
             
+            // Update the password match text
             if (confirmPassword.length === 0) {
                 passwordMatch.innerText = "Passwords do not match";
                 passwordMatch.className = "mt-1 text-xs text-gray-500";
-                submitBtn.disabled = true;
-                return;
-            }
-            
-            if (password === confirmPassword) {
+            } else if (password === confirmPassword) {
                 passwordMatch.innerText = "Passwords match!";
                 passwordMatch.className = "mt-1 text-xs text-green-500";
-                
-                submitBtn.disabled = false;
-                // Instead of: submitBtn.disabled = !(password.length >= 8);
             } else {
                 passwordMatch.innerText = "Passwords do not match";
                 passwordMatch.className = "mt-1 text-xs text-red-500";
-                submitBtn.disabled = true;
             }
+            
+ 
+            submitBtn.disabled = false;
+
+            document.getElementById('password_strength').value = document.getElementById('new_password').dataset.strength || 0;
         }
 
-        // Add this return statement after the SweetAlert for weak passwords
+    
         document.addEventListener('DOMContentLoaded', function() {
-            // Add form submit handler
-            document.getElementById('passwordForm').addEventListener('submit', function(e) {
-                // First check if fields are empty
+            const form = document.getElementById('passwordForm');
+            
+          
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            
+            // Add fresh event listener
+            newForm.addEventListener('submit', function(e) {
+                // Always prevent default first to ensure our validation runs
+                e.preventDefault();
+                
+                // Get fresh values (important)
                 const newPassword = document.getElementById('new_password').value;
                 const confirmPassword = document.getElementById('confirm_password').value;
                 
-                // If either field is empty, show error alert and prevent form submission
+                console.log("Form submitted with values:", { 
+                    newPassword: newPassword ? "has value" : "empty", 
+                    confirmPassword: confirmPassword ? "has value" : "empty" 
+                });
+                
+                // If either field is empty, show error alert
                 if (!newPassword || !confirmPassword) {
-                    e.preventDefault();
+                    console.log("Empty fields detected");
                     
                     Swal.fire({
                         icon: 'error',
@@ -283,17 +295,28 @@
                         text: 'Please fill in both password fields before submitting',
                         confirmButtonColor: '#EF4444'
                     });
-                    return; // This return is correct
+                    return false;
+                }
+                
+                // Check if passwords match
+                if (newPassword !== confirmPassword) {
+                    console.log("Passwords don't match");
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Passwords Don\'t Match',
+                        text: 'Your passwords do not match. Please try again.',
+                        confirmButtonColor: '#EF4444'
+                    });
+                    return false;
                 }
                 
                 // Get password strength
                 const strength = parseInt(document.getElementById('new_password').dataset.strength || 0);
+                console.log("Password strength:", strength);
                 
-                // If strength is less than 100 (not Strong), prevent form submission and show appropriate alert
+                // If strength is less than 100 (not Strong), show appropriate alert
                 if (strength < 100) {
-                    e.preventDefault();
-                    
-                    // Get the strength text and appropriate styling based on the score
                     let strengthText, alertIcon, alertTitle, buttonColor;
                     
                     if (strength >= 75) {
@@ -318,7 +341,8 @@
                         buttonColor = '#EF4444';
                     }
                     
-                    // Show the Sweet Alert with appropriate styling
+                    console.log("Showing strength alert:", strengthText);
+                    
                     Swal.fire({
                         icon: alertIcon,
                         title: alertTitle,
@@ -330,9 +354,28 @@
                             '• Special characters (!@#$%^&*)',
                         confirmButtonColor: buttonColor
                     });
-                    return; // ADD THIS RETURN to prevent form submission after showing the alert
+                    return false;
                 }
+                
+                // If we get here, all validations passed - submit the form
+                console.log("All validations passed, submitting form");
+                this.submit();
             });
+            
+            // Reattach any event handlers that might have been lost from cloning
+            const newPasswordField = document.getElementById('new_password');
+            if (newPasswordField) {
+                newPasswordField.onkeyup = function() {
+                    checkPasswordStrength(this.value);
+                };
+            }
+            
+            const confirmPasswordField = document.getElementById('confirm_password');
+            if (confirmPasswordField) {
+                confirmPasswordField.onkeyup = function() {
+                    checkPasswordMatch();
+                };
+            }
         });
     </script>
 </body>

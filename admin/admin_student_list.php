@@ -356,6 +356,10 @@
                                 </div>
                                 <p id="passwordStrengthText" class="text-xs mt-1 text-gray-500">Password strength: <span>Weak</span></p>
                             </div>
+                            <div class="text-xs mt-2 bg-yellow-50 border border-yellow-200 p-2 rounded-md flex items-center">
+                                <i class="fas fa-info-circle text-yellow-500 mr-2"></i>
+                                <span class="text-yellow-700">The default password for all students should be <code class="bg-gray-100 px-1 py-0.5 rounded font-mono">CCS@123</code></span>
+                            </div>
                         </div>
                     </div>
                 </div>
