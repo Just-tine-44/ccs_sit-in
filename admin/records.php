@@ -59,9 +59,21 @@
             <h1 class="text-2xl font-bold text-gray-800">
                 <i class="fas fa-history mr-2"></i> Session Records
             </h1>
-            <div>
-                <button onclick="exportToCSV()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
-                    <i class="fas fa-file-export"></i> Export to CSV
+            <div class="flex items-center gap-2">
+                <button onclick="exportToCSV()" class="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2">
+                    <i class="fas fa-file-csv"></i> CSV
+                </button>
+                            
+                <button onclick="exportToExcel()" class="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2">
+                    <i class="fas fa-file-excel"></i> Excel
+                </button>
+                
+                <button onclick="exportToPDF()" class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                
+                <button onclick="printTable()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                    <i class="fas fa-print"></i> Print
                 </button>
             </div>
         </div>
@@ -254,8 +266,12 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
     <script>
-        // Export table data to CSV
+        // Existing CSV export function
         function exportToCSV() {
             const table = document.getElementById('recordsTable');
             let csv = [];
@@ -284,6 +300,128 @@
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
+        }
+        
+        // New Excel export function
+        function exportToExcel() {
+            const table = document.getElementById('recordsTable');
+            const wb = XLSX.utils.table_to_book(table, {sheet: "Session Records"});
+            const filename = 'sit_in_records_' + new Date().toISOString().slice(0,10) + '.xlsx';
+            
+            XLSX.writeFile(wb, filename);
+        }
+        
+        // New PDF export function 
+        function exportToPDF() {
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'pt', 'a4');
+            
+            // Add title
+            doc.setFontSize(18);
+            doc.text('Session Records Report', 40, 40);
+            
+            // Add date
+            doc.setFontSize(11);
+            doc.setTextColor(100);
+            doc.text('Generated on: ' + new Date().toLocaleString(), 40, 60);
+            
+            // From the table, create the PDF
+            doc.autoTable({
+                html: '#recordsTable',
+                startY: 70,
+                margin: { top: 70, right: 40, bottom: 40, left: 40 },
+                styles: { fontSize: 8, cellPadding: 2 },
+                columnStyles: {
+                    0: { cellWidth: 'auto' }, // ID
+                    1: { cellWidth: 'auto' }, // Student
+                    2: { cellWidth: 'auto' }, // Course
+                    3: { cellWidth: 40 }, // Laboratory
+                    4: { cellWidth: 80 }, // Purpose
+                    5: { cellWidth: 65 }, // Time-in
+                    6: { cellWidth: 65 }, // Time-out
+                    7: { cellWidth: 50 }, // Duration
+                    8: { cellWidth: 50 }  // Status
+                },
+                didDrawCell: function(data) {
+                    // Ensure text doesn't overflow
+                    if (data.column.index === 4 && data.cell.section === 'body') {
+                        const td = data.cell.raw;
+                        if (td.offsetWidth > 80) {
+                            doc.setFontSize(7);
+                        }
+                    }
+                }
+            });
+            
+            // Save PDF
+            doc.save('sit_in_records_' + new Date().toISOString().slice(0,10) + '.pdf');
+        }
+        
+        // Print function
+        function printTable() {
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank', 'height=600,width=800');
+            
+            // Get current page title and institution name
+            const title = document.title || 'Session Records';
+            const institutionName = 'CCS Sit-In System';
+            
+            // Build HTML content with title, date and table content
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>${title} - Print View</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h1 { text-align: center; font-size: 20px; margin-bottom: 5px; }
+                        .institution { text-align: center; font-size: 16px; margin-bottom: 20px; }
+                        .date { text-align: center; font-size: 14px; margin-bottom: 20px; color: #666; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+                        th { background-color: #f2f2f2; }
+                        tr:nth-child(even) { background-color: #f9f9f9; }
+                        .print-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+                        .filters { margin-bottom: 20px; font-size: 12px; }
+                        .filters strong { font-weight: bold; }
+                        @media print {
+                            button { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-header">
+                        <div>
+                            <h1>${title}</h1>
+                            <div class="institution">${institutionName}</div>
+                            <div class="date">Generated on: ${new Date().toLocaleString()}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="filters">
+                        <strong>Filters:</strong> 
+                        Room: ${document.getElementById('laboratory').value || 'All'} | 
+                        Date: ${document.getElementById('date').value || 'All'} |
+                        Status: ${document.getElementById('status').value || 'All'} |
+                        Search: ${document.getElementById('search').value || 'None'}
+                    </div>
+                    
+                    <table>${document.getElementById('recordsTable').outerHTML}</table>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="window.print();window.close();" style="padding: 10px 20px;">
+                            Print Document
+                        </button>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            // Close the document
+            printWindow.document.close();
+            
+            // Focus on the new window
+            printWindow.focus();
         }
     </script>
 </body>
