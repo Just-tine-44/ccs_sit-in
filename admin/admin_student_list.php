@@ -358,7 +358,7 @@
                             </div>
                             <div class="text-xs mt-2 bg-yellow-50 border border-yellow-200 p-2 rounded-md flex items-center">
                                 <i class="fas fa-info-circle text-yellow-500 mr-2"></i>
-                                <span class="text-yellow-700">The default password for all students should be <code class="bg-gray-100 px-1 py-0.5 rounded font-mono">CCS@123</code></span>
+                                <span class="text-yellow-700">When registering students via admin panel, always use <code class="bg-gray-100 px-1 py-0.5 rounded font-mono">CCS@123</code> as the default password</span>
                             </div>
                         </div>
                     </div>
