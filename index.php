@@ -1,3 +1,16 @@
+<?php
+include('conn/dbcon.php'); // Adjust the path as necessary
+
+// Fetch announcements from the database
+$announcements = [];
+$result = $conn->query("SELECT * FROM announcements ORDER BY post_date DESC");
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $announcements[] = $row;
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -269,6 +282,80 @@
             </div>
         </div>
     </section>
+
+    <section class="py-16 px-6 bg-white">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800">Latest Announcements</h2>
+            <div class="w-24 h-1 bg-blue-600 mx-auto mt-4 rounded-full"></div>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">
+                Stay updated with the latest news and information from the Computer Laboratory
+            </p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 py-4 px-6">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-white bg-opacity-20 rounded-full p-1.5">
+                            <i class="fas fa-bullhorn text-white"></i>
+                        </div>
+                        <h3 class="text-white font-semibold">Official Announcements</h3>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <img src="images/ccswb.png" alt="CCS Logo" class="h-8 w-8 rounded-full bg-white p-0.5">
+                    </div>
+                </div>
+            </div>
+            
+            <?php if (count($announcements) > 0): ?>
+                <div class="h-96 overflow-y-auto custom-scrollbar p-1">
+                    <?php foreach ($announcements as $announcement): ?>
+                        <div class="p-5 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-200">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-lg text-gray-800 mb-2">
+                                        <?php echo htmlspecialchars($announcement['admin_name']); ?>
+                                    </h4>
+                                    <p class="text-gray-600 mb-3">
+                                        <?php echo nl2br(htmlspecialchars($announcement['message'])); ?>
+                                    </p>
+                                    <?php if (!empty($announcement['image'])): ?>
+                                        <div class="mt-3 mb-3">
+                                            <img src="<?php echo htmlspecialchars($announcement['image']); ?>" 
+                                                alt="Announcement image" 
+                                                class="rounded-lg max-h-48 object-cover">
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="flex items-center text-sm text-gray-500 mt-2">
+                                        <i class="far fa-clock mr-2"></i>
+                                        <span>
+                                            <?php 
+                                                $date = new DateTime($announcement['post_date']);
+                                                echo $date->format('F j, Y - g:i A'); 
+                                            ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                        <?php echo htmlspecialchars($announcement['category'] ?? 'General'); ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="py-16 flex flex-col items-center justify-center text-gray-500">
+                    <i class="fas fa-inbox text-5xl mb-4 text-gray-300"></i>
+                    <p class="text-xl font-medium">No announcements yet</p>
+                    <p class="mt-2">Check back later for updates</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
     
     <!-- Call to Action -->
     <section class="py-16 px-6 bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden">
@@ -298,85 +385,121 @@
     </section>
     
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-10 px-6">
+    <footer class="bg-gradient-to-r from-gray-100 to-blue-50 py-12 px-6">
         <div class="container mx-auto">
+            <!-- Footer Top Section with Logo and Info -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Brand Section -->
                 <div>
-                    <div class="flex items-center gap-3 mb-4">
-                        <img src="images/ccswb.png" alt="CCS Logo" class="h-10 w-10">
-                        <h3 class="text-xl font-bold">CCS Monitoring</h3>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                            <img src="images/ccswb.png" alt="CCS Logo" class="h-10 w-10 transform hover:rotate-12 transition-transform duration-300">
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">CCS Monitoring</h3>
                     </div>
-                    <p class="text-gray-400">
-                        A modern solution for computer laboratory management and monitoring.
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        A modern solution for computer laboratory management and monitoring with advanced tracking features.
                     </p>
                     <div class="flex gap-4 mt-6">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-facebook-f"></i>
+                        <a href="#" class="h-9 w-9 bg-white shadow-sm rounded-full flex items-center justify-center group hover:bg-blue-500 transition-colors duration-300">
+                            <i class="fab fa-facebook-f text-gray-500 group-hover:text-white transition-colors duration-300"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-twitter"></i>
+                        <a href="#" class="h-9 w-9 bg-white shadow-sm rounded-full flex items-center justify-center group hover:bg-blue-400 transition-colors duration-300">
+                            <i class="fab fa-twitter text-gray-500 group-hover:text-white transition-colors duration-300"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-instagram"></i>
+                        <a href="#" class="h-9 w-9 bg-white shadow-sm rounded-full flex items-center justify-center group hover:bg-gradient-to-tr from-purple-600 to-orange-500 transition-colors duration-300">
+                            <i class="fab fa-instagram text-gray-500 group-hover:text-white transition-colors duration-300"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-linkedin-in"></i>
+                        <a href="#" class="h-9 w-9 bg-white shadow-sm rounded-full flex items-center justify-center group hover:bg-blue-600 transition-colors duration-300">
+                            <i class="fab fa-linkedin-in text-gray-500 group-hover:text-white transition-colors duration-300"></i>
                         </a>
                     </div>
                 </div>
                 
+                <!-- Quick Links -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
+                    <h3 class="text-lg font-semibold mb-5 text-gray-800 pb-2 border-b border-gray-200">Quick Links</h3>
+                    <ul class="space-y-3">
                         <li>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                                <i class="fas fa-chevron-right text-xs"></i> Home
+                            <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors flex items-center group">
+                                <div class="h-6 w-6 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-home text-xs text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span>Home</span>
                             </a>
                         </li>
                         <li>
-                            <a href="login.php" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                                <i class="fas fa-chevron-right text-xs"></i> Login
+                            <a href="login.php" class="text-gray-600 hover:text-blue-600 transition-colors flex items-center group">
+                                <div class="h-6 w-6 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-sign-in-alt text-xs text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span>Login</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                                <i class="fas fa-chevron-right text-xs"></i> History
+                            <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors flex items-center group">
+                                <div class="h-6 w-6 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-history text-xs text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span>History</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
-                                <i class="fas fa-chevron-right text-xs"></i> Reservation
+                            <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors flex items-center group">
+                                <div class="h-6 w-6 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-calendar-check text-xs text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span>Reservation</span>
                             </a>
                         </li>
                     </ul>
                 </div>
                 
+                <!-- Contact Us -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-map-marker-alt mt-1 text-blue-400"></i>
-                            <span class="text-gray-400">123 University Ave, Cebu City, Philippines</span>
+                    <h3 class="text-lg font-semibold mb-5 text-gray-800 pb-2 border-b border-gray-200">Contact Us</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="flex group">
+                                <div class="h-8 w-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-map-marker-alt text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span class="text-gray-600 group-hover:text-blue-600 transition-colors duration-300">123 University Ave,<br>Cebu City, Philippines</span>
+                            </a>
                         </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-envelope mt-1 text-blue-400"></i>
-                            <span class="text-gray-400">info@ccs-monitor.edu.ph</span>
+                        <li>
+                            <a href="mailto:info@ccs-monitor.edu.ph" class="flex group">
+                                <div class="h-8 w-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-envelope text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span class="text-gray-600 group-hover:text-blue-600 transition-colors duration-300">info@ccs-monitor.edu.ph</span>
+                            </a>
                         </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-phone-alt mt-1 text-blue-400"></i>
-                            <span class="text-gray-400">+63 32 123 4567</span>
+                        <li>
+                            <a href="tel:+6332123456" class="flex group">
+                                <div class="h-8 w-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fas fa-phone-alt text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <span class="text-gray-600 group-hover:text-blue-600 transition-colors duration-300">+63 32 123 4567</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm">
+            <!-- Footer Bottom with Copyright -->
+            <div class="mt-12 pt-6 border-t border-blue-100 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-sm">
                     &copy; 2025 College of Computer Studies. All rights reserved.
                 </p>
-                <p class="text-gray-500 text-sm mt-2 md:mt-0">
-                    AI-Powered ICT: Building the Future with Responsibility
-                </p>
+                <div class="flex items-center mt-4 md:mt-0">
+                    <span class="h-8 w-8 bg-blue-50 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-shield-alt text-blue-500 text-xs"></i>
+                    </span>
+                    <p class="text-gray-600 text-sm">
+                        AI-Powered ICT: Building the Future with Responsibility
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
@@ -536,5 +659,58 @@
         }
     }
     </style>
+
+    <style>
+        /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        transition: width 0.3s ease;
+    }
+
+    .custom-scrollbar:hover::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 3px;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+        animation: pulse-glow 1.5s infinite alternate;
+    }
+
+    /* Announcement animations */
+    .custom-scrollbar > div {
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slide-up 0.5s forwards;
+        animation-delay: calc(0.1s * var(--announcement-index, 0));
+    }
+
+    @keyframes slide-up {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes pulse-glow {
+        0% {
+            box-shadow: 0 0 0 rgba(148, 163, 184, 0.4);
+        }
+        100% {
+            box-shadow: 0 0 10px rgba(148, 163, 184, 0.7);
+        }
+    }
+    </style>
+
 </body>
 </html>
