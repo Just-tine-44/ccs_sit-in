@@ -220,11 +220,15 @@ include 'connection/conn_login.php';
                 document.getElementById('login-form').classList.add('active-form');
                 document.getElementById('register-form').classList.add('hidden-form');
                 document.getElementById('register-form').classList.remove('active-form');
+                // Change page title for login
+                document.title = 'UC-CCS Login';
             } else {
                 document.getElementById('register-form').classList.remove('hidden-form');
                 document.getElementById('register-form').classList.add('active-form');
                 document.getElementById('login-form').classList.add('hidden-form');
                 document.getElementById('login-form').classList.remove('active-form');
+                // Change page title for registration
+                document.title = 'UC-CCS Registration';
             }
         }
         
