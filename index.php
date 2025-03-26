@@ -29,16 +29,71 @@ if ($result->num_rows > 0) {
         <!-- Animated Particles Background -->
         <div class="absolute inset-0 overflow-hidden">
             <div class="particles-container">
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
+                <!-- Particle 1 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 20%; left: 10%; width: 80px; height: 80px; opacity: 0.10; animation-duration: 25s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 2 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 60%; left: 30%; width: 60px; height: 60px; opacity: 0.10; animation-duration: 30s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 3 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 40%; left: 70%; width: 100px; height: 100px; opacity: 0.10; animation-duration: 22s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 4 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 80%; left: 50%; width: 50px; height: 50px; opacity: 0.10; animation-duration: 28s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 5 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 10%; left: 80%; width: 70px; height: 70px; opacity: 0.10; animation-duration: 20s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 6 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 30%; left: 20%; width: 40px; height: 40px; opacity: 0.10; animation-duration: 18s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 7 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 70%; left: 85%; width: 90px; height: 90px; opacity: 0.10; animation-duration: 24s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 8 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 50%; left: 40%; width: 55px; height: 55px; opacity: 0.10; animation-duration: 26s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 9 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 15%; left: 60%; width: 45px; height: 45px; opacity: 0.10; animation-duration: 19s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 10 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 85%; left: 15%; width: 65px; height: 65px; opacity: 0.10; animation-duration: 27s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 11 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 25%; left: 45%; width: 35px; height: 35px; opacity: 0.10; animation-duration: 21s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 12 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 75%; left: 75%; width: 75px; height: 75px; opacity: 0.10; animation-duration: 23s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 13 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 45%; left: 5%; width: 25px; height: 25px; opacity: 0.10; animation-duration: 17s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 14 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 5%; left: 35%; width: 30px; height: 30px; opacity: 0.10; animation-duration: 29s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 15 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 55%; left: 90%; width: 85px; height: 85px; opacity: 0.10; animation-duration: 26s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                
+                <!-- Particle 16 -->
+                <div class="particle absolute rounded-full bg-white" 
+                    style="top: 35%; left: 25%; width: 50px; height: 50px; opacity: 0.10; animation-duration: 22s; box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.3);"></div>
+                </div>
             </div>
-        </div>
         
         <!-- Glass Navbar -->
         <nav class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 transition-all duration-300" id="navbar">
@@ -148,7 +203,7 @@ if ($result->num_rows > 0) {
                     <a href="login.php?form=register" class="px-6 py-3 bg-white text-blue-700 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center gap-2">
                         <i class="fas fa-user-plus"></i> Register Now
                     </a>
-                    <a href="#about" class="px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 flex items-center gap-2">
+                    <a href="#about" class="px-6 py-3 bg-white text-blue-700 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center gap-2">
                         <i class="fas fa-info-circle"></i> Learn More
                     </a>
                 </div>
@@ -376,11 +431,17 @@ if ($result->num_rows > 0) {
             </div>
         </div>
         
-        <!-- Decorative Elements -->
+        <!-- Decorative Elements with Animation -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
-            <div class="absolute -top-20 -left-20 w-64 h-64 bg-white opacity-10 rounded-full"></div>
-            <div class="absolute bottom-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full"></div>
-            <div class="absolute top-1/2 left-1/4 w-32 h-32 bg-white opacity-10 rounded-full"></div>
+            <!-- Background particles with movement -->
+            <div class="cta-particle absolute -top-20 -left-20 w-64 h-64 bg-white opacity-10 rounded-full"></div>
+            <div class="cta-particle absolute bottom-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full"></div>
+            <div class="cta-particle absolute top-1/2 left-1/4 w-32 h-32 bg-white opacity-10 rounded-full"></div>
+            
+            <!-- Additional smaller particles -->
+            <div class="cta-particle absolute top-1/4 right-1/4 w-16 h-16 bg-white opacity-10 rounded-full"></div>
+            <div class="cta-particle absolute bottom-1/4 left-1/3 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+            <div class="cta-particle absolute top-3/4 right-1/5 w-20 h-20 bg-white opacity-10 rounded-full"></div>
         </div>
     </section>
     
@@ -550,113 +611,39 @@ if ($result->num_rows > 0) {
                 });
             });
         });
+
+        // Add random animation delays to particles
+        document.addEventListener("DOMContentLoaded", function() {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach((particle, index) => {
+                particle.style.setProperty('--particle-index', Math.random() * 5);
+            });
+        });
     </script>
     
     <style>
-    /* Animated Underline Effect */
-    .group {
-        position: relative;
-    }
-    
-    /* Animated Particles in Hero */
-    .particles-container {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-    
     .particle {
-        position: absolute;
-        width: 5px;
-        height: 5px;
-        background-color: rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        pointer-events: none;
-        animation: float 15s infinite linear;
+    pointer-events: none;
+    animation: float 15s infinite ease-in-out;
+    animation-delay: calc(var(--particle-index, 0) * -2s);
     }
-    
-    .particle:nth-child(1) {
-        top: 20%;
-        left: 10%;
-        width: 80px;
-        height: 80px;
-        opacity: 0.05;
-        animation-duration: 25s;
-    }
-    
-    .particle:nth-child(2) {
-        top: 60%;
-        left: 30%;
-        width: 60px;
-        height: 60px;
-        opacity: 0.04;
-        animation-duration: 30s;
-    }
-    
-    .particle:nth-child(3) {
-        top: 40%;
-        left: 70%;
-        width: 100px;
-        height: 100px;
-        opacity: 0.06;
-        animation-duration: 22s;
-    }
-    
-    .particle:nth-child(4) {
-        top: 80%;
-        left: 50%;
-        width: 50px;
-        height: 50px;
-        opacity: 0.05;
-        animation-duration: 28s;
-    }
-    
-    .particle:nth-child(5) {
-        top: 10%;
-        left: 80%;
-        width: 70px;
-        height: 70px;
-        opacity: 0.04;
-        animation-duration: 20s;
-    }
-    
-    .particle:nth-child(6) {
-        top: 30%;
-        left: 20%;
-        width: 40px;
-        height: 40px;
-        opacity: 0.06;
-        animation-duration: 18s;
-    }
-    
-    .particle:nth-child(7) {
-        top: 70%;
-        left: 85%;
-        width: 90px;
-        height: 90px;
-        opacity: 0.05;
-        animation-duration: 24s;
-    }
-    
-    .particle:nth-child(8) {
-        top: 50%;
-        left: 40%;
-        width: 55px;
-        height: 55px;
-        opacity: 0.04;
-        animation-duration: 26s;
-    }
-    
+
     @keyframes float {
-        0% {
-            transform: translateY(0) rotate(0deg);
-        }
-        50% {
-            transform: translateY(-20px) rotate(180deg);
-        }
-        100% {
-            transform: translateY(0) rotate(360deg);
-        }
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translate(10px, -15px) rotate(90deg) scale(1.05);
+    }
+    50% {
+        transform: translate(-5px, -25px) rotate(180deg) scale(1.1);
+    }
+    75% {
+        transform: translate(-15px, -10px) rotate(270deg) scale(1.05);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg) scale(1);
+    }
     }
     </style>
 
@@ -708,6 +695,66 @@ if ($result->num_rows > 0) {
         }
         100% {
             box-shadow: 0 0 10px rgba(148, 163, 184, 0.7);
+        }
+    }
+    </style>
+
+    <style>
+    /* CTA Section Floating Particles */
+    .cta-particle {
+        animation: cta-float 15s infinite ease-in-out;
+    }
+
+    .cta-particle:nth-child(1) {
+        animation-duration: 20s;
+        animation-delay: 0s;
+    }
+
+    .cta-particle:nth-child(2) {
+        animation-duration: 25s;
+        animation-delay: -5s;
+    }
+
+    .cta-particle:nth-child(3) {
+        animation-duration: 18s;
+        animation-delay: -3s;
+    }
+
+    .cta-particle:nth-child(4) {
+        animation-duration: 22s;
+        animation-delay: -7s;
+    }
+
+    .cta-particle:nth-child(5) {
+        animation-duration: 19s;
+        animation-delay: -10s;
+    }
+
+    .cta-particle:nth-child(6) {
+        animation-duration: 23s;
+        animation-delay: -2s;
+    }
+
+    @keyframes cta-float {
+        0% {
+            transform: translate(0px, 0px) rotate(0deg) scale(1);
+            opacity: 0.08;
+        }
+        25% {
+            transform: translate(15px, -10px) rotate(5deg) scale(1.05);
+            opacity: 0.1;
+        }
+        50% {
+            transform: translate(5px, -20px) rotate(-5deg) scale(1.1);
+            opacity: 0.12;
+        }
+        75% {
+            transform: translate(-10px, -5px) rotate(3deg) scale(1.05);
+            opacity: 0.1;
+        }
+        100% {
+            transform: translate(0px, 0px) rotate(0deg) scale(1);
+            opacity: 0.08;
         }
     }
     </style>
