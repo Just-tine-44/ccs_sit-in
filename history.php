@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session History | CCS Lab System</title>
+    <title>Session History</title>
     <link rel="icon" type="image/png" href="images/wbccs.png">
     <!-- Tailwind CSS -->
     <link href="css/tailwind.min.css" rel="stylesheet">

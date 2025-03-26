@@ -2,10 +2,27 @@
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row justify-between items-center py-4">
             <div class="flex items-center w-full md:w-auto justify-between">
-                <div class="flex items-center">
-                    <img src="images/ccslogo.png" alt="CCS Logo" class="h-8 w-auto mr-2">
-                    <a href="homepage.php" class="text-gray-800 font-bold text-xl hover:text-blue-500 transition-colors duration-200 <?= basename($_SERVER['PHP_SELF']) == 'homepage.php' ? 'active' : '' ?>">Dashboard</a>
-                </div>
+            <div class="flex items-center">
+                <img src="images/ccslogo.png" alt="CCS Logo" class="h-8 w-auto mr-2">
+                <?php
+                    // Get current page
+                    $currentPage = basename($_SERVER['PHP_SELF']);
+                    
+                    // Set title based on current page
+                    $pageTitle = "Dashboard"; // Default title
+                    
+                    if ($currentPage == 'edit.php') {
+                        $pageTitle = "Edit Profile";
+                    } elseif ($currentPage == 'history.php') {
+                        $pageTitle = "History";
+                    } elseif ($currentPage == 'reservation.php') {
+                        $pageTitle = "Reservation";
+                    }
+                ?>
+                <a href="#" class="text-gray-800 font-bold text-xl hover:text-blue-500 transition-colors duration-200 <?= $currentPage == 'homepage.php' ? 'active' : '' ?>">
+                    <?php echo $pageTitle; ?>
+                </a>
+            </div>
                 <button id="navMenuToggle" class="md:hidden text-gray-800 focus:outline-none">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
