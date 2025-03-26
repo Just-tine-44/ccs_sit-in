@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 21, 2025 at 01:58 AM
+-- Generation Time: Mar 26, 2025 at 02:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,14 +60,14 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`announcement_id`, `admin_name`, `post_date`, `message`) VALUES
-(2, 'CCS-Admin', '2025-03-04 17:38:40', 'System maintenance is scheduled for this Friday from 8:00 PM to 10:00 PM.'),
+(2, 'CCS-Admin', '2025-03-04 17:38:40', 'System maintenance is scheduled for this Friday from 8:00 PM to 10:00 PM. Hello World!'),
 (3, 'CCS-Admin', '2025-03-04 17:40:12', 'All users must update their profiles with their latest student ID numbers.'),
 (4, 'CCS-Admin', '2025-03-04 17:41:05', 'Reminder: All students must log their sit-in sessions properly.'),
 (5, 'CCS-Admin', '2025-03-04 17:41:14', 'Sit-in schedules for next week are now available. Book your slots in advance. Thank You.'),
 (6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions. Thank u'),
 (7, 'CCS-Admin', '2025-03-11 04:55:08', 'Goodluck CSS. Thanks'),
 (8, 'CCS-Admin', '2025-03-11 11:24:37', 'Attention students and faculty! 🎉 We are thrilled to announce the launch of the Sit-in Lab System, created to simplify and enhance the process of attending laboratory sessions. Thank you for your support!'),
-(9, 'CCS-Admin', '2025-03-13 04:03:13', 'GOODLUCK, TIDERT');
+(9, 'CCS-Admin', '2025-03-13 04:03:13', 'GOODLUCK, TIDERTS');
 
 -- --------------------------------------------------------
 
@@ -108,7 +108,8 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 (16, 1, '526', 'C Programming', '2025-03-13 12:02:33', '2025-03-13 12:02:48', 'completed'),
 (17, 1, '530', 'ASP.Net', '2025-03-13 12:05:20', '2025-03-13 12:05:58', 'completed'),
 (18, 1, '524', 'PHP', '2025-03-13 12:38:40', '2025-03-13 12:39:10', 'completed'),
-(19, 10, '530', 'C#', '2025-03-21 07:38:11', '2025-03-21 07:42:17', 'completed');
+(19, 10, '530', 'C#', '2025-03-21 07:38:11', '2025-03-21 07:42:17', 'completed'),
+(20, 1, '530', 'PHP', '2025-03-21 21:47:02', '2025-03-21 21:47:13', 'completed');
 
 -- --------------------------------------------------------
 
@@ -155,7 +156,7 @@ CREATE TABLE `stud_session` (
 --
 
 INSERT INTO `stud_session` (`id`, `session`) VALUES
-(1, 30),
+(1, 29),
 (2, 30),
 (3, 30),
 (4, 30),
@@ -192,7 +193,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`, `level`, `address`, `profileImg`, `email`, `password`) VALUES
-(1, '22692693', 'Does', 'John', 'D.', 'BSCS', '1st Year', 'Talisay City', 'uploadimg/profile_67bd972925704.jpg', 'doe@gmail.com', '123'),
+(1, '22692693', 'Does', 'John', 'D.', 'BSCS', '1st Year', 'Talisay City', 'uploadimg/profile_67dd6e4380901.jpg', 'doe@gmail.com', 'doe123@J'),
 (2, '21864648', 'Smith', 'David', 'C.', 'BSIT', '4th Year', 'Cordova, Lapu-lapu', 'uploadimg/dog.jpg', 'smith@gmail.com', '123'),
 (3, '48965754', 'Major', 'Mary', 'L.', 'BSIT', '1st Year', 'Pahina, Cebu City', 'uploadimg/profile_67bd9bc827a4e.jpg', 'mary@gmail.com', '123'),
 (4, '22889977', 'Michaels', 'Bron', 'C.', 'BSCS', '1st Year', 'Basak, Pardo', 'uploadimg/panda.jpg', 'mic@gmail.com', '$2y$10$NzuQBLCsFSVIqnOwMimST.Q8T11SH5Nygkeayg.IlvGKbZ2BCvq9W'),
@@ -269,7 +270,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`
