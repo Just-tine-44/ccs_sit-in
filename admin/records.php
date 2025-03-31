@@ -59,23 +59,6 @@
             <h1 class="text-2xl font-bold text-gray-800">
                 <i class="fas fa-history mr-2"></i> Session Records
             </h1>
-            <div class="flex items-center gap-2">
-                <button onclick="exportToCSV()" class="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2">
-                    <i class="fas fa-file-csv"></i> CSV
-                </button>
-                            
-                <button onclick="exportToExcel()" class="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2">
-                    <i class="fas fa-file-excel"></i> Excel
-                </button>
-                
-                <button onclick="exportToPDF()" class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </button>
-                
-                <button onclick="printTable()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                    <i class="fas fa-print"></i> Print
-                </button>
-            </div>
         </div>
         
         <!-- Stats Dashboard -->
