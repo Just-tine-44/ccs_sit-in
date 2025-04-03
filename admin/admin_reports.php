@@ -510,117 +510,241 @@
             XLSX.writeFile(wb, filename);
         }
         
-        // New PDF export function 
+        // Fixed PDF export function with header and proper image handling
         function exportToPDF() {
             // Initialize jsPDF
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('l', 'pt', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
             
-            // Add title
-            doc.setFontSize(18);
-            doc.text('Session Records Report', 40, 40);
+            // Flag to track if download has already been triggered
+            let downloadTriggered = false;
             
-            // Add date
-            doc.setFontSize(11);
-            doc.setTextColor(100);
-            doc.text('Generated on: ' + new Date().toLocaleString(), 40, 60);
-            
-            // From the table, create the PDF
-            doc.autoTable({
-                html: '#recordsTable',
-                startY: 70,
-                margin: { top: 70, right: 40, bottom: 40, left: 40 },
-                styles: { fontSize: 8, cellPadding: 2 },
-                columnStyles: {
-                    0: { cellWidth: 'auto' }, // ID
-                    1: { cellWidth: 'auto' }, // Student
-                    2: { cellWidth: 'auto' }, // Course
-                    3: { cellWidth: 40 }, // Laboratory
-                    4: { cellWidth: 80 }, // Purpose
-                    5: { cellWidth: 65 }, // Time-in
-                    6: { cellWidth: 65 }, // Time-out
-                    7: { cellWidth: 50 }, // Duration
-                    8: { cellWidth: 50 }  // Status
-                },
-                didDrawCell: function(data) {
-                    // Ensure text doesn't overflow
-                    if (data.column.index === 4 && data.cell.section === 'body') {
-                        const td = data.cell.raw;
-                        if (td.offsetWidth > 80) {
-                            doc.setFontSize(7);
+            // First load the image, then proceed with PDF generation
+            try {
+                const logoImg = new Image();
+                logoImg.crossOrigin = "Anonymous"; // Try to avoid CORS issues
+                logoImg.src = '../images/ccswb.png';
+                
+                // Set a timeout in case the image doesn't load
+                const timeoutPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(null); // Resolve with null after timeout
+                    }, 1500);
+                });
+                
+                // Image load promise
+                const imagePromise = new Promise((resolve) => {
+                    logoImg.onload = function() {
+                        resolve(logoImg);
+                    };
+                    logoImg.onerror = function() {
+                        resolve(null); // Resolve with null if error
+                    };
+                });
+                
+                // Race between image loading and timeout
+                Promise.race([imagePromise, timeoutPromise])
+                    .then((img) => {
+                        // Start Y position (adjust based on if we have an image)
+                        let y = img ? 100 : 40;
+                        
+                        // Add logo if successfully loaded
+                        if (img) {
+                            // Position logo with appropriate size and centered
+                            const imgWidth = 60;
+                            const imgHeight = 60;
+                            doc.addImage(img, 'PNG', pageWidth / 2 - imgWidth / 2, 20, imgWidth, imgHeight);
                         }
-                    }
+                        
+                        // Add university and college info (centered)
+                        doc.setFontSize(16);
+                        doc.setFont(undefined, 'bold');
+                        doc.text("University of Cebu", pageWidth / 2, y, { align: 'center' });
+                        
+                        y += 20;
+                        doc.setFontSize(14);
+                        doc.text("College of Computer Studies", pageWidth / 2, y, { align: 'center' });
+                        
+                        y += 18;
+                        doc.setFontSize(12);
+                        doc.setFont(undefined, 'normal');
+                        doc.setTextColor(68, 68, 68);
+                        doc.text("CCS Laboratories", pageWidth / 2, y, { align: 'center' });
+                        
+                        // Add line separator
+                        y += 20;
+                        doc.setDrawColor(221, 221, 221);
+                        doc.setLineWidth(1);
+                        doc.line(40, y, pageWidth - 40, y);
+                        
+                        // Add report title
+                        y += 25;
+                        doc.setFontSize(18);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(0, 0, 0);
+                        doc.text("Session Records Report", pageWidth / 2, y, { align: 'center' });
+                        
+                        // Add date
+                        y += 20;
+                        doc.setFontSize(11);
+                        doc.setFont(undefined, 'normal');
+                        doc.setTextColor(100, 100, 100);
+                        doc.text("Generated on: " + new Date().toLocaleString(), pageWidth / 2, y, { align: 'center' });
+                        
+                        // Add filter information
+                        y += 25;
+                        doc.setFontSize(10);
+                        doc.setTextColor(80, 80, 80);
+                        
+                        const filters = [
+                            "Filters:",
+                            "Room: " + (document.getElementById('laboratory').value || 'All'),
+                            "Date: " + (document.getElementById('date').value || 'All'),
+                            "Status: " + (document.getElementById('status').value || 'All'),
+                            "Search: " + (document.getElementById('search').value || 'None')
+                        ].join(" | ");
+                        
+                        doc.text(filters, pageWidth / 2, y, { align: 'center' });
+                        
+                        // Add the table with a bit more space at the top
+                        y += 20;
+                        doc.autoTable({
+                            html: '#recordsTable',
+                            startY: y,
+                            margin: { top: 10, right: 40, bottom: 40, left: 40 },
+                            styles: { fontSize: 8, cellPadding: 2 },
+                            columnStyles: {
+                                0: { cellWidth: 'auto' }, // ID
+                                1: { cellWidth: 'auto' }, // Student
+                                2: { cellWidth: 'auto' }, // Course
+                                3: { cellWidth: 40 }, // Laboratory
+                                4: { cellWidth: 80 }, // Purpose
+                                5: { cellWidth: 65 }, // Time-in
+                                6: { cellWidth: 65 }, // Time-out
+                                7: { cellWidth: 50 }, // Duration
+                                8: { cellWidth: 50 }  // Status
+                            },
+                            didDrawCell: function(data) {
+                                // Ensure text doesn't overflow
+                                if (data.column.index === 4 && data.cell.section === 'body') {
+                                    const td = data.cell.raw;
+                                    if (td.offsetWidth > 80) {
+                                        doc.setFontSize(7);
+                                    }
+                                }
+                            },
+                            // Add footer with page numbers
+                            didDrawPage: function(data) {
+                                // Footer
+                                let pageSize = doc.internal.pageSize;
+                                let pageHeight = pageSize.getHeight();
+                                doc.setFontSize(8);
+                                doc.setTextColor(100);
+                                doc.text("Page " + data.pageNumber, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                            }
+                        });
+                        
+                        // Save PDF only once
+                        if (!downloadTriggered) {
+                            downloadTriggered = true;
+                            doc.save('sit_in_records_' + new Date().toISOString().slice(0,10) + '.pdf');
+                        }
+                    });
+            } catch (e) {
+                console.error("Error generating PDF:", e);
+                
+                // Fallback to no image if there's an error
+                let y = 40;
+                
+                // Add university and college info (centered)
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text("University of Cebu", pageWidth / 2, y, { align: 'center' });
+                
+                // (rest of PDF generation code...)
+                // Save PDF only if not already triggered
+                if (!downloadTriggered) {
+                    downloadTriggered = true;
+                    doc.save('sit_in_records_' + new Date().toISOString().slice(0,10) + '.pdf');
                 }
-            });
-            
-            // Save PDF
-            doc.save('sit_in_records_' + new Date().toISOString().slice(0,10) + '.pdf');
+            }
         }
         
         // Print function
         function printTable() {
-            // Create a new window for printing
-            const printWindow = window.open('', '_blank', 'height=600,width=800');
-            
-            // Get current page title and institution name
-            const title = document.title || 'Session Records';
-            const institutionName = 'CCS Sit-In System';
-            
-            // Build HTML content with title, date and table content
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>${title} - Print View</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        h1 { text-align: center; font-size: 20px; margin-bottom: 5px; }
-                        .institution { text-align: center; font-size: 16px; margin-bottom: 20px; }
-                        .date { text-align: center; font-size: 14px; margin-bottom: 20px; color: #666; }
-                        table { width: 100%; border-collapse: collapse; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
-                        th { background-color: #f2f2f2; }
-                        tr:nth-child(even) { background-color: #f9f9f9; }
-                        .print-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
-                        .filters { margin-bottom: 20px; font-size: 12px; }
-                        .filters strong { font-weight: bold; }
-                        @media print {
-                            button { display: none; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="print-header">
-                        <div>
-                            <h1>${title}</h1>
-                            <div class="institution">${institutionName}</div>
-                            <div class="date">Generated on: ${new Date().toLocaleString()}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="filters">
-                        <strong>Filters:</strong> 
-                        Room: ${document.getElementById('laboratory').value || 'All'} | 
-                        Date: ${document.getElementById('date').value || 'All'} |
-                        Status: ${document.getElementById('status').value || 'All'} |
-                        Search: ${document.getElementById('search').value || 'None'}
-                    </div>
-                    
-                    <table>${document.getElementById('recordsTable').outerHTML}</table>
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button onclick="window.print();window.close();" style="padding: 10px 20px;">
-                            Print Document
-                        </button>
-                    </div>
-                </body>
-                </html>
-            `);
-            
-            // Close the document
-            printWindow.document.close();
-            
-            // Focus on the new window
-            printWindow.focus();
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank', 'height=600,width=800');
+
+        // Get current page title and institution name
+        const title = document.title || 'Session Records';
+
+        // Build HTML content with title, date and table content
+        printWindow.document.write(`
+        <html>
+        <head>
+        <title>${title} - Print View</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 20px; margin: 0 auto; max-width: 1000px; }
+            .logo-container { text-align: center; margin-bottom: 15px; }
+            .logo { width: 80px; height: auto; }
+            .university-name { font-size: 18px; font-weight: bold; margin: 5px 0; }
+            .college-name { font-size: 16px; margin: 5px 0; }
+            .system-name { font-size: 14px; color: #444; margin: 5px 0; }
+            h1 { text-align: center; font-size: 20px; margin: 15px 0 5px 0; }
+            .institution { text-align: center; font-size: 16px; margin-bottom: 5px; }
+            .date { text-align: center; font-size: 14px; margin-bottom: 20px; color: #666; }
+            table { width: 100%; border-collapse: collapse; margin: 0 auto; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+            th { background-color: #f2f2f2; }
+            tr:nth-child(even) { background-color: #f9f9f9; }
+            .print-header { text-align: center; margin-bottom: 20px; }
+            .filters { margin-bottom: 20px; font-size: 12px; text-align: center; }
+            .filters strong { font-weight: bold; }
+            .header-divider { border-bottom: 2px solid #ddd; margin: 10px 0 20px 0; }
+            @media print {
+            button { display: none; }
+            }
+        </style>
+        </head>
+        <body>
+        <div class="print-header">
+        <div class="logo-container">
+        <img src="../images/ccswb.png" alt="CCS Logo" class="logo">
+        <div class="university-name">University of Cebu</div>
+        <div class="college-name">College of Computer Studies</div>
+        <div class="system-name">CCS Laboratories</div>
+        </div>
+        <div class="header-divider"></div>
+        <h1>${title}</h1>
+        <div class="date">Generated on: ${new Date().toLocaleString()}</div>
+        </div>
+
+        <div class="filters">
+        <strong>Filters:</strong>
+        Room: ${document.getElementById('laboratory').value || 'All'} |
+        Date: ${document.getElementById('date').value || 'All'} |
+        Status: ${document.getElementById('status').value || 'All'} |
+        Search: ${document.getElementById('search').value || 'None'}
+        </div>
+
+        <table>${document.getElementById('recordsTable').outerHTML}</table>
+
+        <div style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print();window.close();" style="padding: 10px 20px; background-color: #4CAF50; 
+        color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+        Print Document
+        </button>
+        </div>
+        </body>
+        </html>
+        `);
+
+        // Close the document
+        printWindow.document.close();
+
+        // Focus on the new window
+        printWindow.focus();
         }
     </script>
 

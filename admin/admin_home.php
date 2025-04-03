@@ -39,12 +39,61 @@
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Admin Dashboard</h1>
                 <p class="text-gray-500">Welcome back, manage your college resources</p>
             </div>
-            <div class="mt-3 md:mt-0">
-                <p class="text-sm text-gray-500"><?php echo date('l, F j, Y'); ?></p>
-                <p class="text-sm text-gray-500 font-mono" id="running-time"></p>
+            
+            <div class="flex items-center space-x-4">
+                <!-- Dropdown Menu -->
+                <div class="relative">
+                    <button id="dashboardOptionsBtn" type="button" class="flex items-center justify-center rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        <i class="fas fa-cog mr-2"></i>
+                        Options
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="dashboardOptionsMenu" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10">
+                        <div class="py-1">
+                            <a href="admin_resources.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="fas fa-book-reader mr-2"></i> Manage Resources
+                            </a>
+                        </div>
+                        <div class="py-1">
+                            <a href="admin_leaderboards.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="fas fa-trophy mr-2"></i> Leaderboards
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Time and Date -->
+                <div class="mt-3 md:mt-0">
+                    <p class="text-sm text-gray-500"><?php echo date('l, F j, Y'); ?></p>
+                    <p class="text-sm text-gray-500 font-mono" id="running-time"></p>
+                </div>
             </div>
 
             <script>
+            
+            // Dropdown toggle
+            document.getElementById('dashboardOptionsBtn').addEventListener('click', function(event) {
+                // Prevent event from propagating to the document
+                event.stopPropagation();
+                
+                // Toggle the 'hidden' class
+                const dropdownMenu = document.getElementById('dashboardOptionsMenu');
+                dropdownMenu.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const dropdownMenu = document.getElementById('dashboardOptionsMenu');
+                const dropdownButton = document.getElementById('dashboardOptionsBtn');
+                
+                // Check if the click is outside the dropdown and button
+                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+
             function updateTime() {
                 const now = new Date();
                 let hours = now.getHours();
@@ -69,9 +118,22 @@
                 document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
             }
 
-
             updateDate();
             setInterval(updateDate, 60000);
+            
+            // Dropdown toggle
+            document.getElementById('dashboardOptionsBtn').addEventListener('click', function() {
+                document.getElementById('dashboardOptionsMenu').classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('dashboardOptionsMenu');
+                const button = document.getElementById('dashboardOptionsBtn');
+                if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
             </script>
         </div>
         

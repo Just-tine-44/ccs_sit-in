@@ -17,7 +17,9 @@
                         $pageTitle = "History";
                     } elseif ($currentPage == 'reservation.php') {
                         $pageTitle = "Reservation";
-                    }
+                    } elseif ($currentPage == 'user_resources.php') {
+                        $pageTitle = "Lab Resources";
+                    }10
                 ?>
                 <a href="#" class="text-gray-800 font-bold text-xl hover:text-blue-500 transition-colors duration-200 <?= $currentPage == 'homepage.php' ? 'active' : '' ?>">
                     <?php echo $pageTitle; ?>
@@ -125,7 +127,12 @@
                     <i class="fas fa-history mr-1"></i> History
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
-                
+
+                <a href="user_resources.php" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'user_resources.php' ? 'active' : '' ?>">
+                    <i class="fas fa-book-reader mr-1"></i> Lab Resources
+                    <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
+                </a>
+                                
                 <a href="#" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'reservation.php' ? 'active' : '' ?>">
                     <i class="fas fa-calendar-check mr-1"></i> Reservation
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>

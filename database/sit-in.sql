@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 02:41 AM
+-- Generation Time: Apr 03, 2025 at 04:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,7 +64,7 @@ INSERT INTO `announcements` (`announcement_id`, `admin_name`, `post_date`, `mess
 (3, 'CCS-Admin', '2025-03-04 17:40:12', 'All users must update their profiles with their latest student ID numbers.'),
 (4, 'CCS-Admin', '2025-03-04 17:41:05', 'Reminder: All students must log their sit-in sessions properly.'),
 (5, 'CCS-Admin', '2025-03-04 17:41:14', 'Sit-in schedules for next week are now available. Book your slots in advance. Thank You.'),
-(6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions. Thank u'),
+(6, 'CCS-Admin', '2025-03-05 02:52:47', 'Attention students and faculty! 🎉 We are excited to introduce the Sit-in Lab System, designed to streamline the sit-in process for laboratory sessions. Thank u so much'),
 (7, 'CCS-Admin', '2025-03-11 04:55:08', 'Goodluck CSS. Thanks'),
 (8, 'CCS-Admin', '2025-03-11 11:24:37', 'Attention students and faculty! 🎉 We are thrilled to announce the launch of the Sit-in Lab System, created to simplify and enhance the process of attending laboratory sessions. Thank you for your support!'),
 (9, 'CCS-Admin', '2025-03-13 04:03:13', 'GOODLUCK, TIDERTS');
@@ -114,6 +114,32 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `lab_resources`
+--
+
+CREATE TABLE `lab_resources` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `link_url` varchar(255) DEFAULT NULL,
+  `year_level` varchar(50) NOT NULL,
+  `uploaded_by` varchar(100) NOT NULL,
+  `upload_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `resource_type` varchar(50) NOT NULL DEFAULT 'document'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lab_resources`
+--
+
+INSERT INTO `lab_resources` (`id`, `title`, `description`, `file_path`, `link_url`, `year_level`, `uploaded_by`, `upload_date`, `is_active`, `resource_type`) VALUES
+(1, 'C# Programming', 'To enhance your skill and knowledge towards Programming', NULL, 'https://www.w3schools.com/cs/index.php', '2nd Year', 'Admin', '2025-04-03 20:56:01', 1, 'link');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sit_in_ratings`
 --
 
@@ -156,7 +182,7 @@ CREATE TABLE `stud_session` (
 --
 
 INSERT INTO `stud_session` (`id`, `session`) VALUES
-(1, 29),
+(1, 30),
 (2, 30),
 (3, 30),
 (4, 30),
@@ -229,6 +255,12 @@ ALTER TABLE `curr_sit_in`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `lab_resources`
+--
+ALTER TABLE `lab_resources`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `sit_in_ratings`
 --
 ALTER TABLE `sit_in_ratings`
@@ -271,6 +303,12 @@ ALTER TABLE `announcements`
 --
 ALTER TABLE `curr_sit_in`
   MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `lab_resources`
+--
+ALTER TABLE `lab_resources`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`
