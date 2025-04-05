@@ -12,58 +12,100 @@
     <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
-    <div class="bg-white shadow-sm border-b">
+    <!-- Navigation header with soft shadow and subtle gradient -->
+    <div class="bg-white shadow-sm border-b sticky top-0 z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <a href="admin_home.php" class="group flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors duration-200">
-                    <div class="p-1.5 rounded-full bg-gray-100 group-hover:bg-blue-100 transition-colors duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="p-1.5 rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                     </div>
                     <span class="font-medium">Back to Dashboard</span>
                 </a>
-                <div class="hidden md:block text-sm text-gray-600">
-                    Lab Resources Management
+                <div class="hidden md:flex items-center space-x-2">
+                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-book-reader text-blue-600 text-sm"></i>
+                    </div>
+                    <span class="font-medium text-gray-700">Lab Resources Management</span>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Dashboard Header -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <!-- Dashboard Header with modern spacing and gradient accent -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 animate-fade-in">
             <div>
+                <div class="inline-flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-1 rounded-full text-sm mb-3">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    Resource Center
+                </div>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
-                    <i class="fas fa-book-reader text-blue-600 mr-3"></i>
-                    Lab Resources Management
+                    Learning Resources Management
                 </h1>
-                <p class="text-gray-600 mt-1">Provide students with quality learning materials and resources</p>
+                <p class="text-gray-600 mt-2 max-w-2xl">
+                    Create and manage high-quality learning materials for students to enhance their educational experience.
+                </p>
             </div>
             
-            <div class="mt-4 md:mt-0 flex items-center space-x-3">
+            <div class="mt-6 md:mt-0 flex items-center space-x-3">
                 <div class="relative inline-block text-left">
-                    <button id="filterBtn" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <i class="fas fa-filter mr-2 text-gray-500"></i>
-                        Filter
+                    <button id="filterBtn" type="button" class="inline-flex items-center px-4 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+                        <i class="fas fa-filter mr-2 text-blue-500"></i>
+                        Filter Resources
                     </button>
-                    <div id="filterMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <div class="px-4 py-2 border-b">
-                                <p class="text-sm font-medium text-gray-700">Filter by Year Level</p>
-                            </div>
-                            <button class="filter-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left active" data-year="all">All Years</button>
-                            <button class="filter-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" data-year="1">1st Year</button>
-                            <button class="filter-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" data-year="2">2nd Year</button>
-                            <button class="filter-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" data-year="3">3rd Year</button>
-                            <button class="filter-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" data-year="4">4th Year</button>
+                    <div id="filterMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 hidden z-10 divide-y divide-gray-100">
+                        <div class="py-3 px-4">
+                            <p class="text-sm font-semibold text-gray-900">Filter by Year Level</p>
+                            <p class="text-xs text-gray-500 mt-1">Select the year level to display</p>
+                        </div>
+                        <div class="py-1">
+                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 active" data-year="all">
+                                <span class="h-2 w-2 rounded-full bg-purple-400 mr-3"></span>
+                                All Years
+                            </button>
+                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="1">
+                                <span class="h-2 w-2 rounded-full bg-green-400 mr-3"></span>
+                                1st Year
+                            </button>
+                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="2">
+                                <span class="h-2 w-2 rounded-full bg-blue-400 mr-3"></span>
+                                2nd Year
+                            </button>
+                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="3">
+                                <span class="h-2 w-2 rounded-full bg-yellow-400 mr-3"></span>
+                                3rd Year
+                            </button>
+                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="4">
+                                <span class="h-2 w-2 rounded-full bg-red-400 mr-3"></span>
+                                4th Year
+                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <button id="addResourceBtn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button id="addResourceBtn" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
                     <i class="fas fa-plus mr-2"></i>
                     Add Resource
                 </button>
@@ -80,7 +122,10 @@
                         text: '<?php echo $_SESSION['success_message']; ?>',
                         showConfirmButton: false,
                         timer: 3000,
-                        timerProgressBar: true
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'rounded-xl'
+                        }
                     });
                 </script>
                 <?php unset($_SESSION['success_message']); ?>
@@ -92,167 +137,230 @@
                         icon: 'error',
                         title: 'Error!',
                         text: '<?php echo $_SESSION['error_message']; ?>',
-                        showConfirmButton: true
+                        showConfirmButton: true,
+                        customClass: {
+                            popup: 'rounded-xl',
+                            confirmButton: 'bg-blue-600 hover:bg-blue-700'
+                        }
                     });
                 </script>
                 <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
         </div>
         
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Stats Cards with elegant hover effects -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             <!-- Total Resources Card -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="stats-card bg-white overflow-hidden shadow-lg rounded-xl transition-all duration-300 border border-gray-100">
                 <div class="px-4 py-5 sm:p-6">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                        <div class="flex-shrink-0 bg-blue-100 rounded-lg p-3">
                             <i class="fas fa-file-alt text-blue-600 text-xl"></i>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Total Resources</dt>
                                 <dd>
-                                    <div class="text-lg font-semibold text-gray-900">
+                                    <div class="text-2xl font-bold text-gray-900">
                                         <?php echo count($resources); ?>
                                     </div>
                                 </dd>
                             </dl>
                         </div>
                     </div>
+                    <div class="mt-4 border-t border-gray-100 pt-4">
+                        <div class="text-xs text-gray-500">
+                            <span class="flex items-center">
+                                <i class="fas fa-chart-line text-blue-500 mr-1"></i>
+                                Total learning materials
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Document Count Card -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="stats-card bg-white overflow-hidden shadow-lg rounded-xl transition-all duration-300 border border-gray-100">
                 <div class="px-4 py-5 sm:p-6">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-indigo-100 rounded-md p-3">
+                        <div class="flex-shrink-0 bg-indigo-100 rounded-lg p-3">
                             <i class="fas fa-file-pdf text-indigo-600 text-xl"></i>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Documents</dt>
                                 <dd>
-                                    <div class="text-lg font-semibold text-gray-900">
+                                    <div class="text-2xl font-bold text-gray-900">
                                         <?php echo count(array_filter($resources, function($r) { return $r['resource_type'] == 'document'; })); ?>
                                     </div>
                                 </dd>
                             </dl>
                         </div>
                     </div>
+                    <div class="mt-4 border-t border-gray-100 pt-4">
+                        <div class="text-xs text-gray-500">
+                            <span class="flex items-center">
+                                <i class="fas fa-file-alt text-indigo-500 mr-1"></i>
+                                PDFs, DOCs, etc.
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Video Count Card -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="stats-card bg-white overflow-hidden shadow-lg rounded-xl transition-all duration-300 border border-gray-100">
                 <div class="px-4 py-5 sm:p-6">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-red-100 rounded-md p-3">
+                        <div class="flex-shrink-0 bg-red-100 rounded-lg p-3">
                             <i class="fas fa-video text-red-600 text-xl"></i>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Videos</dt>
                                 <dd>
-                                    <div class="text-lg font-semibold text-gray-900">
+                                    <div class="text-2xl font-bold text-gray-900">
                                         <?php echo count(array_filter($resources, function($r) { return $r['resource_type'] == 'video'; })); ?>
                                     </div>
                                 </dd>
                             </dl>
                         </div>
                     </div>
+                    <div class="mt-4 border-t border-gray-100 pt-4">
+                        <div class="text-xs text-gray-500">
+                            <span class="flex items-center">
+                                <i class="fas fa-film text-red-500 mr-1"></i>
+                                Tutorial videos
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Links Count Card -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="stats-card bg-white overflow-hidden shadow-lg rounded-xl transition-all duration-300 border border-gray-100">
                 <div class="px-4 py-5 sm:p-6">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
+                        <div class="flex-shrink-0 bg-green-100 rounded-lg p-3">
                             <i class="fas fa-link text-green-600 text-xl"></i>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">External Links</dt>
                                 <dd>
-                                    <div class="text-lg font-semibold text-gray-900">
+                                    <div class="text-2xl font-bold text-gray-900">
                                         <?php echo count(array_filter($resources, function($r) { return $r['resource_type'] == 'link'; })); ?>
                                     </div>
                                 </dd>
                             </dl>
                         </div>
                     </div>
+                    <div class="mt-4 border-t border-gray-100 pt-4">
+                        <div class="text-xs text-gray-500">
+                            <span class="flex items-center">
+                                <i class="fas fa-external-link-alt text-green-500 mr-1"></i>
+                                External resources
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
             
-        <!-- Add Resource Form (Hidden by default) -->
-        <div id="resourceForm" class="bg-white shadow-lg rounded-lg mb-6 hidden">
-            <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
-                    <i class="fas fa-cloud-upload-alt text-blue-500 mr-2"></i>
-                    Upload New Resource
-                </h3>
-                <p class="mt-1 text-sm text-gray-500">
-                    Fill out the form below to add a new resource for students
-                </p>
+        <!-- Add Resource Form with improved UI and shadows -->
+        <div id="resourceForm" class="bg-white shadow-xl rounded-xl mb-8 hidden animate-fade-in border border-gray-200">
+            <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg leading-6 font-semibold text-gray-900 flex items-center">
+                        <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                            <i class="fas fa-cloud-upload-alt text-blue-600"></i>
+                        </div>
+                        Upload New Resource
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Fill out the form below to add a new resource for students
+                    </p>
+                </div>
+                <button id="closeFormBtn" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <div class="px-4 py-5 sm:p-6">
+            <div class="px-6 py-6">
                 <form action="conn_back/resources_process.php" method="POST" enctype="multipart/form-data" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="title" class="block text-sm font-medium text-gray-700">Resource Title</label>
-                            <div class="mt-1">
-                                <input type="text" id="title" name="title" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Resource Title</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-heading text-gray-400"></i>
+                                </div>
+                                <input type="text" id="title" name="title" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg" placeholder="Enter resource title" required>
                             </div>
                         </div>
                         
                         <div>
-                            <label for="resource_type" class="block text-sm font-medium text-gray-700">Resource Type</label>
-                            <div class="mt-1">
-                                <select id="resource_type" name="resource_type" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+                            <label for="resource_type" class="block text-sm font-medium text-gray-700 mb-1">Resource Type</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-list text-gray-400"></i>
+                                </div>
+                                <select id="resource_type" name="resource_type" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg appearance-none" required>
                                     <option value="">-- Select Type --</option>
                                     <option value="document">Document</option>
                                     <option value="video">Video</option>
                                     <option value="link">External Link</option>
                                 </select>
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <div class="mt-1">
-                            <textarea id="description" name="description" rows="3" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required></textarea>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute top-3 left-3 flex items-center pointer-events-none">
+                                <i class="fas fa-align-left text-gray-400"></i>
+                            </div>
+                            <textarea id="description" name="description" rows="4" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg" placeholder="Describe what this resource contains and how it will help students" required></textarea>
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">Briefly describe what this resource contains and how it will help students.</p>
+                        <p class="mt-1 text-xs text-gray-500 flex items-center"><i class="fas fa-info-circle mr-1 text-blue-500"></i> Clear descriptions help students find relevant materials.</p>
                     </div>
                     
                     <div>
-                        <label for="year_level" class="block text-sm font-medium text-gray-700">Year Level</label>
-                        <div class="mt-1">
-                            <select id="year_level" name="year_level" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+                        <label for="year_level" class="block text-sm font-medium text-gray-700 mb-1">Year Level</label>
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-graduate text-gray-400"></i>
+                            </div>
+                            <select id="year_level" name="year_level" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg appearance-none" required>
                                 <option value="">-- Select Year Level --</option>
                                 <option value="1st Year">1st Year</option>
                                 <option value="2nd Year">2nd Year</option>
                                 <option value="3rd Year">3rd Year</option>
                                 <option value="4th Year">4th Year</option>
                             </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
                         </div>
                     </div>
                     
                     <div id="file_upload_section">
-                        <label for="resource_file" class="block text-sm font-medium text-gray-700">Upload File</label>
-                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                            <div class="space-y-1 text-center">
-                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl"></i>
-                                <div class="flex text-sm text-gray-600">
-                                    <label for="resource_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                        <label for="resource_file" class="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-blue-400 transition-colors duration-200">
+                            <div class="space-y-2 text-center">
+                                <div class="mx-auto h-20 w-20 text-gray-400 flex items-center justify-center">
+                                    <i class="fas fa-cloud-upload-alt text-5xl"></i>
+                                </div>
+                                <div class="flex flex-col text-sm text-gray-600">
+                                    <label for="resource_file" class="relative cursor-pointer py-2 px-4 bg-blue-50 rounded-lg text-blue-600 font-medium hover:bg-blue-100 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 mx-auto mb-2 transition-colors">
                                         <span>Upload a file</span>
                                         <input id="resource_file" name="resource_file" type="file" class="sr-only">
                                     </label>
-                                    <p class="pl-1">or drag and drop</p>
+                                    <p class="text-xs text-gray-500">or drag and drop your file here</p>
                                 </div>
                                 <p class="text-xs text-gray-500">PDF, DOCX, MP4, etc. up to 10MB</p>
                             </div>
@@ -261,21 +369,24 @@
                     </div>
                     
                     <div id="link_section" class="hidden">
-                        <label for="link_url" class="block text-sm font-medium text-gray-700">External URL</label>
+                        <label for="link_url" class="block text-sm font-medium text-gray-700 mb-1">External URL</label>
                         <div class="mt-1 flex rounded-md shadow-sm">
-                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                            <span class="inline-flex items-center px-4 py-2 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
                                 <i class="fas fa-link"></i>
                             </span>
-                            <input type="url" id="link_url" name="link_url" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300" placeholder="https://example.com/resource">
+                            <input type="url" id="link_url" name="link_url" class="flex-1 min-w-0 block w-full px-3 py-3 rounded-none rounded-r-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300" placeholder="https://example.com/resource">
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">Enter the full URL including https:// or http://</p>
+                        <p class="mt-1 text-xs text-gray-500 flex items-center">
+                            <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                            Enter the full URL including https:// or http://
+                        </p>
                     </div>
                     
                     <div class="flex justify-end space-x-3 pt-5 border-t border-gray-200">
-                        <button type="button" id="cancelBtn" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button type="button" id="cancelBtn" class="px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                             Cancel
                         </button>
-                        <button type="submit" name="add_resource" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button type="submit" name="add_resource" class="inline-flex justify-center items-center py-2.5 px-5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                             <i class="fas fa-upload mr-2"></i> Upload Resource
                         </button>
                     </div>
@@ -283,14 +394,15 @@
             </div>
         </div>
         
-        <!-- Resources Table -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-800 sm:px-6">
+        <!-- Resources Table with modern styling -->
+        <div class="bg-white shadow-lg overflow-hidden sm:rounded-xl border border-gray-200 animate-fade-in">
+            <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 sm:px-6">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg leading-6 font-medium text-white">
+                    <h3 class="text-lg leading-6 font-medium text-white flex items-center">
+                        <i class="fas fa-books mr-2"></i>
                         Lab Resources
                     </h3>
-                    <span id="resourceCount" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span id="resourceCount" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-blue-600">
                         <?php echo count($resources); ?> total
                     </span>
                 </div>
@@ -299,15 +411,15 @@
             <?php if (empty($resources)): ?>
                 <div class="px-4 py-16 sm:px-6 text-center">
                     <div class="flex flex-col items-center">
-                        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100">
-                            <i class="fas fa-folder-open text-blue-400 text-2xl"></i>
+                        <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-blue-100">
+                            <i class="fas fa-folder-open text-blue-400 text-3xl"></i>
                         </div>
-                        <h3 class="mt-3 text-lg font-medium text-gray-900">No resources yet</h3>
-                        <p class="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+                        <h3 class="mt-5 text-xl font-medium text-gray-900">No resources yet</h3>
+                        <p class="mt-3 text-sm text-gray-500 max-w-md mx-auto">
                             You haven't added any learning resources yet. Get started by clicking the "Add Resource" button above.
                         </p>
                         <div class="mt-6">
-                            <button id="emptyStateBtn" type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <button id="emptyStateBtn" type="button" class="inline-flex items-center px-5 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
                                 <i class="fas fa-plus mr-2"></i>
                                 Add Your First Resource
                             </button>
@@ -319,27 +431,27 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Resource Details
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Type
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Year Level
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Uploaded
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php foreach ($resources as $resource): ?>
-                                <tr class="resource-row hover:bg-gray-50" data-year="<?php echo $resource['year_level']; ?>">
-                                    <td class="px-6 py-4">
+                                <tr class="resource-row hover:bg-gray-50 transition-colors" data-year="<?php echo $resource['year_level']; ?>">
+                                    <td class="px-6 py-5">
                                         <div class="flex items-center">
                                             <?php
                                                 // Icon based on resource type
@@ -354,21 +466,21 @@
                                                     $bgColor = 'bg-green-100';
                                                 }
                                             ?>
-                                            <div class="flex-shrink-0 h-10 w-10 rounded-full <?php echo $bgColor; ?> flex items-center justify-center">
-                                                <i class="fas <?php echo $icon; ?>"></i>
+                                            <div class="flex-shrink-0 h-12 w-12 rounded-lg <?php echo $bgColor; ?> flex items-center justify-center shadow-sm">
+                                                <i class="fas <?php echo $icon; ?> text-xl"></i>
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">
+                                                <div class="text-base font-semibold text-gray-900">
                                                     <?php echo htmlspecialchars($resource['title']); ?>
                                                 </div>
-                                                <div class="text-sm text-gray-500 max-w-xs truncate">
+                                                <div class="text-sm text-gray-500 max-w-md truncate mt-1">
                                                     <?php echo htmlspecialchars($resource['description']); ?>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <td class="px-6 py-5 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                                             <?php 
                                                 if ($resource['resource_type'] == 'document') echo 'bg-blue-100 text-blue-800';
                                                 elseif ($resource['resource_type'] == 'video') echo 'bg-red-100 text-red-800';
@@ -377,29 +489,35 @@
                                             <?php echo ucfirst($resource['resource_type']); ?>
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900"><?php echo $resource['year_level']; ?></div>
+                                    <td class="px-6 py-5 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900"><?php echo $resource['year_level']; ?></div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-5 whitespace-nowrap">
                                         <div class="text-sm text-gray-900"><?php echo date('M d, Y', strtotime($resource['upload_date'])); ?></div>
-                                        <div class="text-xs text-gray-500">by <?php echo htmlspecialchars($resource['uploaded_by']); ?></div>
+                                        <div class="text-xs text-gray-500 mt-1">by <?php echo htmlspecialchars($resource['uploaded_by']); ?></div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-3">
+                                    <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-4">
                                             <?php if (!empty($resource['file_path'])): ?>
-                                                <a href="../<?php echo htmlspecialchars($resource['file_path']); ?>" target="_blank" class="text-blue-600 hover:text-blue-900 transition-colors" title="View File">
-                                                    <i class="fas fa-eye"></i>
+                                                <a href="../<?php echo htmlspecialchars($resource['file_path']); ?>" target="_blank" class="text-blue-600 hover:text-blue-900 transition-colors flex items-center" title="View File">
+                                                    <span class="w-8 h-8 flex items-center justify-center bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                                                        <i class="fas fa-eye"></i>
+                                                    </span>
                                                 </a>
                                             <?php endif; ?>
                                             
                                             <?php if (!empty($resource['link_url'])): ?>
-                                                <a href="<?php echo htmlspecialchars($resource['link_url']); ?>" target="_blank" class="text-green-600 hover:text-green-900 transition-colors" title="Open Link">
-                                                    <i class="fas fa-external-link-alt"></i>
+                                                <a href="<?php echo htmlspecialchars($resource['link_url']); ?>" target="_blank" class="text-green-600 hover:text-green-900 transition-colors flex items-center" title="Open Link">
+                                                    <span class="w-8 h-8 flex items-center justify-center bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                                                        <i class="fas fa-external-link-alt"></i>
+                                                    </span>
                                                 </a>
                                             <?php endif; ?>
                                             
-                                            <button class="text-red-600 hover:text-red-900 transition-colors delete-resource" data-id="<?php echo $resource['id']; ?>" title="Delete Resource">
-                                                <i class="fas fa-trash-alt"></i>
+                                            <button class="text-red-600 hover:text-red-900 transition-colors flex items-center delete-resource" data-id="<?php echo $resource['id']; ?>" title="Delete Resource">
+                                                <span class="w-8 h-8 flex items-center justify-center bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </span>
                                             </button>
                                         </div>
                                     </td>
@@ -419,6 +537,7 @@
             const emptyStateBtn = document.getElementById('emptyStateBtn');
             const resourceForm = document.getElementById('resourceForm');
             const cancelBtn = document.getElementById('cancelBtn');
+            const closeFormBtn = document.getElementById('closeFormBtn');
             
             // Filter dropdown
             const filterBtn = document.getElementById('filterBtn');
@@ -433,6 +552,10 @@
                 resourceForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
+            function hideAddResourceForm() {
+                resourceForm.classList.add('hidden');
+            }
+            
             if (addResourceBtn) {
                 addResourceBtn.addEventListener('click', showAddResourceForm);
             }
@@ -442,9 +565,11 @@
             }
             
             if (cancelBtn) {
-                cancelBtn.addEventListener('click', function() {
-                    resourceForm.classList.add('hidden');
-                });
+                cancelBtn.addEventListener('click', hideAddResourceForm);
+            }
+            
+            if (closeFormBtn) {
+                closeFormBtn.addEventListener('click', hideAddResourceForm);
             }
             
             // Filter dropdown toggle
@@ -517,8 +642,8 @@
             if (resourceFile && selectedFile) {
                 resourceFile.addEventListener('change', function() {
                     if (this.files.length > 0) {
-                        selectedFile.innerHTML = '<span class="font-medium">Selected file:</span> ' + 
-                            '<span class="text-blue-600">' + this.files[0].name + '</span>';
+                        selectedFile.innerHTML = '<div class="flex items-center p-2 bg-blue-50 rounded-lg mt-2"><i class="fas fa-check-circle text-blue-500 mr-2"></i><span class="font-medium">Selected file:</span>&nbsp;' + 
+                            '<span class="text-blue-600">' + this.files[0].name + '</span></div>';
                     } else {
                         selectedFile.textContent = '';
                     }
@@ -537,10 +662,15 @@
                         text: "This resource will no longer be available to students. This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#6b7280',
                         confirmButtonText: 'Yes, delete it',
                         cancelButtonText: 'Cancel',
+                        customClass: {
+                            popup: 'rounded-xl',
+                            confirmButton: 'px-4 py-2 rounded-lg',
+                            cancelButton: 'px-4 py-2 rounded-lg'
+                        },
                         showClass: {
                             popup: 'animate__animated animate__fadeIn'
                         }
