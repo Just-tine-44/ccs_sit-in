@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2025 at 04:22 PM
+-- Generation Time: Apr 08, 2025 at 04:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -109,7 +109,11 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 (17, 1, '530', 'ASP.Net', '2025-03-13 12:05:20', '2025-03-13 12:05:58', 'completed'),
 (18, 1, '524', 'PHP', '2025-03-13 12:38:40', '2025-03-13 12:39:10', 'completed'),
 (19, 10, '530', 'C#', '2025-03-21 07:38:11', '2025-03-21 07:42:17', 'completed'),
-(20, 1, '530', 'PHP', '2025-03-21 21:47:02', '2025-03-21 21:47:13', 'completed');
+(20, 1, '530', 'PHP', '2025-03-21 21:47:02', '2025-03-21 21:47:13', 'completed'),
+(21, 1, '528', 'PHP', '2025-04-08 09:06:59', '2025-04-08 09:07:09', 'completed'),
+(22, 1, '530', 'PHP', '2025-04-08 09:44:45', '2025-04-08 09:45:02', 'completed'),
+(23, 8, '528', 'C#', '2025-04-08 10:25:49', '2025-04-08 10:26:03', 'completed'),
+(24, 5, '524', 'Other', '2025-04-08 10:31:47', '2025-04-08 10:32:04', 'completed');
 
 -- --------------------------------------------------------
 
@@ -165,6 +169,22 @@ INSERT INTO `sit_in_ratings` (`rating_id`, `sit_in_id`, `user_id`, `rating`, `fe
 (6, 6, 7, 3, 'Love it', '2025-03-13 17:41:57'),
 (7, 5, 7, 3, 'Great', '2025-03-13 17:42:07'),
 (8, 2, 7, 3, 'HAHAHAHAHHA', '2025-03-13 17:42:26');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `student_points`
+--
+
+CREATE TABLE `student_points` (
+  `point_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `points_earned` int(11) NOT NULL DEFAULT 1,
+  `points_reason` varchar(255) NOT NULL,
+  `awarded_by` varchar(100) NOT NULL,
+  `awarded_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `converted_to_session` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -269,6 +289,13 @@ ALTER TABLE `sit_in_ratings`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `student_points`
+--
+ALTER TABLE `student_points`
+  ADD PRIMARY KEY (`point_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `stud_session`
 --
 ALTER TABLE `stud_session`
@@ -302,7 +329,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `lab_resources`
@@ -315,6 +342,12 @@ ALTER TABLE `lab_resources`
 --
 ALTER TABLE `sit_in_ratings`
   MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `student_points`
+--
+ALTER TABLE `student_points`
+  MODIFY `point_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stud_session`
@@ -344,6 +377,12 @@ ALTER TABLE `curr_sit_in`
 ALTER TABLE `sit_in_ratings`
   ADD CONSTRAINT `sit_in_ratings_ibfk_1` FOREIGN KEY (`sit_in_id`) REFERENCES `curr_sit_in` (`sit_in_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sit_in_ratings_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `student_points`
+--
+ALTER TABLE `student_points`
+  ADD CONSTRAINT `student_points_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `stud_session`

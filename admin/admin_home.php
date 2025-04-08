@@ -57,6 +57,11 @@
                             </a>
                         </div>
                         <div class="py-1">
+                            <a href="admin_points.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="fas fa-chart-bar mr-2"></i> Usage Points
+                            </a>
+                        </div>
+                        <div class="py-1">
                             <a href="admin_leaderboards.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                                 <i class="fas fa-trophy mr-2"></i> Leaderboards
                             </a>
