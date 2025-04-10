@@ -225,6 +225,14 @@
                                                     <option value="C#">C#</option>
                                                     <option value="PHP">PHP</option>
                                                     <option value="ASP.Net">ASP.Net</option>
+                                                    <option value="Database">Database</option>
+                                                    <option value="Digital Logic & Design">Digital Logic & Design</option>
+                                                    <option value="Embedded System % IOT">Embedded System % IOT</option>
+                                                    <option value="Python Programming">Python Programming</option>
+                                                    <option value="Systems Integration & Architecture">Systems Integration & Architecture</option>
+                                                    <option value="Computer Application">Computer Application</option>
+                                                    <option value="Web Design & Development">Web Design & Development</option>
+                                                    <option value="Project Management">Project Management</option>
                                                     <option value="Other">Other</option>
                                                 </select>
                                             </div>

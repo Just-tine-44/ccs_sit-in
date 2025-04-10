@@ -12,7 +12,7 @@ include(__DIR__ . '/../../conn/dbcon.php');
 // Initialize variables
 $searchResults = [];
 $searchPerformed = false;
-$laboratories = ["524", "526", "528", "530", "542"];
+$laboratories = ["524", "526", "528", "530", "542", "544", "517"];
 
 // Initialize recent searches array in session if it doesn't exist
 if (!isset($_SESSION['recent_searches'])) {
