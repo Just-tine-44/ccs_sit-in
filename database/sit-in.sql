@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2025 at 02:26 PM
+-- Generation Time: Apr 10, 2025 at 03:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -146,6 +146,24 @@ INSERT INTO `lab_resources` (`id`, `title`, `description`, `file_path`, `link_ur
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `lab_schedules`
+--
+
+CREATE TABLE `lab_schedules` (
+  `schedule_id` int(11) NOT NULL,
+  `lab_room` varchar(10) NOT NULL,
+  `schedule_image` varchar(255) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `upload_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uploaded_by` varchar(100) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sit_in_ratings`
 --
 
@@ -277,6 +295,12 @@ ALTER TABLE `curr_sit_in`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `lab_schedules`
+--
+ALTER TABLE `lab_schedules`
+  ADD PRIMARY KEY (`schedule_id`);
+
+--
 -- Indexes for table `sit_in_ratings`
 --
 ALTER TABLE `sit_in_ratings`
@@ -326,6 +350,12 @@ ALTER TABLE `announcements`
 --
 ALTER TABLE `curr_sit_in`
   MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `lab_schedules`
+--
+ALTER TABLE `lab_schedules`
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`

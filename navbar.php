@@ -19,7 +19,10 @@
                         $pageTitle = "Reservation";
                     } elseif ($currentPage == 'user_resources.php') {
                         $pageTitle = "Lab Resources";
-                    }10
+                    } elseif ($currentPage == 'lab_schedule.php') {
+                        $pageTitle = "Lab Schedule";
+                    }
+                    
                 ?>
                 <a href="#" class="text-gray-800 font-bold text-xl hover:text-blue-500 transition-colors duration-200 <?= $currentPage == 'homepage.php' ? 'active' : '' ?>">
                     <?php echo $pageTitle; ?>
@@ -113,27 +116,32 @@
                     </div>
                 </div>
                 
-                <a href="homepage.php" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'homepage.php' ? 'active' : '' ?>">
+                <a href="homepage.php" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'homepage.php' ? 'active' : '' ?>">
                     <i class="fas fa-home mr-1"></i> Home
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
                 
-                <a href="edit.php" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'edit.php' ? 'active' : '' ?>">
+                <a href="edit.php" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'edit.php' ? 'active' : '' ?>">
                     <i class="fas fa-user-edit mr-1"></i> Edit Profile
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
                 
-                <a href="history.php" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'history.php' ? 'active' : '' ?>">
+                <a href="history.php" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'history.php' ? 'active' : '' ?>">
                     <i class="fas fa-history mr-1"></i> History
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
 
-                <a href="user_resources.php" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'user_resources.php' ? 'active' : '' ?>">
+                <a href="user_resources.php" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'user_resources.php' ? 'active' : '' ?>">
                     <i class="fas fa-book-reader mr-1"></i> Lab Resources
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
+
+                <a href="lab_schedule.php" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'lab_schedule.php' ? 'active' : '' ?>">
+                    <i class="fas fa-calendar-alt mr-1"></i> View Lab Schedule
+                    <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
+                </a>
                                 
-                <a href="#" class="nav-item group w-full md:w-auto text-center md:text-left px-3 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'reservation.php' ? 'active' : '' ?>">
+                <a href="#" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'reservation.php' ? 'active' : '' ?>">
                     <i class="fas fa-calendar-check mr-1"></i> Reservation
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
