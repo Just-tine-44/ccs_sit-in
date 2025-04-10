@@ -14,8 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_resource'])) {
     $title = $_POST['title'];
     $description = $_POST['description'];
     $year_level = $_POST['year_level'];
+    $course = $_POST['course']; // Added course parameter
     $resource_type = $_POST['resource_type'];
-    $uploaded_by = $_SESSION['admin_name'] ?? 'Admin'; // Just use admin_name from session
+    $uploaded_by = $_SESSION['admin_name'] ?? 'Admin';
     
     $file_path = null;
     $link_url = null;
@@ -42,12 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_resource'])) {
         $link_url = $_POST['link_url'];
     }
     
-    // Insert into database (without admin_id and course fields)
-    $query = "INSERT INTO lab_resources (title, description, file_path, link_url, year_level, resource_type, uploaded_by) 
-              VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Insert into database (with course field)
+    $query = "INSERT INTO lab_resources (title, description, file_path, link_url, year_level, course, resource_type, uploaded_by) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssssss", $title, $description, $file_path, $link_url, $year_level, $resource_type, $uploaded_by);
+    $stmt->bind_param("ssssssss", $title, $description, $file_path, $link_url, $year_level, $course, $resource_type, $uploaded_by);
     
     if ($stmt->execute()) {
         $_SESSION['success_message'] = "Resource added successfully!";

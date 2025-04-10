@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 08, 2025 at 04:51 AM
+-- Generation Time: Apr 10, 2025 at 02:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -113,7 +113,8 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 (21, 1, '528', 'PHP', '2025-04-08 09:06:59', '2025-04-08 09:07:09', 'completed'),
 (22, 1, '530', 'PHP', '2025-04-08 09:44:45', '2025-04-08 09:45:02', 'completed'),
 (23, 8, '528', 'C#', '2025-04-08 10:25:49', '2025-04-08 10:26:03', 'completed'),
-(24, 5, '524', 'Other', '2025-04-08 10:31:47', '2025-04-08 10:32:04', 'completed');
+(24, 5, '524', 'Other', '2025-04-08 10:31:47', '2025-04-08 10:32:04', 'completed'),
+(25, 8, '544', 'Systems Integration & Architecture', '2025-04-10 19:34:40', '2025-04-10 19:35:13', 'completed');
 
 -- --------------------------------------------------------
 
@@ -128,6 +129,7 @@ CREATE TABLE `lab_resources` (
   `file_path` varchar(255) DEFAULT NULL,
   `link_url` varchar(255) DEFAULT NULL,
   `year_level` varchar(50) NOT NULL,
+  `course` varchar(50) NOT NULL,
   `uploaded_by` varchar(100) NOT NULL,
   `upload_date` datetime NOT NULL DEFAULT current_timestamp(),
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
@@ -138,8 +140,8 @@ CREATE TABLE `lab_resources` (
 -- Dumping data for table `lab_resources`
 --
 
-INSERT INTO `lab_resources` (`id`, `title`, `description`, `file_path`, `link_url`, `year_level`, `uploaded_by`, `upload_date`, `is_active`, `resource_type`) VALUES
-(1, 'C# Programming', 'To enhance your skill and knowledge towards Programming', NULL, 'https://www.w3schools.com/cs/index.php', '2nd Year', 'Admin', '2025-04-03 20:56:01', 1, 'link');
+INSERT INTO `lab_resources` (`id`, `title`, `description`, `file_path`, `link_url`, `year_level`, `course`, `uploaded_by`, `upload_date`, `is_active`, `resource_type`) VALUES
+(0, 'Law 101 ', 'To enhance the knowledge towards law 101.', NULL, 'https://courses.lumenlearning.com/suny-monroe-law101/', '1st Year', 'AB PolSci', 'Admin', '2025-04-10 20:23:30', 1, 'link');
 
 -- --------------------------------------------------------
 
@@ -246,7 +248,7 @@ INSERT INTO `users` (`id`, `idno`, `lastname`, `firstname`, `midname`, `course`,
 (5, '33669944', 'Tatum', 'Lebron', 'L.', 'BSCompE', '2nd Year', 'Cebu, Boston', 'uploadimg/profile_67bfdabe507b0.jpg', 'tatum@gmail.com', 'Piggy123@'),
 (6, '11556677', 'Doncics', 'Maxie', 'D.', 'BSCS', '1st Year', 'Sibonga, Cebu', 'images/person.jpg', 'max@gmail.com', '123'),
 (7, '22596886', 'PaldoGodz', 'Rovic', 'T.', 'BSCompE', '2nd Year', 'Pahina, Cebu City', NULL, 'rovic@gmail.com', 'Paldo123@'),
-(8, '55442211', 'Steph', 'Kevin', 'B.', 'AB PolSci', '1', 'Mandaue Cebu', NULL, 'step@gmail.com', '123'),
+(8, '55442211', 'Steph', 'Kevin', 'B.', 'AB PolSci', '1st Year', 'Mandaue Cebu', NULL, 'step@gmail.com', '123'),
 (9, '44883311', 'Byrce', 'Paul', 'P', 'BSEE', '2', 'Cleveland, USA', NULL, 'paul@gmail.com', '123paul@'),
 (10, '14556678', 'Bryant', 'Alexander', 'R.', 'BSCrim', '2nd Year', 'Bulacao, Cebu City', NULL, 'alexander@gmail.com', 'Ball@123'),
 (11, '99884422', 'Wade', 'Chris', 'J.', 'BSEE', '2nd Year', 'Mambaling, Basak', NULL, 'chris@gmail.com', 'chris@J123');
@@ -273,12 +275,6 @@ ALTER TABLE `announcements`
 ALTER TABLE `curr_sit_in`
   ADD PRIMARY KEY (`sit_in_id`),
   ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `lab_resources`
---
-ALTER TABLE `lab_resources`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `sit_in_ratings`
@@ -329,13 +325,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- AUTO_INCREMENT for table `lab_resources`
---
-ALTER TABLE `lab_resources`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`

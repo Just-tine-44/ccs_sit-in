@@ -75,31 +75,46 @@
                         <i class="fas fa-filter mr-2 text-blue-500"></i>
                         Filter Resources
                     </button>
-                    <div id="filterMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 hidden z-10 divide-y divide-gray-100">
+                    <div id="filterMenu" class="origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 hidden z-10 divide-y divide-gray-100">
                         <div class="py-3 px-4">
-                            <p class="text-sm font-semibold text-gray-900">Filter by Year Level</p>
-                            <p class="text-xs text-gray-500 mt-1">Select the year level to display</p>
+                            <p class="text-sm font-semibold text-gray-900">Filter Resources</p>
+                            <p class="text-xs text-gray-500 mt-1">Select filters to apply</p>
                         </div>
-                        <div class="py-1">
-                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 active" data-year="all">
-                                <span class="h-2 w-2 rounded-full bg-purple-400 mr-3"></span>
-                                All Years
-                            </button>
-                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="1">
-                                <span class="h-2 w-2 rounded-full bg-green-400 mr-3"></span>
-                                1st Year
-                            </button>
-                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="2">
-                                <span class="h-2 w-2 rounded-full bg-blue-400 mr-3"></span>
-                                2nd Year
-                            </button>
-                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="3">
-                                <span class="h-2 w-2 rounded-full bg-yellow-400 mr-3"></span>
-                                3rd Year
-                            </button>
-                            <button class="filter-option flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50" data-year="4">
-                                <span class="h-2 w-2 rounded-full bg-red-400 mr-3"></span>
-                                4th Year
+                        <div class="py-2 px-4">
+                            <label class="text-xs font-medium text-gray-700 block mb-1">Year Level</label>
+                            <select id="yearFilter" class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <option value="all">All Years</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="py-2 px-4">
+                            <label class="text-xs font-medium text-gray-700 block mb-1">Course Program</label>
+                            <select id="courseFilter" class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <option value="all">All Courses</option>
+                                <option value="BSIT">BSIT</option>
+                                <option value="BSCS">BSCS</option>
+                                <option value="ACT">ACT</option>
+                                <option value="BSCE">BSCE</option>
+                                <option value="BSME">BSME</option>
+                                <option value="BSEE">BSEE</option>
+                                <option value="BSIE">BSIE</option>
+                                <option value="BSCompE">BSCompE</option>
+                                <option value="BSA">BSA</option>
+                                <option value="BSBA">BSBA</option>
+                                <option value="BSOA">BSOA</option>
+                                <option value="BEEd">BEEd</option>
+                                <option value="BSEd">BSEd</option>
+                                <option value="AB PolSci">AB PolSci</option>
+                                <option value="BSCrim">BSCrim</option>
+                                <option value="BSHRM">BSHRM</option>
+                            </select>
+                        </div>
+                        <div class="py-2 px-4">
+                            <button id="applyFilters" class="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                Apply Filters
                             </button>
                         </div>
                     </div>
@@ -266,6 +281,46 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Course Stats Cards -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Resources by Course</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+                <?php
+                $courses = ['BSCS', 'BSIT', 'BSCompE', 'BSEE', 'BSCE', 'BSME', 'BSBA', 'BSCrim'];
+                $courseColors = [
+                    'BSCS' => ['bg-blue-100', 'text-blue-600'],
+                    'BSIT' => ['bg-indigo-100', 'text-indigo-600'],
+                    'BSCompE' => ['bg-purple-100', 'text-purple-600'],
+                    'BSEE' => ['bg-red-100', 'text-red-600'],
+                    'BSCE' => ['bg-amber-100', 'text-amber-600'],
+                    'BSME' => ['bg-green-100', 'text-green-600'],
+                    'BSBA' => ['bg-teal-100', 'text-teal-600'],
+                    'BSCrim' => ['bg-emerald-100', 'text-emerald-600'],
+                ];
+                
+                foreach ($courses as $course) {
+                    $count = count(array_filter($resources, function($r) use ($course) { 
+                        return isset($r['course']) && $r['course'] == $course; 
+                    }));
+                    
+                    $bgColor = $courseColors[$course][0] ?? 'bg-gray-100';
+                    $textColor = $courseColors[$course][1] ?? 'text-gray-600';
+                ?>
+                    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+                        <div class="p-3 flex items-center justify-between">
+                            <div class="<?php echo $bgColor; ?> rounded-lg p-2">
+                                <i class="fas fa-book-open <?php echo $textColor; ?>"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500"><?php echo $course; ?></p>
+                                <p class="text-lg font-bold text-gray-800"><?php echo $count; ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
             
         <!-- Add Resource Form with improved UI and shadows -->
         <div id="resourceForm" class="bg-white shadow-xl rounded-xl mb-8 hidden animate-fade-in border border-gray-200">
@@ -329,21 +384,54 @@
                         <p class="mt-1 text-xs text-gray-500 flex items-center"><i class="fas fa-info-circle mr-1 text-blue-500"></i> Clear descriptions help students find relevant materials.</p>
                     </div>
                     
-                    <div>
-                        <label for="year_level" class="block text-sm font-medium text-gray-700 mb-1">Year Level</label>
-                        <div class="relative rounded-md shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user-graduate text-gray-400"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="year_level" class="block text-sm font-medium text-gray-700 mb-1">Year Level</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user-graduate text-gray-400"></i>
+                                </div>
+                                <select id="year_level" name="year_level" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg appearance-none" required>
+                                    <option value="">-- Select Year Level --</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
                             </div>
-                            <select id="year_level" name="year_level" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg appearance-none" required>
-                                <option value="">-- Select Year Level --</option>
-                                <option value="1st Year">1st Year</option>
-                                <option value="2nd Year">2nd Year</option>
-                                <option value="3rd Year">3rd Year</option>
-                                <option value="4th Year">4th Year</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                        
+                        <div>
+                            <label for="course" class="block text-sm font-medium text-gray-700 mb-1">Course Program</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-graduation-cap text-gray-400"></i>
+                                </div>
+                                <select id="course" name="course" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-3 sm:text-sm border-gray-300 rounded-lg appearance-none" required>
+                                    <option value="">-- Select Course --</option>
+                                    <option value="BSIT">BSIT</option>
+                                    <option value="BSCS">BSCS</option>
+                                    <option value="ACT">ACT</option>
+                                    <option value="BSCE">BSCE</option>
+                                    <option value="BSME">BSME</option>
+                                    <option value="BSEE">BSEE</option>
+                                    <option value="BSIE">BSIE</option>
+                                    <option value="BSCompE">BSCompE</option>
+                                    <option value="BSA">BSA</option>
+                                    <option value="BSBA">BSBA</option>
+                                    <option value="BSOA">BSOA</option>
+                                    <option value="BEEd">BEEd</option>
+                                    <option value="BSEd">BSEd</option>
+                                    <option value="AB PolSci">AB PolSci</option>
+                                    <option value="BSCrim">BSCrim</option>
+                                    <option value="BSHRM">BSHRM</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -441,6 +529,9 @@
                                     Year Level
                                 </th>
                                 <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Course
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Uploaded
                                 </th>
                                 <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -450,7 +541,9 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php foreach ($resources as $resource): ?>
-                                <tr class="resource-row hover:bg-gray-50 transition-colors" data-year="<?php echo $resource['year_level']; ?>">
+                                <tr class="resource-row hover:bg-gray-50 transition-colors" 
+                                    data-year="<?php echo $resource['year_level']; ?>" 
+                                    data-course="<?php echo $resource['course'] ?? ''; ?>">
                                     <td class="px-6 py-5">
                                         <div class="flex items-center">
                                             <?php
@@ -491,6 +584,11 @@
                                     </td>
                                     <td class="px-6 py-5 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900"><?php echo $resource['year_level']; ?></div>
+                                    </td>
+                                    <td class="px-6 py-5 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                            <?php echo isset($resource['course']) ? $resource['course'] : 'N/A'; ?>
+                                        </span>
                                     </td>
                                     <td class="px-6 py-5 whitespace-nowrap">
                                         <div class="text-sm text-gray-900"><?php echo date('M d, Y', strtotime($resource['upload_date'])); ?></div>
@@ -542,7 +640,9 @@
             // Filter dropdown
             const filterBtn = document.getElementById('filterBtn');
             const filterMenu = document.getElementById('filterMenu');
-            const filterOptions = document.querySelectorAll('.filter-option');
+            const yearFilter = document.getElementById('yearFilter');
+            const courseFilter = document.getElementById('courseFilter');
+            const applyFilters = document.getElementById('applyFilters');
             const resourceRows = document.querySelectorAll('.resource-row');
             const resourceCount = document.getElementById('resourceCount');
             
@@ -585,23 +685,23 @@
                     }
                 });
                 
-                // Filter options
-                filterOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        // Update active state
-                        filterOptions.forEach(opt => opt.classList.remove('active', 'bg-blue-50', 'text-blue-700'));
-                        this.classList.add('active', 'bg-blue-50', 'text-blue-700');
-                        
-                        // Get selected year
-                        const selectedYear = this.getAttribute('data-year');
+                // Apply filters
+                if (applyFilters) {
+                    applyFilters.addEventListener('click', function() {
+                        const selectedYear = yearFilter.value;
+                        const selectedCourse = courseFilter.value;
                         
                         // Filter table rows
                         let visibleCount = 0;
                         
                         resourceRows.forEach(row => {
                             const yearLevel = row.getAttribute('data-year');
+                            const courseName = row.getAttribute('data-course');
                             
-                            if (selectedYear === 'all' || yearLevel === selectedYear) {
+                            const yearMatch = selectedYear === 'all' || yearLevel === selectedYear;
+                            const courseMatch = selectedCourse === 'all' || courseName === selectedCourse;
+                            
+                            if (yearMatch && courseMatch) {
                                 row.classList.remove('hidden');
                                 visibleCount++;
                             } else {
@@ -615,7 +715,7 @@
                         // Close dropdown
                         filterMenu.classList.add('hidden');
                     });
-                });
+                }
             }
             
             // Handle resource type change
