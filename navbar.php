@@ -21,6 +21,8 @@
                         $pageTitle = "Lab Resources";
                     } elseif ($currentPage == 'lab_schedule.php') {
                         $pageTitle = "Lab Schedule";
+                    } elseif ($currentPage == 'reservation.php') {
+                        $pageTitle = "Reservation";
                     }
                     
                 ?>
@@ -141,7 +143,7 @@
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
                                 
-                <a href="#" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'reservation.php' ? 'active' : '' ?>">
+                <a href="reservation.php" class="nav-item group w-full md:w-auto text-center md:text-left px-1 py-2 rounded-lg transition-all duration-200 <?= basename($_SERVER['PHP_SELF']) == 'reservation.php' ? 'active' : '' ?>">
                     <i class="fas fa-calendar-check mr-1"></i> Reservation
                     <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600"></span>
                 </a>
