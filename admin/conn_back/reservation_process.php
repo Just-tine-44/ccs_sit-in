@@ -119,13 +119,13 @@ if (isset($_POST['toggle_pc'])) {
     
     if ($check_result->num_rows > 0) {
         // Update existing computer
-        $update_query = "UPDATE lab_computers SET status = ? WHERE lab_room = ? AND pc_number = ?";
+        $update_query = "UPDATE lab_computers SET status = ?, last_updated = NOW() WHERE lab_room = ? AND pc_number = ?";
         $update_stmt = $conn->prepare($update_query);
         $update_stmt->bind_param("sss", $new_status, $lab_room, $pc_id);
         $update_stmt->execute();
     } else {
         // Insert new computer
-        $insert_query = "INSERT INTO lab_computers (lab_room, pc_number, status) VALUES (?, ?, ?)";
+        $insert_query = "INSERT INTO lab_computers (lab_room, pc_number, status, last_updated) VALUES (?, ?, ?, NOW())";
         $insert_stmt = $conn->prepare($insert_query);
         $insert_stmt->bind_param("sss", $lab_room, $pc_id, $new_status);
         $insert_stmt->execute();
@@ -346,7 +346,7 @@ if (isset($_POST['approve_request'])) {
         
         if ($check_pc_result->num_rows > 0) {
             // Update existing computer with appropriate status
-            $update_old_query = "UPDATE lab_computers SET status = ? WHERE lab_room = ? AND pc_number = ?";
+            $update_old_query = "UPDATE lab_computers SET status = ?, last_updated = NOW() WHERE lab_room = ? AND pc_number = ?";
             $update_old_stmt = $conn->prepare($update_old_query);
             $update_old_stmt->bind_param("sss", $pc_status, $lab_room, $pc_number);
             if (!$update_old_stmt->execute()) {
@@ -354,7 +354,7 @@ if (isset($_POST['approve_request'])) {
             }
         } else {
             // Insert new computer with appropriate status
-            $insert_pc_query = "INSERT INTO lab_computers (lab_room, pc_number, status) VALUES (?, ?, ?)";
+            $insert_pc_query = "INSERT INTO lab_computers (lab_room, pc_number, status, last_updated) VALUES (?, ?, ?, NOW())";
             $insert_pc_stmt = $conn->prepare($insert_pc_query);
             $insert_pc_stmt->bind_param("sss", $lab_room, $pc_number, $pc_status);
             if (!$insert_pc_stmt->execute()) {
@@ -375,7 +375,13 @@ if (isset($_POST['approve_request'])) {
                         $admin_username_result->fetch_assoc()['username'] : "Unknown";
         
         error_log("Approval successful for reservation #$request_id by admin: $admin_username (ID: $admin_id)");
-        echo json_encode(['success' => true]);
+        echo json_encode([
+            'success' => true, 
+            'pc_status' => $pc_status, 
+            'lab_room' => $lab_room,
+            'pc_number' => $pc_number,
+            'tooltipText' => 'Reserved for Future Use - This PC is booked for an upcoming reservation' // Add explicit tooltip text
+        ]);
         exit;
         
     } catch (Exception $e) {

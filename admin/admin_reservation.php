@@ -242,61 +242,84 @@
                     <div class="p-5">
                         <h3 class="text-sm font-medium text-gray-700 mb-4">Room <?php echo $selected_lab; ?> Computers</h3>
                         <div class="pc-grid max-h-[500px] overflow-y-auto pr-2 custom-scrollbar pb-2" id="pcGrid">
-                                <?php foreach($computers as $pc_num => $pc): 
-                                    $status = $pc['status']; 
+                            <?php foreach($computers as $pc_num => $pc): 
+                                $status = $pc['status']; 
+                                
+                                if ($status == 'available') {
+                                    $statusColor = 'bg-green-500';
+                                    $hoverColor = 'hover:bg-green-600';
+                                    $icon = 'fa-check-circle';
+                                    $nextStatus = 'used';
+                                    $tooltipText = 'Available - Click to mark as In Use';
+                                } 
+                                else if ($status == 'used') {
+                                    $statusColor = 'bg-red-500';
+                                    $hoverColor = 'hover:bg-red-600';
+                                    $icon = 'fa-times-circle';
+                                    $nextStatus = 'available';
+                                    $tooltipText = 'Currently In Use - Click to mark as Available';
+                                }
+                                else if ($status == 'reserved') {
+                                    $statusColor = 'bg-purple-500';
+                                    $hoverColor = 'hover:bg-purple-600';
+                                    $icon = 'fa-calendar-check';
+                                    $nextStatus = 'available';
+                                    $tooltipText = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
+                                }
+                                else {
+                                    $statusColor = 'bg-gray-400';
+                                    $hoverColor = 'hover:bg-gray-500';
+                                    $icon = 'fa-question-circle';
+                                    $nextStatus = 'available';
+                                    $tooltipText = 'Status Unknown - Click to mark as Available';
+                                }
+                            ?>
+                            <div class="pc-item" data-status="<?php echo $status; ?>" data-pc-num="<?php echo $pc_num; ?>">
+                                <button type="button" class="pc-button toggle-pc-btn <?php echo $statusColor . ' ' . $hoverColor; ?> text-white shadow-sm btn-transition relative group"
+                                    data-pc-id="<?php echo $pc_num; ?>"
+                                    data-new-status="<?php echo $nextStatus; ?>"
+                                    data-lab-room="<?php echo $selected_lab; ?>"
+                                    title="<?php echo $tooltipText; ?>">
+                                    <i class="fas <?php echo $icon; ?> mb-1 text-lg"></i>
+                                    <span class="text-xs font-medium">PC<?php echo $pc_num; ?></span>
                                     
-                                    if ($status == 'available') {
-                                        $statusColor = 'bg-green-500';
-                                        $hoverColor = 'hover:bg-green-600';
-                                        $icon = 'fa-check-circle';
-                                        $nextStatus = 'used';
-                                    } 
-                                    else if ($status == 'used') {
-                                        $statusColor = 'bg-red-500';
-                                        $hoverColor = 'hover:bg-red-600';
-                                        $icon = 'fa-times-circle';
-                                        $nextStatus = 'available';
-                                    }
-                                    else if ($status == 'reserved') {
-                                        $statusColor = 'bg-purple-500';
-                                        $hoverColor = 'hover:bg-purple-600';
-                                        $icon = 'fa-calendar-check';
-                                        $nextStatus = 'available';
-                                    }
-                                    else {
-                                        $statusColor = 'bg-gray-400';
-                                        $hoverColor = 'hover:bg-gray-500';
-                                        $icon = 'fa-question-circle';
-                                        $nextStatus = 'available';
-                                    }
-                                ?>
-                                <div class="pc-item" data-status="<?php echo $status; ?>" data-pc-num="<?php echo $pc_num; ?>">
-                                    <button type="button" class="pc-button toggle-pc-btn <?php echo $statusColor . ' ' . $hoverColor; ?> text-white shadow-sm btn-transition"
-                                        data-pc-id="<?php echo $pc_num; ?>"
-                                        data-new-status="<?php echo $nextStatus; ?>"
-                                        data-lab-room="<?php echo $selected_lab; ?>">
-                                        <i class="fas <?php echo $icon; ?> mb-1 text-lg"></i>
-                                        <span class="text-xs font-medium">PC<?php echo $pc_num; ?></span>
-                                    </button>
-                                </div>
+                                    <!-- Enhanced Tooltip -->
+                                    <div class="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 z-50 pointer-events-none">
+                                        <div class="bg-gray-900 text-white text-xs rounded py-1.5 px-2 shadow-lg">
+                                            <p class="font-medium"><?php echo $tooltipText; ?></p>
+                                            <?php if($status == 'reserved'): ?>
+                                            <p class="text-purple-300 mt-1 text-[10px]">Auto-resets to Available after 30 minutes</p>
+                                            <?php endif; ?>
+                                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
                             <?php endforeach; ?>
                         </div>
                     </div>
                     
                     <!-- Computer Status Legend -->
-                    <div class="px-5 py-3 bg-gray-50 border-t border-gray-200 flex justify-between text-xs text-gray-600">
-                        <div class="flex items-center">
-                            <span class="w-3 h-3 bg-green-500 rounded-full inline-block mr-1.5"></span>
-                            Available
+                    <div class="px-5 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-600">
+                        <div class="flex flex-wrap gap-x-6 gap-y-2">
+                            <div class="flex items-center">
+                                <span class="w-3 h-3 bg-green-500 rounded-full inline-block mr-1.5"></span>
+                                <span class="font-medium">Available</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-3 h-3 bg-red-500 rounded-full inline-block mr-1.5"></span>
+                                <span class="font-medium">In Use</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-3 h-3 bg-purple-500 rounded-full inline-block mr-1.5"></span>
+                                <span class="font-medium">Reserved</span>
+                                <span class="ml-1 text-[10px] text-gray-500">(Future Reservation)</span>
+                            </div>
                         </div>
-                        <div class="flex items-center">
-                            <span class="w-3 h-3 bg-red-500 rounded-full inline-block mr-1.5"></span>
-                            In Use
-                        </div>
-                        <div class="flex items-center">
-                            <span class="w-3 h-3 bg-purple-500 rounded-full inline-block mr-1.5"></span>
-                            Reserved
-                        </div>
+                        <p class="mt-2 text-[10px] text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Reserved PCs automatically return to Available status after 30 minutes
+                        </p>
                     </div>
                 </div>
             </div>
@@ -549,7 +572,46 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {        
+        // Check URL parameters for preserved PC status
+        const urlParams = new URLSearchParams(window.location.search);
+        const preservePc = urlParams.get('preserve_pc');
+        const preserveLab = urlParams.get('preserve_lab');
+        const preserveStatus = urlParams.get('preserve_status');
+
+        // If we have preserved status parameters, apply them immediately
+        if (preservePc && preserveLab && preserveStatus) {
+            // Find the PC button
+            setTimeout(() => {
+                const pcButton = document.querySelector(
+                    `.toggle-pc-btn[data-pc-id="${preservePc}"][data-lab-room="${preserveLab}"]`
+                );
+                
+                if (pcButton) {
+                    // Update the button's appearance to match the preserved status
+                    const parentItem = pcButton.closest('.pc-item');
+                    
+                    // Remove all status classes
+                    pcButton.classList.remove('bg-green-500', 'bg-red-500', 'bg-purple-500', 'bg-gray-400');
+                    pcButton.classList.remove('hover:bg-green-600', 'hover:bg-red-600', 'hover:bg-purple-600', 'hover:bg-gray-500');
+                    
+                    // Apply the preserved status
+                    if (preserveStatus === 'reserved') {
+                        pcButton.classList.add('bg-purple-500', 'hover:bg-purple-600');
+                        const icon = pcButton.querySelector('i');
+                        if (icon) icon.className = 'fas fa-calendar-check mb-1 text-lg';
+                        pcButton.setAttribute('data-new-status', 'available');
+                        parentItem.setAttribute('data-status', 'reserved');
+                    }
+                }
+                
+                // Clean up URL after applying preserved status
+                const cleanUrl = window.location.href.split('?')[0] + 
+                    (urlParams.has('lab') ? '?lab=' + urlParams.get('lab') : '');
+                window.history.replaceState({}, document.title, cleanUrl);
+            }, 100); // Small delay to ensure DOM is fully loaded
+        }
+
         // Attach event listeners to PC toggle buttons
         attachPCToggleListeners();
         
@@ -874,13 +936,37 @@
                         })
                         .then(data => {
                             if (data.success) {
+                                // Get the PC button element in the grid
+                                const pcButton = document.querySelector(`.toggle-pc-btn[data-pc-id="${data.pc_number}"][data-lab-room="${data.lab_room}"]`);
+                                
+                                if (pcButton) {
+                                    // Update the button's appearance to match the reserved status
+                                    const parentItem = pcButton.closest('.pc-item');
+                                    
+                                    // Remove all status classes
+                                    pcButton.classList.remove('bg-green-500', 'bg-red-500', 'bg-purple-500', 'bg-gray-400');
+                                    pcButton.classList.remove('hover:bg-green-600', 'hover:bg-red-600', 'hover:bg-purple-600', 'hover:bg-gray-500');
+                                    
+                                    // Add the appropriate class based on returned status
+                                    pcButton.classList.add('bg-purple-500', 'hover:bg-purple-600');
+                                    const icon = pcButton.querySelector('i');
+                                    icon.className = 'fas fa-calendar-check mb-1 text-lg';
+                                    pcButton.setAttribute('data-new-status', 'available');
+                                    parentItem.setAttribute('data-status', 'reserved');
+                                }
+                                
                                 Swal.fire({
                                     title: 'Approved!',
                                     text: 'The reservation has been approved successfully.',
                                     icon: 'success',
                                     confirmButtonColor: '#3085d6'
                                 }).then(() => {
-                                    location.reload();
+                                    // Instead of a full page reload, we'll reload with a PC status parameter
+                                    window.location.href = window.location.href + 
+                                        (window.location.href.includes('?') ? '&' : '?') + 
+                                        'preserve_pc=' + data.pc_number + 
+                                        '&preserve_lab=' + data.lab_room + 
+                                        '&preserve_status=reserved';
                                 });
                             } else {
                                 showAlert('Error', data.message || 'An error occurred while approving the reservation.', 'error');
@@ -1022,42 +1108,56 @@
     // Helper function to create PC buttons
     // In your <script> section, update the createPCButton function:
     function createPCButton(pcNumber, status, labRoom) {
-        let statusColor, hoverColor, icon, nextStatus;
-    
+        let statusColor, hoverColor, icon, nextStatus, tooltipText;
+
         if (status === 'available') {
             statusColor = 'bg-green-500';
             hoverColor = 'hover:bg-green-600';
             icon = 'fa-check-circle';
             nextStatus = 'used';
+            tooltipText = 'Available - Click to mark as In Use';
         } else if (status === 'used') {
             statusColor = 'bg-red-500';
             hoverColor = 'hover:bg-red-600';
             icon = 'fa-times-circle';
             nextStatus = 'available';
+            tooltipText = 'Currently In Use - Click to mark as Available';
         } else if (status === 'reserved') {
             statusColor = 'bg-purple-500';
             hoverColor = 'hover:bg-purple-600';
             icon = 'fa-calendar-check';
             nextStatus = 'available';
+            tooltipText = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
         } else {
             statusColor = 'bg-gray-400';
             hoverColor = 'hover:bg-gray-500';
             icon = 'fa-question-circle';
             nextStatus = 'available';
+            tooltipText = 'Status Unknown - Click to mark as Available';
         }
-        
+
         const pcItem = document.createElement('div');
         pcItem.className = 'pc-item';
         pcItem.setAttribute('data-status', status);
         pcItem.setAttribute('data-pc-num', pcNumber);
         
         pcItem.innerHTML = `
-            <button type="button" class="pc-button toggle-pc-btn ${statusColor} ${hoverColor} text-white shadow-sm btn-transition"
+            <button type="button" class="pc-button toggle-pc-btn ${statusColor} ${hoverColor} text-white shadow-sm btn-transition relative group"
                 data-pc-id="${pcNumber}"
                 data-new-status="${nextStatus}"
-                data-lab-room="${labRoom}">
+                data-lab-room="${labRoom}"
+                title="${tooltipText}">
                 <i class="fas ${icon} mb-1 text-lg"></i>
                 <span class="text-xs font-medium">PC${pcNumber}</span>
+                
+                <!-- Enhanced Tooltip -->
+                <div class="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 z-50 pointer-events-none">
+                    <div class="bg-gray-900 text-white text-xs rounded py-1.5 px-2 shadow-lg">
+                        <p class="font-medium">${tooltipText}</p>
+                        ${status === 'reserved' ? '<p class="text-purple-300 mt-1 text-[10px]">Auto-resets to Available after 30 minutes</p>' : ''}
+                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                </div>
             </button>
         `;
         
@@ -1125,6 +1225,24 @@
                             btn.classList.add('bg-purple-500', 'hover:bg-purple-600');
                             icon.className = 'fas fa-calendar-check mb-1 text-lg';
                             btn.setAttribute('data-new-status', 'available');
+                            btn.setAttribute('title', 'Reserved for Future Use - This PC is booked for an upcoming reservation');
+                            
+                            // Add this code to update the tooltip content inside the button
+                            const tooltip = btn.querySelector('.group-hover\\:opacity-100 .bg-gray-900 p:first-child');
+                            if (tooltip) {
+                                tooltip.textContent = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
+                            }
+                            
+                            // Add the small text about auto-reset if not already present
+                            const tooltipContainer = btn.querySelector('.group-hover\\:opacity-100 .bg-gray-900');
+                            if (tooltipContainer) {
+                                if (!tooltipContainer.querySelector('.text-purple-300')) {
+                                    const autoResetText = document.createElement('p');
+                                    autoResetText.className = 'text-purple-300 mt-1 text-[10px]';
+                                    autoResetText.textContent = 'Auto-resets to Available after 30 minutes';
+                                    tooltipContainer.appendChild(autoResetText);
+                                }
+                            }
                         } else {
                             btn.classList.add('bg-gray-400', 'hover:bg-gray-500');
                             icon.className = 'fas fa-question-circle mb-1 text-lg';
@@ -1153,6 +1271,7 @@
                             icon: 'error'
                         });
                     }
+                    console.log('Response data:', data);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -1173,3 +1292,12 @@
 </script>
 </body>
 </html>
+
+<iframe src="conn_back/reset_pc.php" style="display:none;" id="resetFrame"></iframe>
+
+<script>
+    // Refresh the reset frame every 5 minutes
+    setInterval(function() {
+        document.getElementById('resetFrame').src = 'conn_back/reset_pc.php?t=' + new Date().getTime();
+    }, 300000);
+</script>
