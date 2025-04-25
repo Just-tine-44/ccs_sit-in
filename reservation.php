@@ -1,40 +1,5 @@
-<?php
-// Start session and include necessary connections/functions
-session_start();
-include('conn/dbcon.php');
-
-// Check if user is logged in
-if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
-    exit();
-}
-
-// Get user information - FIXED: Using 'users' table instead of 'students'
-$user_id = $_SESSION['user']['id'];
-$sql = "SELECT * FROM users WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-
-// Get remaining sessions from stud_session table
-$sql_sessions = "SELECT session FROM stud_session WHERE id = ?";
-$stmt_sessions = $conn->prepare($sql_sessions);
-$stmt_sessions->bind_param("i", $user_id);
-$stmt_sessions->execute();
-$result_sessions = $stmt_sessions->get_result();
-
-$remaining_sessions = 0;
-if ($result_sessions->num_rows > 0) {
-    $sessions_data = $result_sessions->fetch_assoc();
-    $remaining_sessions = $sessions_data['session'];
-}
-
-// Get available labs (placeholder - replace with actual query)
-$available_labs = ['524', '526', '528', '530', '542', '544', '517'];
-
-// Form submission will be handled by AJAX
+<?php 
+    include("connection/reservation_back.php");
 ?>
 
 <!DOCTYPE html>
@@ -167,6 +132,21 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
         .card-content {
             flex-grow: 1;
         }
+        
+        .pc-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .pc-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .pc-btn.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -186,7 +166,7 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
             </p>
         </div>
         
-        <!-- Info Cards Row - MOVED TO THE TOP -->
+        <!-- Info Cards Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8 animate-fade-in" style="animation-delay: 0.1s;">
             <!-- Sessions Balance -->
             <div class="form-card rounded-2xl p-5 reservation-shadow animate-scale-in info-card">
@@ -280,12 +260,6 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                             <span class="text-sm text-gray-600">Arrive 5 minutes before your scheduled time slot</span>
                         </li>
                         <li class="flex items-start">
-                            <div class="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                                <i class="fas fa-check text-green-600 text-xs"></i>
-                            </div>
-                            <span class="text-sm text-gray-600">Cancel reservations at least 2 hours before the scheduled time</span>
-                        </li>
-                        <li class="flex items-start">
                             <div class="h-5 w-5 rounded-full bg-amber-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
                                 <i class="fas fa-exclamation text-amber-600 text-xs"></i>
                             </div>
@@ -367,7 +341,7 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                                     <option value="ASP.Net">ASP.Net</option>
                                     <option value="Database">Database</option>
                                     <option value="Digital Logic & Design">Digital Logic & Design</option>
-                                    <option value="Embedded System % IOT">Embedded System % IOT</option>
+                                    <option value="Embedded System & IOT">Embedded System & IOT</option>
                                     <option value="Python Programming">Python Programming</option>
                                     <option value="Systems Integration & Architecture">Systems Integration & Architecture</option>
                                     <option value="Computer Application">Computer Application</option>
@@ -417,6 +391,7 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                                     id="date" 
                                     name="date" 
                                     min="<?php echo date('Y-m-d'); ?>"
+                                    max="<?php echo date('Y-m-d', strtotime('+7 days')); ?>"
                                     class="pl-11 pr-4 py-3 block w-full border border-gray-300 rounded-lg text-gray-700 input-focus"
                                     required
                                 >
@@ -426,9 +401,9 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                             </div>
                         </div>
                         
-                        <!-- Time In (Changed to time input with validation) -->
+                        <!-- Time In (Modified to remove end time assumptions) -->
                         <div class="animate-fade-in" style="animation-delay: 0.55s;">
-                            <label for="timeIn" class="block text-sm font-medium text-gray-700 mb-2">Time In</label>
+                            <label for="timeIn" class="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
                             <div class="relative">
                                 <input 
                                     type="time" 
@@ -441,14 +416,29 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                                     <i class="fas fa-clock input-icon"></i>
                                 </div>
                                 <div class="absolute right-0 top-0 mt-2 mr-3">
-                                    <span class="text-xs text-gray-500">(7:00 AM - 11:59 PM)</span>
+                                    <span class="text-xs text-gray-500">(7:00 AM - 7:00 PM)</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
+                    <!-- Computer Selection -->
+                    <div class="animate-fade-in" id="pcSelectionContainer" style="animation-delay: 0.6s; display: none;">
+                        <div class="mt-5">
+                            <h3 class="text-md font-semibold text-gray-800 mb-2">Select a Computer</h3>
+                            <div id="pcSelectionMessage" class="text-center py-8 text-gray-500">
+                                <div class="animate-spin inline-block w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full mb-2"></div>
+                                <p>Please select lab room, date and time first</p>
+                            </div>
+                            <div id="pcGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 mt-3" style="display: none;">
+                                <!-- PC selection buttons will be inserted here dynamically -->
+                            </div>
+                            <input type="hidden" id="pcNumber" name="pcNumber" required>
+                        </div>
+                    </div>
+                    
                     <!-- Submit Button -->
-                    <div class="flex justify-end mt-8 animate-fade-in" style="animation-delay: 0.6s;">
+                    <div class="flex justify-end mt-8 animate-fade-in" style="animation-delay: 0.65s;">
                         <button 
                             type="submit" 
                             id="reserveButton"
@@ -466,23 +456,128 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('reservationForm');
+            const labRoomSelect = document.getElementById('labRoom');
+            const dateInput = document.getElementById('date');
             const timeInInput = document.getElementById('timeIn');
+            const pcSelectionContainer = document.getElementById('pcSelectionContainer');
+            const pcGrid = document.getElementById('pcGrid');
+            const pcSelectionMessage = document.getElementById('pcSelectionMessage');
+            const pcNumberInput = document.getElementById('pcNumber');
             const remainingSessions = <?php echo $remaining_sessions; ?>;
             
+            // Function to check PC availability and show PC selection grid
+            function checkAvailablePCs() {
+                const labRoom = labRoomSelect.value;
+                const date = dateInput.value;
+                const timeIn = timeInInput.value;
+                
+                if (!labRoom || !date || !timeIn) {
+                    return;
+                }
+                
+                // Show loading message
+                pcSelectionContainer.style.display = 'block';
+                pcGrid.style.display = 'none';
+                pcSelectionMessage.innerHTML = `
+                    <div class="animate-spin inline-block w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full mb-2"></div>
+                    <p>Loading available computers...</p>
+                `;
+                
+                // Clear previous selection
+                pcNumberInput.value = '';
+                
+                // Fetch available PCs via AJAX
+                fetch(`reservation.php?get_available_pcs=1&lab_room=${labRoom}&date=${date}&time=${timeIn}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            const availablePCs = result.data;
+                            
+                            // Clear the grid
+                            pcGrid.innerHTML = '';
+                            
+                            if (availablePCs.length === 0) {
+                                pcGrid.style.display = 'none';
+                                pcSelectionMessage.innerHTML = `
+                                    <i class="fas fa-exclamation-circle text-amber-500 text-3xl mb-2"></i>
+                                    <p>No computers are available in this lab room at the selected time.</p>
+                                    <p class="text-sm mt-2">Please try a different time or lab.</p>
+                                `;
+                                return;
+                            }
+                            
+                            // Create PC selection buttons
+                            availablePCs.forEach(pc => {
+                                const pcButton = document.createElement('button');
+                                pcButton.type = 'button';
+                                pcButton.className = 'pc-btn p-2 border border-gray-200 rounded-lg flex flex-col items-center justify-center hover:bg-gray-50 focus:outline-none';
+                                pcButton.dataset.pcNumber = pc.pc_number;
+                                pcButton.innerHTML = `
+                                    <i class="fas fa-desktop text-green-500 mb-1"></i>
+                                    <span class="text-xs font-medium">PC ${pc.pc_number}</span>
+                                `;
+                                
+                                // Add click event to select PC
+                                pcButton.addEventListener('click', function() {
+                                    // Remove selected class from all buttons
+                                    document.querySelectorAll('.pc-btn.selected').forEach(btn => {
+                                        btn.classList.remove('selected');
+                                    });
+                                    
+                                    // Add selected class to this button
+                                    this.classList.add('selected');
+                                    
+                                    // Set hidden input value
+                                    pcNumberInput.value = this.dataset.pcNumber;
+                                });
+                                
+                                pcGrid.appendChild(pcButton);
+                            });
+                            
+                            // Show the PC grid
+                            pcGrid.style.display = 'grid';
+                            pcSelectionMessage.style.display = 'none';
+                        } else {
+                            pcGrid.style.display = 'none';
+                            pcSelectionMessage.innerHTML = `
+                                <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
+                                <p>Error loading available computers:</p>
+                                <p class="text-sm mt-2">${result.message}</p>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        pcGrid.style.display = 'none';
+                        pcSelectionMessage.innerHTML = `
+                            <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
+                            <p>Error loading available computers.</p>
+                            <p class="text-sm mt-2">Please try again later.</p>
+                        `;
+                    });
+            }
+            
+            // Event listeners for lab room, date and time selection
+            labRoomSelect.addEventListener('change', checkAvailablePCs);
+            dateInput.addEventListener('change', checkAvailablePCs);
+            timeInInput.addEventListener('change', checkAvailablePCs);
+            
+            // Form submission handler
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 // Get form values
                 const purpose = document.getElementById('purpose').value;
-                const labRoom = document.getElementById('labRoom').value;
-                const date = document.getElementById('date').value;
+                const labRoom = labRoomSelect.value;
+                const date = dateInput.value;
                 const timeIn = timeInInput.value;
+                const pcNumber = pcNumberInput.value;
                 
                 // Basic validation
-                if (!purpose || !labRoom || !date || !timeIn) {
+                if (!purpose || !labRoom || !date || !timeIn || !pcNumber) {
                     Swal.fire({
                         title: 'Missing Information',
-                        text: 'Please fill in all required fields.',
+                        text: 'Please fill in all required fields, including selecting a computer.',
                         icon: 'warning',
                         confirmButtonColor: '#3085d6'
                     });
@@ -509,11 +604,22 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                 const timeInMinutes = hours * 60 + minutes;
                 const earlyMorningStart = 0; // 12:00 AM
                 const earlyMorningEnd = 6 * 60 + 30; // 6:30 AM
+                const eveningCutoff = 19 * 60; // 7:00 PM
                 
                 if (timeInMinutes >= earlyMorningStart && timeInMinutes <= earlyMorningEnd) {
                     Swal.fire({
                         title: 'Invalid Time',
                         text: 'The lab is closed between 12:00 AM and 6:30 AM. Please select a time during operating hours.',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    return;
+                }
+                
+                if (timeInMinutes >= eveningCutoff) {
+                    Swal.fire({
+                        title: 'Invalid Time',
+                        text: 'Reservations cannot be made after 7:00 PM. Please select an earlier time.',
                         icon: 'warning',
                         confirmButtonColor: '#3085d6'
                     });
@@ -535,49 +641,101 @@ $available_labs = ['524', '526', '528', '530', '542', '544', '517'];
                     return;
                 }
                 
-                // Format time for display in 12-hour format
-                let displayHours = hours % 12;
-                if (displayHours === 0) displayHours = 12;
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                // Prepare form data for AJAX submission
+                const formData = new FormData();
+                formData.append('submit_reservation', '1');
+                formData.append('purpose', purpose);
+                formData.append('labRoom', labRoom);
+                formData.append('pcNumber', pcNumber);
+                formData.append('date', date);
+                formData.append('timeIn', timeIn);
                 
-                // Success message (normally this would be after AJAX call to backend)
-                Swal.fire({
-                    title: 'Reservation Confirmed',
-                    html: `
-                        <div class="text-left p-1">
-                            <div class="mb-3 pb-3 border-b border-gray-200">
-                                <p class="text-sm text-gray-500 mb-1">Reservation Details:</p>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="font-semibold text-gray-700">Lab Room:</div>
-                                    <div>${labRoom}</div>
-                                    <div class="font-semibold text-gray-700">Date:</div>
-                                    <div>${new Date(date).toLocaleDateString()}</div>
-                                    <div class="font-semibold text-gray-700">Time:</div>
-                                    <div>${displayTime}</div>
-                                    <div class="font-semibold text-gray-700">Purpose:</div>
-                                    <div>${purpose}</div>
+                // Show loading indicator
+                const submitBtn = document.getElementById('reserveButton');
+                const originalBtnContent = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <div class="inline-block align-middle w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></div>
+                    Processing...
+                `;
+                
+                // Submit via AJAX
+                fetch('reservation.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnContent;
+                    
+                    if (result.success) {
+                        // Format time for display in 12-hour format
+                        let displayHours = hours % 12;
+                        if (displayHours === 0) displayHours = 12;
+                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                        const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                        
+                        // Success message
+                        Swal.fire({
+                            title: 'Reservation Submitted',
+                            html: `
+                                <div class="text-left p-1">
+                                    <div class="mb-3 pb-3 border-b border-gray-200">
+                                        <p class="text-sm text-gray-500 mb-1">Reservation Details:</p>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div class="font-semibold text-gray-700">Lab Room:</div>
+                                            <div>${labRoom}</div>
+                                            <div class="font-semibold text-gray-700">Computer:</div>
+                                            <div>PC ${pcNumber}</div>
+                                            <div class="font-semibold text-gray-700">Date:</div>
+                                            <div>${new Date(date).toLocaleDateString()}</div>
+                                            <div class="font-semibold text-gray-700">Time:</div>
+                                            <div>${displayTime}</div>
+                                            <div class="font-semibold text-gray-700">Purpose:</div>
+                                            <div>${purpose}</div>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-amber-600 flex items-center">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Your reservation is pending approval by an administrator.
+                                    </p>
                                 </div>
-                            </div>
-                            <p class="text-sm text-green-600 flex items-center">
-                                <i class="fas fa-check-circle mr-2"></i>
-                                Your reservation has been confirmed!
-                            </p>
-                        </div>
-                    `,
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Done'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Normally we would redirect or reload after server processing
-                        // For demo, we'll just reset the form
-                        form.reset();
+                            `,
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Done'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Reload page to reflect updated session count
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        // Error message
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.message || 'An error occurred while submitting your reservation.',
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6'
+                        });
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnContent;
+                    
+                    // Show error message
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again later.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
                 });
-                
-                // In a real implementation, you would send the data to the server via AJAX here
-                // and handle the response accordingly
             });
         });
     </script>

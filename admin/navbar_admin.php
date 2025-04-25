@@ -96,7 +96,7 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
                     <i class="fas fa-comment-alt mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Feedback</span>
                 </a>
-                <a href="#" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                <a href="admin_reservation.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-calendar-check mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Reservation</span>
                 </a>

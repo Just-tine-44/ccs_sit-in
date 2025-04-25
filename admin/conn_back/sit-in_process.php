@@ -1,4 +1,5 @@
 <?php
+// filepath: c:\xampp\htdocs\login\admin\conn_back\sit-in_process.php
 session_start();
 
 if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) || 
@@ -9,8 +10,11 @@ if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) ||
 
 include(__DIR__ . '/../../conn/dbcon.php');
 
-// Handle student checkout/timeout
-if (isset($_POST['checkout'])) {
+// ==========================================
+// DIRECT SIT-IN CHECKOUT (NON-AJAX FALLBACK)
+// ==========================================
+// This handles form submissions for direct sit-ins when JavaScript is disabled
+if (isset($_POST['checkout']) && isset($_POST['sit_in_id'])) {
     $sit_in_id = $_POST['sit_in_id'];
     
     // Get the sit-in record to update
@@ -23,12 +27,19 @@ if (isset($_POST['checkout'])) {
     if ($result->num_rows > 0) {
         $sit_in = $result->fetch_assoc();
         $user_id = $sit_in['user_id'];
+        $check_in_time = $sit_in['check_in_time'];
         
         // Start transaction to ensure both operations succeed or fail together
         $conn->begin_transaction();
         
         try {
-            // 1. Update sit-in record to mark as completed
+            // Calculate the session duration for display in message
+            $now = new DateTime();
+            $check_in = new DateTime($check_in_time);
+            $interval = $check_in->diff($now);
+            $duration = $interval->format('%h hr %i min');
+            
+            // 1. Update sit-in record to mark as completed with current time
             $updateQuery = "UPDATE curr_sit_in SET check_out_time = NOW(), status = 'completed' WHERE sit_in_id = ?";
             $updateStmt = $conn->prepare($updateQuery);
             $updateStmt->bind_param("i", $sit_in_id);
@@ -43,7 +54,7 @@ if (isset($_POST['checkout'])) {
             // If everything succeeds, commit the transaction
             $conn->commit();
             
-            $_SESSION['message'] = "Student checked out and session count updated successfully";
+            $_SESSION['message'] = "Student checked out successfully. Session duration: " . $duration;
             $_SESSION['msg_type'] = "success";
         } catch (Exception $e) {
             // If any error occurs, rollback the transaction
@@ -58,11 +69,72 @@ if (isset($_POST['checkout'])) {
     }
     
     // Redirect to prevent form resubmission
-    header("Location: sit_in.php");
+    header("Location: ../sit_in.php");
     exit();
 }
 
-// Get all active sit-in sessions with student info
+// ==============================================
+// RESERVATION END SESSION (NON-AJAX FALLBACK)
+// ==============================================
+// This handles form submissions for reservations when JavaScript is disabled
+if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
+    $reservation_id = $_POST['reservation_id'];
+    
+    // Start transaction
+    $conn->begin_transaction();
+    
+    try {
+        // Get reservation details
+        $getDetailsQuery = "SELECT lab_room, pc_number, user_id FROM reservations WHERE reservation_id = ?";
+        $detailsStmt = $conn->prepare($getDetailsQuery);
+        $detailsStmt->bind_param("i", $reservation_id);
+        $detailsStmt->execute();
+        $detailsResult = $detailsStmt->get_result();
+        
+        if ($detailsResult->num_rows > 0) {
+            $reservationDetails = $detailsResult->fetch_assoc();
+            $lab_room = $reservationDetails['lab_room'];
+            $pc_number = $reservationDetails['pc_number'];
+            $user_id = $reservationDetails['user_id'];
+            
+            // Current time for the end time display
+            $current_time = date('g:i A');
+            
+            // Mark reservation as completed and set time_out to current time
+            $completeQuery = "UPDATE reservations SET status = 'completed', time_out = NOW(), updated_at = NOW() WHERE reservation_id = ?";
+            $completeStmt = $conn->prepare($completeQuery);
+            $completeStmt->bind_param("i", $reservation_id);
+            $completeStmt->execute();
+            
+            // Update PC status to available
+            $updatePCQuery = "UPDATE lab_computers SET status = 'available' WHERE lab_room = ? AND pc_number = ?";
+            $updatePCStmt = $conn->prepare($updatePCQuery);
+            $updatePCStmt->bind_param("ss", $lab_room, $pc_number);
+            $updatePCStmt->execute();
+            
+            $conn->commit();
+            
+            $_SESSION['message'] = "Reservation session ended successfully at " . $current_time;
+            $_SESSION['msg_type'] = "success";
+        } else {
+            throw new Exception("Reservation not found");
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['message'] = "Error ending reservation: " . $e->getMessage();
+        $_SESSION['msg_type'] = "error";
+    }
+    
+    // Redirect to prevent form resubmission
+    header("Location: ../sit_in.php");
+    exit();
+}
+
+// ==============================================
+// DATA RETRIEVAL FOR DISPLAY
+// ==============================================
+
+// Get all active direct sit-in sessions with student info
 $query = "SELECT s.sit_in_id, s.user_id, s.laboratory, s.purpose, s.check_in_time, 
                  u.idno, u.firstname, u.midname, u.lastname, u.course, u.level, 
                  ss.session as remaining_sessions
@@ -73,19 +145,42 @@ $query = "SELECT s.sit_in_id, s.user_id, s.laboratory, s.purpose, s.check_in_tim
           ORDER BY s.check_in_time DESC";
 $result = $conn->query($query);
 
-// Get active sit-in count for each lab
-$labCounts = [];
-$countQuery = "SELECT laboratory, COUNT(*) as count FROM curr_sit_in WHERE status = 'active' GROUP BY laboratory";
-$countResult = $conn->query($countQuery);
+// Get all reservation-based sessions (both active and upcoming)
+$reservationQuery = "SELECT r.reservation_id, r.lab_room, r.pc_number, r.purpose, 
+                    r.time_in, r.time_out, r.reservation_date, r.status,
+                    u.id as user_id, u.idno, u.firstname, u.midname, u.lastname, u.course, u.level
+                    FROM reservations r
+                    JOIN users u ON r.user_id = u.id
+                    WHERE r.status = 'approved' 
+                    AND r.reservation_date >= CURDATE() 
+                    ORDER BY r.reservation_date ASC, r.time_in ASC";
+$reservationResult = $conn->query($reservationQuery);
 
-if ($countResult->num_rows > 0) {
-    while ($row = $countResult->fetch_assoc()) {
-        $labCounts[$row['laboratory']] = $row['count'];
+// ==============================================
+// ADDITIONAL STATUS INFO FOR DISPLAY
+// ==============================================
+
+// Add additional status information for reservations (active or upcoming)
+if ($reservationResult && $reservationResult->num_rows > 0) {
+    $reservationData = [];
+    while ($row = $reservationResult->fetch_assoc()) {
+        // Add a status indicator (active or upcoming)
+        $current_time = date('H:i:s');
+        $current_date = date('Y-m-d');
+        $start_time = $row['time_in'];
+        $res_date = $row['reservation_date'];
+        
+        // Check if reservation is for today and has started
+        if ($current_date == $res_date && $current_time >= $start_time) {
+            $row['session_status'] = 'active';
+        } else {
+            $row['session_status'] = 'upcoming';
+        }
+        
+        $reservationData[] = $row;
     }
+    
+    // Reset the result to beginning so it can be used in sit_in.php
+    $reservationResult = $conn->query($reservationQuery);
 }
-
-// Get total active sit-ins
-$totalQuery = "SELECT COUNT(*) as total FROM curr_sit_in WHERE status = 'active'";
-$totalResult = $conn->query($totalQuery);
-$totalActive = $totalResult->fetch_assoc()['total'];
 ?>

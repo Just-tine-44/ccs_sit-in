@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2025 at 03:49 PM
+-- Generation Time: Apr 25, 2025 at 07:16 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -114,7 +114,149 @@ INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `che
 (22, 1, '530', 'PHP', '2025-04-08 09:44:45', '2025-04-08 09:45:02', 'completed'),
 (23, 8, '528', 'C#', '2025-04-08 10:25:49', '2025-04-08 10:26:03', 'completed'),
 (24, 5, '524', 'Other', '2025-04-08 10:31:47', '2025-04-08 10:32:04', 'completed'),
-(25, 8, '544', 'Systems Integration & Architecture', '2025-04-10 19:34:40', '2025-04-10 19:35:13', 'completed');
+(25, 8, '544', 'Systems Integration & Architecture', '2025-04-10 19:34:40', '2025-04-10 19:35:13', 'completed'),
+(26, 5, '530', 'Systems Integration & Architecture', '2025-04-25 00:48:36', '2025-04-25 00:48:47', 'completed'),
+(27, 2, '544', 'Computer Application', '2025-04-25 00:50:04', '2025-04-25 00:50:18', 'completed'),
+(28, 8, '528', 'Computer Application', '2025-04-25 00:56:37', '2025-04-25 00:56:45', 'completed'),
+(29, 7, '542', 'PHP', '2025-04-25 01:00:29', '2025-04-25 01:00:36', 'completed'),
+(30, 7, '530', 'Digital Logic & Design', '2025-04-25 01:05:27', '2025-04-25 01:05:36', 'completed'),
+(31, 10, '542', 'Systems Integration & Architecture', '2025-04-25 01:06:54', '2025-04-25 01:07:01', 'completed'),
+(32, 10, '528', 'Other', '2025-04-25 01:17:37', '2025-04-25 01:17:44', 'completed'),
+(33, 4, '524', 'Java Programming', '2025-04-25 09:35:19', '2025-04-25 09:35:26', 'completed'),
+(34, 8, '526', 'Computer Application', '2025-04-25 09:52:34', '2025-04-25 09:52:41', 'completed'),
+(35, 1, '542', 'Systems Integration & Architecture', '2025-04-25 11:06:18', '2025-04-25 05:06:40', 'completed'),
+(36, 3, '528', 'Embedded System % IOT', '2025-04-25 11:14:07', '2025-04-25 05:14:14', 'completed'),
+(37, 6, '526', 'Systems Integration & Architecture', '2025-04-25 11:25:55', '2025-04-25 05:26:01', 'completed'),
+(38, 9, '530', 'Systems Integration & Architecture', '2025-04-25 11:41:15', '2025-04-25 05:41:21', 'completed'),
+(39, 5, '542', 'Database', '2025-04-25 11:48:04', '2025-04-25 11:48:13', 'completed');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lab_computers`
+--
+
+CREATE TABLE `lab_computers` (
+  `id` int(11) NOT NULL,
+  `lab_room` varchar(10) NOT NULL,
+  `pc_number` varchar(10) NOT NULL,
+  `status` enum('available','used','maintenance') NOT NULL DEFAULT 'available',
+  `last_updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lab_computers`
+--
+
+INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_updated`) VALUES
+(1, '524', '1', 'available', '2025-04-24 11:41:14'),
+(2, '524', '2', 'available', '2025-04-24 11:41:15'),
+(3, '524', '3', 'available', '2025-04-24 11:41:16'),
+(4, '517', '1', 'available', '2025-04-24 12:53:50'),
+(5, '517', '2', 'available', '2025-04-25 04:03:00'),
+(6, '517', '3', 'available', '2025-04-24 12:53:53'),
+(7, '517', '4', 'available', '2025-04-25 02:56:24'),
+(8, '517', '5', 'available', '2025-04-24 15:14:17'),
+(9, '517', '6', 'available', '2025-04-25 02:55:57'),
+(10, '517', '7', 'available', '2025-04-24 12:53:57'),
+(11, '517', '8', 'available', '2025-04-25 02:13:15'),
+(12, '517', '9', 'available', '2025-04-25 01:44:39'),
+(13, '517', '10', 'used', '2025-04-24 16:15:55'),
+(14, '517', '11', 'used', '2025-04-24 12:54:11'),
+(15, '517', '12', 'used', '2025-04-24 12:54:11'),
+(16, '517', '13', 'used', '2025-04-24 12:54:14'),
+(17, '517', '14', 'used', '2025-04-24 12:54:14'),
+(18, '517', '15', 'used', '2025-04-24 14:50:59'),
+(19, '517', '16', 'used', '2025-04-24 12:54:10'),
+(20, '517', '17', 'used', '2025-04-24 12:54:12'),
+(21, '517', '18', 'used', '2025-04-24 12:54:12'),
+(22, '517', '19', 'used', '2025-04-24 12:54:12'),
+(23, '517', '20', 'used', '2025-04-24 12:54:13'),
+(24, '544', '1', 'available', '2025-04-24 16:21:04'),
+(25, '544', '2', 'available', '2025-04-24 16:21:10'),
+(26, '544', '3', 'available', '2025-04-25 00:34:03'),
+(27, '544', '4', 'available', '2025-04-25 00:34:04'),
+(28, '544', '5', 'available', '2025-04-25 00:34:04'),
+(29, '544', '6', 'available', '2025-04-25 00:34:05'),
+(30, '544', '7', 'available', '2025-04-25 00:34:08'),
+(31, '544', '8', 'available', '2025-04-25 00:34:07'),
+(32, '544', '9', 'available', '2025-04-25 00:34:08'),
+(33, '544', '10', 'available', '2025-04-24 16:21:04'),
+(34, '544', '11', 'available', '2025-04-24 16:21:05'),
+(35, '544', '12', 'available', '2025-04-24 16:21:05'),
+(36, '544', '13', 'available', '2025-04-24 16:21:05'),
+(37, '544', '14', 'available', '2025-04-24 16:21:06'),
+(38, '544', '15', 'available', '2025-04-24 16:21:06'),
+(39, '544', '50', 'used', '2025-04-24 12:55:12'),
+(40, '544', '49', 'used', '2025-04-24 12:55:11'),
+(41, '544', '48', 'used', '2025-04-24 12:55:11'),
+(42, '544', '47', 'used', '2025-04-24 12:55:11'),
+(43, '544', '46', 'used', '2025-04-24 12:55:10'),
+(44, '544', '42', 'used', '2025-04-24 12:55:09'),
+(45, '544', '43', 'used', '2025-04-24 12:55:10'),
+(46, '544', '44', 'used', '2025-04-24 12:55:08'),
+(47, '544', '45', 'used', '2025-04-24 12:55:07'),
+(48, '544', '41', 'used', '2025-04-24 12:55:09'),
+(49, '544', '36', 'used', '2025-04-24 12:55:04'),
+(50, '544', '37', 'used', '2025-04-24 12:55:05'),
+(51, '544', '38', 'used', '2025-04-24 12:55:05'),
+(52, '544', '39', 'used', '2025-04-24 12:55:07'),
+(53, '544', '40', 'used', '2025-04-24 12:55:06'),
+(54, '544', '35', 'used', '2025-04-24 12:55:03'),
+(55, '544', '34', 'used', '2025-04-24 12:55:03'),
+(56, '544', '33', 'used', '2025-04-24 12:55:02'),
+(57, '544', '31', 'used', '2025-04-24 12:55:02'),
+(58, '544', '32', 'used', '2025-04-24 12:55:02'),
+(59, '544', '26', 'available', '2025-04-24 16:21:22'),
+(60, '544', '27', 'maintenance', '2025-04-25 04:29:17'),
+(61, '544', '28', 'used', '2025-04-24 12:54:59'),
+(62, '544', '29', 'used', '2025-04-24 12:55:00'),
+(63, '544', '30', 'used', '2025-04-24 12:55:00'),
+(64, '544', '25', 'available', '2025-04-24 16:21:21'),
+(65, '544', '24', 'available', '2025-04-24 16:21:21'),
+(66, '544', '22', 'available', '2025-04-24 16:21:13'),
+(67, '544', '23', 'available', '2025-04-24 16:21:21'),
+(68, '544', '21', 'available', '2025-04-24 16:21:13'),
+(69, '544', '16', 'available', '2025-04-24 16:21:07'),
+(70, '544', '17', 'available', '2025-04-24 16:21:07'),
+(71, '544', '18', 'available', '2025-04-24 16:21:08'),
+(72, '544', '19', 'available', '2025-04-24 16:21:09'),
+(73, '544', '20', 'available', '2025-04-25 02:46:47'),
+(74, '517', '25', 'used', '2025-04-25 04:03:08'),
+(75, '517', '50', 'used', '2025-04-25 03:58:23'),
+(77, '524', '4', 'available', '2025-04-24 16:21:32'),
+(78, '524', '5', 'available', '2025-04-24 16:21:34'),
+(79, '524', '10', 'available', '2025-04-25 04:28:58'),
+(80, '524', '9', 'available', '2025-04-24 16:21:34'),
+(81, '517', '40', 'used', '2025-04-25 04:03:22'),
+(82, '517', '21', 'used', '2025-04-25 04:03:07'),
+(83, '517', '22', 'used', '2025-04-25 04:03:07'),
+(84, '517', '23', 'used', '2025-04-25 04:03:06'),
+(85, '517', '24', 'used', '2025-04-25 04:03:05'),
+(86, '517', '26', 'used', '2025-04-25 04:03:11'),
+(87, '517', '27', 'used', '2025-04-25 04:03:11'),
+(88, '517', '28', 'used', '2025-04-25 04:03:11'),
+(89, '517', '32', 'used', '2025-04-25 04:03:12'),
+(90, '517', '31', 'used', '2025-04-25 04:03:13'),
+(91, '517', '30', 'used', '2025-04-25 04:03:13'),
+(92, '517', '29', 'used', '2025-04-25 04:03:14'),
+(93, '517', '33', 'used', '2025-04-25 04:03:15'),
+(94, '517', '34', 'used', '2025-04-25 04:03:16'),
+(95, '517', '35', 'used', '2025-04-25 04:03:16'),
+(96, '517', '36', 'used', '2025-04-25 04:03:17'),
+(97, '517', '37', 'used', '2025-04-25 04:03:18'),
+(98, '517', '38', 'used', '2025-04-25 04:03:19'),
+(99, '517', '39', 'used', '2025-04-25 04:03:20'),
+(100, '517', '44', 'used', '2025-04-25 05:07:22'),
+(101, '517', '43', 'used', '2025-04-25 04:03:27'),
+(102, '517', '42', 'used', '2025-04-25 04:03:27'),
+(103, '517', '41', 'available', '2025-04-25 04:03:28'),
+(104, '517', '45', 'available', '2025-04-25 04:03:29'),
+(105, '517', '47', 'used', '2025-04-25 04:03:30'),
+(106, '517', '46', 'available', '2025-04-25 04:03:30'),
+(107, '517', '48', 'available', '2025-04-25 04:03:31'),
+(108, '517', '49', 'available', '2025-04-25 04:03:31'),
+(109, '528', '50', 'used', '2025-04-25 04:13:14');
 
 -- --------------------------------------------------------
 
@@ -160,6 +302,41 @@ CREATE TABLE `lab_schedules` (
   `uploaded_by` varchar(100) NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reservations`
+--
+
+CREATE TABLE `reservations` (
+  `reservation_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `lab_room` varchar(10) NOT NULL,
+  `pc_number` varchar(10) NOT NULL,
+  `purpose` varchar(255) NOT NULL,
+  `reservation_date` date NOT NULL,
+  `time_in` time NOT NULL,
+  `time_out` time DEFAULT NULL,
+  `status` enum('pending','approved','disapproved','completed','cancelled') NOT NULL DEFAULT 'pending',
+  `disapproval_reason` varchar(255) DEFAULT NULL,
+  `approved_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`reservation_id`, `user_id`, `lab_room`, `pc_number`, `purpose`, `reservation_date`, `time_in`, `time_out`, `status`, `disapproval_reason`, `approved_by`, `created_at`, `updated_at`) VALUES
+(1, 1, '544', '20', 'Database', '2025-04-27', '09:00:00', NULL, 'completed', NULL, 1, '2025-04-25 02:35:07', '2025-04-25 02:46:47'),
+(2, 11, '517', '4', 'Project Management', '2025-04-28', '15:00:00', '04:56:24', 'completed', NULL, 1, '2025-04-25 02:55:29', '2025-04-25 02:56:24'),
+(3, 1, '544', '27', 'Other', '2025-04-28', '08:00:00', NULL, 'approved', NULL, 1, '2025-04-25 02:59:57', '2025-04-25 03:00:41'),
+(4, 1, '517', '9', 'Systems Integration & Architecture', '2025-04-26', '07:00:00', NULL, 'disapproved', 'Conflicting schedule', 1, '2025-04-25 04:23:27', '2025-04-25 04:28:30'),
+(5, 2, '524', '10', 'Embedded System & IOT', '2025-04-26', '08:00:00', NULL, 'approved', NULL, 1, '2025-04-25 04:24:06', '2025-04-25 04:28:53'),
+(6, 3, '544', '27', 'Computer Application', '2025-04-30', '09:00:00', NULL, 'approved', NULL, 1, '2025-04-25 04:24:49', '2025-04-25 04:29:17'),
+(7, 5, '517', '44', 'Computer Application', '2025-04-30', '11:00:00', NULL, 'approved', NULL, 1, '2025-04-25 04:25:31', '2025-04-25 04:44:13');
 
 -- --------------------------------------------------------
 
@@ -222,17 +399,17 @@ CREATE TABLE `stud_session` (
 --
 
 INSERT INTO `stud_session` (`id`, `session`) VALUES
-(1, 30),
-(2, 30),
-(3, 30),
-(4, 30),
-(5, 30),
-(6, 30),
-(7, 30),
-(8, 30),
-(9, 30),
-(10, 30),
-(11, 30);
+(1, 24),
+(2, 27),
+(3, 28),
+(4, 29),
+(5, 26),
+(6, 29),
+(7, 27),
+(8, 27),
+(9, 29),
+(10, 27),
+(11, 29);
 
 -- --------------------------------------------------------
 
@@ -295,10 +472,25 @@ ALTER TABLE `curr_sit_in`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `lab_computers`
+--
+ALTER TABLE `lab_computers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `lab_pc_unique` (`lab_room`,`pc_number`);
+
+--
 -- Indexes for table `lab_schedules`
 --
 ALTER TABLE `lab_schedules`
   ADD PRIMARY KEY (`schedule_id`);
+
+--
+-- Indexes for table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD PRIMARY KEY (`reservation_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `approved_by` (`approved_by`);
 
 --
 -- Indexes for table `sit_in_ratings`
@@ -349,13 +541,25 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT for table `lab_computers`
+--
+ALTER TABLE `lab_computers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `lab_schedules`
 --
 ALTER TABLE `lab_schedules`
   MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reservations`
+--
+ALTER TABLE `reservations`
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`
@@ -390,6 +594,13 @@ ALTER TABLE `users`
 --
 ALTER TABLE `curr_sit_in`
   ADD CONSTRAINT `curr_sit_in_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`approved_by`) REFERENCES `admin` (`id`);
 
 --
 -- Constraints for table `sit_in_ratings`
