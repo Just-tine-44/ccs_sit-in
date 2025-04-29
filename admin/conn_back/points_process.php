@@ -141,8 +141,8 @@ if (isset($_POST['convert_points'])) {
 // Fetch all students with their point information
 $query = "SELECT u.id, u.idno, CONCAT(u.firstname, ' ', u.lastname) as name, u.email, u.level, u.course, u.profileImg, 
          (SELECT SUM(points_earned) FROM student_points WHERE user_id = u.id AND converted_to_session = 0) as current_points,
-         (SELECT COUNT(*) FROM student_points WHERE user_id = u.id) as total_points_earned,
-         (SELECT COUNT(*) FROM student_points WHERE user_id = u.id AND converted_to_session = 1) / 3 as sessions_earned,
+         (SELECT SUM(points_earned) FROM student_points WHERE user_id = u.id) as total_points_earned, 
+         (SELECT SUM(points_earned) FROM student_points WHERE user_id = u.id AND converted_to_session = 1) / 3 as sessions_earned,
          (SELECT session FROM stud_session WHERE id = u.id) as current_sessions
          FROM users u
          ORDER BY current_points DESC, name ASC";

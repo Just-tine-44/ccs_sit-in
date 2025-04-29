@@ -100,6 +100,20 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
                     <i class="fas fa-calendar-check mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Reservation</span>
                 </a>
+
+                   <!-- Theme Toggle Button -->
+                <div class="px-2 mr-2 border-r border-gray-200 dark:border-gray-700">
+                    <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-100 hover:bg-opacity-50 transition-colors">
+                        <!-- Sun icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 theme-icon-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <!-- Moon icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 theme-icon-dark hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
                 
                 <!-- User menu -->
                 <div class="relative ml-0 md:ml-2 mt-2 md:mt-0">
@@ -213,3 +227,362 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 </style>
+
+<style>
+    /* Dark mode styles - Improved for better contrast and readability */
+    :root {
+        --light-bg: #f9fafb;
+        --light-card: #ffffff;
+        --light-text: #374151;
+        --light-text-secondary: #6B7280;
+        --light-border: #e5e7eb;
+        --dark-bg: #111827;
+        --dark-card: #1f2937;
+        --dark-card-secondary: #374151;
+        --dark-text: #f3f4f6;
+        --dark-text-secondary: #d1d5db;
+        --dark-border: #374151;
+    }
+
+    body.dark-mode {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+    }
+
+    /* Card backgrounds */
+    body.dark-mode .bg-white {
+        background-color: var(--dark-card);
+    }
+
+    body.dark-mode .bg-gray-50,
+    body.dark-mode .bg-gray-100 {
+        background-color: var(--dark-card-secondary);
+    }
+
+    /* Text colors */
+    body.dark-mode .text-gray-700,
+    body.dark-mode .text-gray-800,
+    body.dark-mode .text-gray-900 {
+        color: var(--dark-text);
+    }
+
+    body.dark-mode .text-gray-500,
+    body.dark-mode .text-gray-600 {
+        color: var(--dark-text-secondary);
+    }
+
+    /* Borders */
+    body.dark-mode .border-gray-100,
+    body.dark-mode .border-gray-200 {
+        border-color: var(--dark-border);
+    }
+
+    /* Navbar-specific */
+    body.dark-mode nav.bg-white {
+        background-color: var(--dark-card);
+    }
+    
+    body.dark-mode .nav-link.hover\:bg-blue-50:hover {
+        background-color: rgba(59, 130, 246, 0.2);
+    }
+
+    /* Improved Table Elements */
+    body.dark-mode #recordsTable thead,
+    body.dark-mode #reservationsTable thead,
+    body.dark-mode table thead {
+        background-color: #1f2937 !important;
+        color: #f3f4f6 !important;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    body.dark-mode #recordsTable thead th,
+    body.dark-mode #reservationsTable thead th,
+    body.dark-mode table thead th {
+        color: #e5e7eb !important;
+        border-bottom-color: #374151 !important;
+    }
+
+    /* Table body cells */
+    body.dark-mode #recordsTable tbody td,
+    body.dark-mode #reservationsTable tbody td,
+    body.dark-mode table tbody td {
+        border-color: #374151 !important;
+        color: #e5e7eb !important;
+    }
+
+    body.dark-mode table tbody tr:hover {
+        background-color: #2d3748 !important;
+    }
+    
+    body.dark-mode .bg-white tbody {
+        background-color: #1f2937 !important;
+    }
+    
+    body.dark-mode .bg-white tbody tr {
+        background-color: #1f2937 !important;
+    }
+
+    /* Force the text color in the table cells that use text-gray-500 */
+    body.dark-mode table .text-sm.text-gray-500 {
+        color: #d1d5db !important;
+    }
+
+    /* Input Fields */
+    body.dark-mode input, 
+    body.dark-mode textarea, 
+    body.dark-mode select {
+        background-color: #1f2937;
+        border-color: #4b5563;
+        color: var(--dark-text);
+    }
+    
+    body.dark-mode input::placeholder, 
+    body.dark-mode textarea::placeholder {
+        color: #9ca3af;
+    }
+
+    /* Button Improvements */
+    body.dark-mode .bg-blue-50 {
+        background-color: rgba(59, 130, 246, 0.15);
+    }
+    
+    body.dark-mode .bg-red-50 {
+        background-color: rgba(239, 68, 68, 0.15);
+    }
+    
+    body.dark-mode .bg-green-50 {
+        background-color: rgba(16, 185, 129, 0.15);
+    }
+    
+    body.dark-mode .bg-yellow-50 {
+        background-color: rgba(245, 158, 11, 0.15);
+    }
+    
+    body.dark-mode .bg-purple-50 {
+        background-color: rgba(139, 92, 246, 0.15);
+    }
+    
+    body.dark-mode .hover\:bg-gray-100:hover {
+        background-color: #374151 !important;
+    }
+
+    /* Charts and Graphs */
+    body.dark-mode canvas {
+        filter: brightness(0.9) contrast(1.1);
+    }
+    
+    /* Status labels - ensure they remain visible */
+    body.dark-mode .bg-green-100 {
+        background-color: rgba(16, 185, 129, 0.2) !important;
+    }
+    
+    body.dark-mode .text-green-800 {
+        color: #4ade80 !important;
+    }
+    
+    body.dark-mode .bg-red-100 {
+        background-color: rgba(239, 68, 68, 0.2) !important;
+    }
+    
+    body.dark-mode .text-red-800 {
+        color: #f87171 !important;
+    }
+    
+    body.dark-mode .bg-yellow-100 {
+        background-color: rgba(245, 158, 11, 0.2) !important;
+    }
+    
+    body.dark-mode .text-yellow-800 {
+        color: #fcd34d !important;
+    }
+    
+    body.dark-mode .bg-blue-100 {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+    }
+    
+    body.dark-mode .text-blue-800 {
+        color: #60a5fa !important;
+    }
+
+    body.dark-mode .bg-purple-100 {
+        background-color: rgba(139, 92, 246, 0.2) !important;
+    }
+
+    body.dark-mode .text-purple-800 {
+        color: #a78bfa !important;
+    }
+    
+    body.dark-mode .bg-gray-100 {
+        background-color: rgba(107, 114, 128, 0.2) !important;
+    }
+    
+    /* Scrollbar styling */
+    body.dark-mode .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1f2937 !important;
+    }
+
+    body.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #4b5563 !important;
+    }
+
+    body.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #6b7280 !important;
+    }
+    
+    /* Keep status colors visible with brightness adjustment */
+    body.dark-mode .bg-green-500,
+    body.dark-mode .bg-red-500,
+    body.dark-mode .bg-purple-500,
+    body.dark-mode .bg-blue-500,
+    body.dark-mode .bg-yellow-500 {
+        filter: brightness(1.2);
+    }
+    
+    /* Dashboard cards and special elements */
+    body.dark-mode .border-l-4 {
+        border-left-width: 4px !important;
+    }
+    
+    body.dark-mode .bg-gradient-to-r {
+        opacity: 0.9;
+    }
+    
+    /* Fix for dropdown menus */
+    body.dark-mode #exportDropdown {
+        background-color: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+
+    body.dark-mode #exportDropdown button {
+        color: #e5e7eb !important;
+    }
+
+    body.dark-mode #exportDropdown button:hover {
+        background-color: #374151 !important;
+    }
+    
+    /* Fix "No records found" display */
+    body.dark-mode .text-center.py-10 .bg-gray-100 {
+        background-color: #374151 !important;
+    }
+
+    body.dark-mode .text-center.py-10 .text-gray-400 {
+        color: #9ca3af !important;
+    }
+    
+    /* Fix tabs */
+    body.dark-mode .tab-inactive {
+        color: #9ca3af !important;
+    }
+    
+    body.dark-mode .tab-active {
+        color: #60a5fa !important;
+        border-bottom-color: #60a5fa !important;
+    }
+    
+    /* Fix the form inputs better */
+    body.dark-mode select,
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="date"],
+    body.dark-mode input[type="password"],
+    body.dark-mode input[type="email"],
+    body.dark-mode input[type="number"] {
+        background-color: #374151 !important;
+        color: #e5e7eb !important;
+        border-color: #4b5563 !important;
+    }
+
+    body.dark-mode select option {
+        background-color: #1f2937 !important;
+        color: #e5e7eb !important;
+    }
+
+    body.dark-mode label {
+        color: #e5e7eb !important;
+    }
+    
+    /* Specifically target tables in records.php */
+    body.dark-mode #records-tab table,
+    body.dark-mode #reservations-tab table {
+        background-color: #1f2937 !important;
+    }
+    
+    body.dark-mode #records-tab table thead,
+    body.dark-mode #reservations-tab table thead {
+        background-color: #1f2937 !important;
+    }
+
+    /* Handle badges better */
+    body.dark-mode .text-sm.font-medium.inline-flex.items-center.px-2\.5.py-0\.5.rounded-full {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* SweetAlert in dark mode */
+    body.dark-mode .swal2-popup {
+        background-color: #1f2937 !important;
+        color: #e5e7eb !important;
+    }
+
+    body.dark-mode .swal2-title {
+        color: #f3f4f6 !important;
+    }
+
+    body.dark-mode .swal2-content {
+        color: #d1d5db !important;
+    }
+
+        /* Dark mode styles for the feedback modal */
+    body.dark-mode #feedbackModal .bg-white {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    body.dark-mode #feedbackModal .text-gray-800 {
+        color: #f3f4f6;
+    }
+
+    body.dark-mode #feedbackModal .text-gray-500 {
+        color: #d1d5db;
+    }
+
+    body.dark-mode #feedbackModal .border-gray-200 {
+        border-color: #374151;
+    }
+
+    body.dark-mode #feedbackModal .bg-gray-50 {
+        background-color: #111827;
+    }
+
+    body.dark-mode #feedbackModal .bg-gray-200 {
+        background-color: #4b5563;
+    }
+
+    body.dark-mode #feedbackModal .text-gray-700 {
+        color: #e5e7eb;
+    }
+
+    /* Specifically target the close button */
+    body.dark-mode #feedbackModal button.text-gray-500 {
+        color: #d1d5db !important;
+    }
+
+    body.dark-mode #feedbackModal button.text-gray-500:hover {
+        color: #f3f4f6 !important;
+    }
+
+    /* Make the modal content more visible in dark mode */
+    body.dark-mode #modal-feedback-text {
+        color: #e5e7eb !important;
+    }
+</style>
+
+<script>
+    // Theme toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+
+    });
+</script>
+
+<script src="theme.js"></script>

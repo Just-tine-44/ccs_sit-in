@@ -39,13 +39,18 @@ if (isset($_GET['ajax']) && isset($_GET['lab'])) {
     
     $ajax_computers = [];
     while ($row = $ajax_result->fetch_assoc()) {
+        $status = $row['status'];
+        // Convert unknown to available
+        if ($status === 'unknown' || empty($status)) {
+            $status = 'available';
+        }
         $ajax_computers[] = [
             'id' => $row['pc_number'],
-            'status' => $row['status']
+            'status' => $status
         ];
     }
     
-    // Add missing computers
+    // Add missing computers with "available" status
     for ($i = 1; $i <= 50; $i++) {
         $found = false;
         foreach ($ajax_computers as $pc) {
@@ -58,7 +63,7 @@ if (isset($_GET['ajax']) && isset($_GET['lab'])) {
         if (!$found) {
             $ajax_computers[] = [
                 'id' => $i,
-                'status' => 'unknown'
+                'status' => 'available' // Changed from 'unknown' to 'available'
             ];
         }
     }
@@ -559,18 +564,23 @@ $result = $stmt->get_result();
 
 $computers = [];
 while ($row = $result->fetch_assoc()) {
+    $status = $row['status'];
+    // Convert 'unknown' to 'available'
+    if ($status == 'unknown' || empty($status)) {
+        $status = 'available';
+    }
     $computers[$row['pc_number']] = [
         'id' => $row['pc_number'],
-        'status' => $row['status']
+        'status' => $status
     ];
 }
 
-// Add missing computers (just in case, for completeness)
+// Add missing computers with "available" status by default (not unknown)
 for ($i = 1; $i <= 50; $i++) {
     if (!isset($computers[$i])) {
         $computers[$i] = [
             'id' => $i,
-            'status' => 'unknown'
+            'status' => 'available' 
         ];
     }
 }

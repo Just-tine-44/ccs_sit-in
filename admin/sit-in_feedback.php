@@ -366,7 +366,7 @@
         <div class="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
             <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                 <h3 class="font-bold text-lg text-gray-800" id="modal-student-name"></h3>
-                <button onclick="closeFeedback()" class="text-gray-500 hover:text-gray-700">
+                <button onclick="closeFeedback()" class="text-gray-500 hover:text-gray-700 focus:outline-none p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -374,7 +374,7 @@
                 <p id="modal-feedback-text" class="text-gray-800"></p>
             </div>
             <div class="bg-gray-50 p-4 rounded-b-lg flex justify-end">
-                <button onclick="closeFeedback()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Close</button>
+                <button onclick="closeFeedback()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Close</button>
             </div>
         </div>
     </div>

@@ -34,11 +34,12 @@
         
         .pc-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 buttons per row instead of 5 */
-            gap: 0.75rem; /* More space between buttons */
-            max-height: 250px; /* Set a fixed height for vertical scrolling */
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); /* This makes columns auto-adjust */
+            gap: 0.75rem; /* Space between buttons */
+            max-height: 220px; /* Fixed height for vertical scrolling */
             overflow-y: auto; /* Enable vertical scrollbar */
-            padding-right: 0.5rem; /* Add some padding for the scrollbar */
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+            padding-right: 0.5rem; /* Padding for the scrollbar */
         }
 
         .pc-button {
@@ -116,80 +117,6 @@
             </div>
         </div>
         
-        <!-- Current Active Sessions -->
-        <?php if (count($active_sessions) > 0): ?>
-        <div class="mb-6">
-            <div class="card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="card-header bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-                    <h2 class="font-semibold text-white text-lg flex items-center">
-                        <i class="fas fa-users mr-2"></i> Current Sit-In Sessions
-                        <span class="ml-auto bg-white text-blue-600 text-xs font-bold px-3 py-1 rounded-full"><?php echo count($active_sessions); ?></span>
-                    </h2>
-                </div>
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Number</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lab Room</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PC</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach($active_sessions as $session): 
-                                $current_time = strtotime(date('H:i:s'));
-                                $start_time = strtotime($session['start_time']);
-                                $status = ($current_time >= $start_time) ? 'active' : 'upcoming';
-                            ?>
-                                <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm font-medium text-gray-800"><?php echo $session['student_name']; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-600"><?php echo $session['student_id']; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-600">Room <?php echo $session['lab']; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-600">PC <?php echo $session['pc']; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php 
-                                            $start_display = date('h:i A', strtotime($session['start_time']));
-                                            $end_display = date('h:i A', strtotime($session['end_time']));
-                                        ?>
-                                        <div class="text-sm text-gray-600"><?php echo $start_display . ' - ' . $end_display; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-600 max-w-[200px] truncate" title="<?php echo $session['purpose']; ?>"><?php echo $session['purpose']; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php if($status == 'active'): ?>
-                                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
-                                                <span class="mr-1 h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                                                Active
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-amber-100 text-amber-800">
-                                                <span class="mr-1 h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-                                                Starting Soon
-                                            </span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <?php endif; ?>
-        
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
             <!-- Computer Control Panel -->
             <div class="xl:col-span-3">
@@ -243,7 +170,11 @@
                         <h3 class="text-sm font-medium text-gray-700 mb-4">Room <?php echo $selected_lab; ?> Computers</h3>
                         <div class="pc-grid max-h-[500px] overflow-y-auto pr-2 custom-scrollbar pb-2" id="pcGrid">
                             <?php foreach($computers as $pc_num => $pc): 
-                                $status = $pc['status']; 
+                                // Set default status to 'available' if status is 'unknown'
+                                $status = $pc['status'];
+                                if ($status == 'unknown' || empty($status)) {
+                                    $status = 'available';
+                                }
                                 
                                 if ($status == 'available') {
                                     $statusColor = 'bg-green-500';
@@ -267,11 +198,13 @@
                                     $tooltipText = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
                                 }
                                 else {
-                                    $statusColor = 'bg-gray-400';
-                                    $hoverColor = 'hover:bg-gray-500';
-                                    $icon = 'fa-question-circle';
-                                    $nextStatus = 'available';
-                                    $tooltipText = 'Status Unknown - Click to mark as Available';
+
+                                    $statusColor = 'bg-green-500';
+                                    $hoverColor = 'hover:bg-green-600';
+                                    $icon = 'fa-check-circle';
+                                    $nextStatus = 'used';
+                                    $tooltipText = 'Available - Click to mark as In Use';
+                                    $status = 'available';
                                 }
                             ?>
                             <div class="pc-item" data-status="<?php echo $status; ?>" data-pc-num="<?php echo $pc_num; ?>">
@@ -1106,63 +1039,68 @@
     });
 
     // Helper function to create PC buttons
-    // In your <script> section, update the createPCButton function:
-    function createPCButton(pcNumber, status, labRoom) {
-        let statusColor, hoverColor, icon, nextStatus, tooltipText;
+        function createPCButton(pcNumber, status, labRoom) {
+            // Set default status to 'available' if status is 'unknown' or not defined
+            if (status === 'unknown' || !status) {
+                status = 'available';
+            }
+            
+            let statusColor, hoverColor, icon, nextStatus, tooltipText;
 
-        if (status === 'available') {
-            statusColor = 'bg-green-500';
-            hoverColor = 'hover:bg-green-600';
-            icon = 'fa-check-circle';
-            nextStatus = 'used';
-            tooltipText = 'Available - Click to mark as In Use';
-        } else if (status === 'used') {
-            statusColor = 'bg-red-500';
-            hoverColor = 'hover:bg-red-600';
-            icon = 'fa-times-circle';
-            nextStatus = 'available';
-            tooltipText = 'Currently In Use - Click to mark as Available';
-        } else if (status === 'reserved') {
-            statusColor = 'bg-purple-500';
-            hoverColor = 'hover:bg-purple-600';
-            icon = 'fa-calendar-check';
-            nextStatus = 'available';
-            tooltipText = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
-        } else {
-            statusColor = 'bg-gray-400';
-            hoverColor = 'hover:bg-gray-500';
-            icon = 'fa-question-circle';
-            nextStatus = 'available';
-            tooltipText = 'Status Unknown - Click to mark as Available';
-        }
+            if (status === 'available') {
+                statusColor = 'bg-green-500';
+                hoverColor = 'hover:bg-green-600';
+                icon = 'fa-check-circle';
+                nextStatus = 'used';
+                tooltipText = 'Available - Click to mark as In Use';
+            } else if (status === 'used') {
+                statusColor = 'bg-red-500';
+                hoverColor = 'hover:bg-red-600';
+                icon = 'fa-times-circle';
+                nextStatus = 'available';
+                tooltipText = 'Currently In Use - Click to mark as Available';
+            } else if (status === 'reserved') {
+                statusColor = 'bg-purple-500';
+                hoverColor = 'hover:bg-purple-600';
+                icon = 'fa-calendar-check';
+                nextStatus = 'available';
+                tooltipText = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
+            } else {
+                // Fallback to available for any unrecognized status (shouldn't happen)
+                statusColor = 'bg-green-500';
+                hoverColor = 'hover:bg-green-600';
+                icon = 'fa-check-circle';
+                nextStatus = 'used';
+                tooltipText = 'Available - Click to mark as In Use';
+            }
 
-        const pcItem = document.createElement('div');
-        pcItem.className = 'pc-item';
-        pcItem.setAttribute('data-status', status);
-        pcItem.setAttribute('data-pc-num', pcNumber);
-        
-        pcItem.innerHTML = `
-            <button type="button" class="pc-button toggle-pc-btn ${statusColor} ${hoverColor} text-white shadow-sm btn-transition relative group"
-                data-pc-id="${pcNumber}"
-                data-new-status="${nextStatus}"
-                data-lab-room="${labRoom}"
-                title="${tooltipText}">
-                <i class="fas ${icon} mb-1 text-lg"></i>
-                <span class="text-xs font-medium">PC${pcNumber}</span>
-                
-                <!-- Enhanced Tooltip -->
-                <div class="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 z-50 pointer-events-none">
-                    <div class="bg-gray-900 text-white text-xs rounded py-1.5 px-2 shadow-lg">
-                        <p class="font-medium">${tooltipText}</p>
-                        ${status === 'reserved' ? '<p class="text-purple-300 mt-1 text-[10px]">Auto-resets to Available after 30 minutes</p>' : ''}
-                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+            const pcItem = document.createElement('div');
+            pcItem.className = 'pc-item';
+            pcItem.setAttribute('data-status', status);
+            pcItem.setAttribute('data-pc-num', pcNumber);
+            
+            pcItem.innerHTML = `
+                <button type="button" class="pc-button toggle-pc-btn ${statusColor} ${hoverColor} text-white shadow-sm btn-transition relative group"
+                    data-pc-id="${pcNumber}"
+                    data-new-status="${nextStatus}"
+                    data-lab-room="${labRoom}"
+                    title="${tooltipText}">
+                    <i class="fas ${icon} mb-1 text-lg"></i>
+                    <span class="text-xs font-medium">PC${pcNumber}</span>
+                    
+                    <!-- Enhanced Tooltip -->
+                    <div class="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 z-50 pointer-events-none">
+                        <div class="bg-gray-900 text-white text-xs rounded py-1.5 px-2 shadow-lg">
+                            <p class="font-medium">${tooltipText}</p>
+                            ${status === 'reserved' ? '<p class="text-purple-300 mt-1 text-[10px]">Auto-resets to Available after 30 minutes</p>' : ''}
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
                     </div>
-                </div>
-            </button>
-        `;
-        
-        return pcItem;
-    }
+                </button>
+            `;
+            
+            return pcItem;
+        }
 
     // Function to attach event listeners to PC toggle buttons
     function attachPCToggleListeners() {
@@ -1209,25 +1147,33 @@
                 .then(data => {
                     if (data.success) {
                         // Update button appearance
-                        btn.classList.remove('bg-green-500', 'bg-red-500', 'bg-amber-500', 'bg-gray-400');
-                        btn.classList.remove('hover:bg-green-600', 'hover:bg-red-600', 'hover:bg-amber-600', 'hover:bg-gray-500');
+                        btn.classList.remove('bg-green-500', 'bg-red-500', 'bg-purple-500', 'bg-gray-400');
+                        btn.classList.remove('hover:bg-green-600', 'hover:bg-red-600', 'hover:bg-purple-600', 'hover:bg-gray-500');
+                        
+                        // Convert 'unknown' to 'available' if returned from server
+                        let status = data.status;
+                        if (status === 'unknown') {
+                            status = 'available';
+                        }
                         
                         // Update icon and color
-                        if (data.status === 'available') {
+                        if (status === 'available') {
                             btn.classList.add('bg-green-500', 'hover:bg-green-600');
                             icon.className = 'fas fa-check-circle mb-1 text-lg';
                             btn.setAttribute('data-new-status', 'used');
-                        } else if (data.status === 'used') {
+                            btn.setAttribute('title', 'Available - Click to mark as In Use');
+                        } else if (status === 'used') {
                             btn.classList.add('bg-red-500', 'hover:bg-red-600');
                             icon.className = 'fas fa-times-circle mb-1 text-lg';
                             btn.setAttribute('data-new-status', 'available');
-                        } else if (data.status === 'reserved') {
+                            btn.setAttribute('title', 'Currently In Use - Click to mark as Available');
+                        } else if (status === 'reserved') {
                             btn.classList.add('bg-purple-500', 'hover:bg-purple-600');
                             icon.className = 'fas fa-calendar-check mb-1 text-lg';
                             btn.setAttribute('data-new-status', 'available');
                             btn.setAttribute('title', 'Reserved for Future Use - This PC is booked for an upcoming reservation');
                             
-                            // Add this code to update the tooltip content inside the button
+                            // Update tooltip content
                             const tooltip = btn.querySelector('.group-hover\\:opacity-100 .bg-gray-900 p:first-child');
                             if (tooltip) {
                                 tooltip.textContent = 'Reserved for Future Use - This PC is booked for an upcoming reservation';
@@ -1244,19 +1190,22 @@
                                 }
                             }
                         } else {
-                            btn.classList.add('bg-gray-400', 'hover:bg-gray-500');
-                            icon.className = 'fas fa-question-circle mb-1 text-lg';
-                            btn.setAttribute('data-new-status', 'available');
+                            // Fallback to available for any unrecognized status
+                            btn.classList.add('bg-green-500', 'hover:bg-green-600');
+                            icon.className = 'fas fa-check-circle mb-1 text-lg';
+                            btn.setAttribute('data-new-status', 'used');
+                            btn.setAttribute('title', 'Available - Click to mark as In Use');
+                            status = 'available';
                         }
                         
                         // Update parent element status
-                        btn.closest('.pc-item').setAttribute('data-status', data.status);
+                        btn.closest('.pc-item').setAttribute('data-status', status);
                         
                         // Show success toast
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: `PC ${pcId} updated to ${data.status}`,
+                            title: `PC ${pcId} updated to ${status}`,
                             showConfirmButton: false,
                             timer: 1500,
                             toast: true,

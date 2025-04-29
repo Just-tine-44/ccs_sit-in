@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 25, 2025 at 07:16 AM
+-- Generation Time: Apr 29, 2025 at 03:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,45 +90,7 @@ CREATE TABLE `curr_sit_in` (
 --
 
 INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `check_in_time`, `check_out_time`, `status`) VALUES
-(1, 1, 'CCS Lab 1', 'PHP PROGRAMMING', '2025-03-11 12:33:11', '2025-03-11 12:49:16', 'completed'),
-(2, 7, 'CCS Lab 2', 'Java Programming', '2025-03-11 12:43:30', '2025-03-11 12:49:18', 'completed'),
-(3, 7, 'CCS Lab 2', 'Research', '2025-03-11 12:52:12', '2025-03-11 12:52:23', 'completed'),
-(4, 7, 'CCS Lab 1', 'Research', '2025-03-11 12:54:21', '2025-03-11 12:54:26', 'completed'),
-(5, 7, 'CCS Lab 1', 'Java Programming', '2025-03-11 12:56:21', '2025-03-11 12:56:41', 'completed'),
-(6, 7, 'CCS Lab 1', 'Assignment', '2025-03-11 17:15:53', '2025-03-11 17:16:30', 'completed'),
-(7, 2, '524', 'Study', '2025-03-11 17:53:21', '2025-03-11 17:58:38', 'completed'),
-(8, 1, '528', 'Assignment', '2025-03-11 17:55:20', '2025-03-11 17:58:36', 'completed'),
-(9, 7, '528', 'Project', '2025-03-11 17:57:20', '2025-03-11 17:58:34', 'completed'),
-(10, 1, '528', 'Assignment', '2025-03-11 18:09:22', '2025-03-11 18:16:30', 'completed'),
-(11, 6, '524', 'C Programming', '2025-03-11 19:16:42', '2025-03-11 19:17:13', 'completed'),
-(12, 5, '530', 'Other', '2025-03-11 21:49:54', '2025-03-11 21:50:09', 'completed'),
-(13, 3, '530', 'C#', '2025-03-11 21:52:42', '2025-03-11 21:53:35', 'completed'),
-(14, 5, '528', 'PHP', '2025-03-11 21:55:17', '2025-03-11 21:57:28', 'completed'),
-(15, 1, '526', 'C#', '2025-03-13 11:10:26', '2025-03-13 11:11:04', 'completed'),
-(16, 1, '526', 'C Programming', '2025-03-13 12:02:33', '2025-03-13 12:02:48', 'completed'),
-(17, 1, '530', 'ASP.Net', '2025-03-13 12:05:20', '2025-03-13 12:05:58', 'completed'),
-(18, 1, '524', 'PHP', '2025-03-13 12:38:40', '2025-03-13 12:39:10', 'completed'),
-(19, 10, '530', 'C#', '2025-03-21 07:38:11', '2025-03-21 07:42:17', 'completed'),
-(20, 1, '530', 'PHP', '2025-03-21 21:47:02', '2025-03-21 21:47:13', 'completed'),
-(21, 1, '528', 'PHP', '2025-04-08 09:06:59', '2025-04-08 09:07:09', 'completed'),
-(22, 1, '530', 'PHP', '2025-04-08 09:44:45', '2025-04-08 09:45:02', 'completed'),
-(23, 8, '528', 'C#', '2025-04-08 10:25:49', '2025-04-08 10:26:03', 'completed'),
-(24, 5, '524', 'Other', '2025-04-08 10:31:47', '2025-04-08 10:32:04', 'completed'),
-(25, 8, '544', 'Systems Integration & Architecture', '2025-04-10 19:34:40', '2025-04-10 19:35:13', 'completed'),
-(26, 5, '530', 'Systems Integration & Architecture', '2025-04-25 00:48:36', '2025-04-25 00:48:47', 'completed'),
-(27, 2, '544', 'Computer Application', '2025-04-25 00:50:04', '2025-04-25 00:50:18', 'completed'),
-(28, 8, '528', 'Computer Application', '2025-04-25 00:56:37', '2025-04-25 00:56:45', 'completed'),
-(29, 7, '542', 'PHP', '2025-04-25 01:00:29', '2025-04-25 01:00:36', 'completed'),
-(30, 7, '530', 'Digital Logic & Design', '2025-04-25 01:05:27', '2025-04-25 01:05:36', 'completed'),
-(31, 10, '542', 'Systems Integration & Architecture', '2025-04-25 01:06:54', '2025-04-25 01:07:01', 'completed'),
-(32, 10, '528', 'Other', '2025-04-25 01:17:37', '2025-04-25 01:17:44', 'completed'),
-(33, 4, '524', 'Java Programming', '2025-04-25 09:35:19', '2025-04-25 09:35:26', 'completed'),
-(34, 8, '526', 'Computer Application', '2025-04-25 09:52:34', '2025-04-25 09:52:41', 'completed'),
-(35, 1, '542', 'Systems Integration & Architecture', '2025-04-25 11:06:18', '2025-04-25 05:06:40', 'completed'),
-(36, 3, '528', 'Embedded System % IOT', '2025-04-25 11:14:07', '2025-04-25 05:14:14', 'completed'),
-(37, 6, '526', 'Systems Integration & Architecture', '2025-04-25 11:25:55', '2025-04-25 05:26:01', 'completed'),
-(38, 9, '530', 'Systems Integration & Architecture', '2025-04-25 11:41:15', '2025-04-25 05:41:21', 'completed'),
-(39, 5, '542', 'Database', '2025-04-25 11:48:04', '2025-04-25 11:48:13', 'completed');
+(1, 1, '517', 'Computer Application', '2025-04-29 06:56:33', '2025-04-29 07:00:29', 'completed');
 
 -- --------------------------------------------------------
 
@@ -149,15 +111,15 @@ CREATE TABLE `lab_computers` (
 --
 
 INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_updated`) VALUES
-(1, '524', '1', 'available', '2025-04-24 11:41:14'),
-(2, '524', '2', 'available', '2025-04-24 11:41:15'),
+(1, '524', '1', 'available', '2025-04-25 15:10:08'),
+(2, '524', '2', 'available', '2025-04-25 22:21:25'),
 (3, '524', '3', 'available', '2025-04-24 11:41:16'),
-(4, '517', '1', 'available', '2025-04-24 12:53:50'),
-(5, '517', '2', 'available', '2025-04-25 04:03:00'),
-(6, '517', '3', 'available', '2025-04-24 12:53:53'),
-(7, '517', '4', 'available', '2025-04-25 02:56:24'),
+(4, '517', '1', 'available', '2025-04-25 22:05:50'),
+(5, '517', '2', 'available', '2025-04-25 21:52:47'),
+(6, '517', '3', 'available', '2025-04-25 21:52:48'),
+(7, '517', '4', 'available', '2025-04-25 22:10:54'),
 (8, '517', '5', 'available', '2025-04-24 15:14:17'),
-(9, '517', '6', 'available', '2025-04-25 02:55:57'),
+(9, '517', '6', 'available', '2025-04-25 22:13:03'),
 (10, '517', '7', 'available', '2025-04-24 12:53:57'),
 (11, '517', '8', 'available', '2025-04-25 02:13:15'),
 (12, '517', '9', 'available', '2025-04-25 01:44:39'),
@@ -173,7 +135,7 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (22, '517', '19', 'used', '2025-04-24 12:54:12'),
 (23, '517', '20', 'used', '2025-04-24 12:54:13'),
 (24, '544', '1', 'available', '2025-04-24 16:21:04'),
-(25, '544', '2', 'available', '2025-04-24 16:21:10'),
+(25, '544', '2', 'available', '2025-04-25 22:16:30'),
 (26, '544', '3', 'available', '2025-04-25 00:34:03'),
 (27, '544', '4', 'available', '2025-04-25 00:34:04'),
 (28, '544', '5', 'available', '2025-04-25 00:34:04'),
@@ -250,13 +212,25 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (100, '517', '44', 'used', '2025-04-25 05:07:22'),
 (101, '517', '43', 'used', '2025-04-25 04:03:27'),
 (102, '517', '42', 'used', '2025-04-25 04:03:27'),
-(103, '517', '41', 'available', '2025-04-25 04:03:28'),
-(104, '517', '45', 'available', '2025-04-25 04:03:29'),
+(103, '517', '41', 'used', '2025-04-25 05:24:01'),
+(104, '517', '45', 'used', '2025-04-25 14:39:49'),
 (105, '517', '47', 'used', '2025-04-25 04:03:30'),
-(106, '517', '46', 'available', '2025-04-25 04:03:30'),
-(107, '517', '48', 'available', '2025-04-25 04:03:31'),
-(108, '517', '49', 'available', '2025-04-25 04:03:31'),
-(109, '528', '50', 'used', '2025-04-25 04:13:14');
+(106, '517', '46', 'used', '2025-04-25 14:39:49'),
+(107, '517', '48', 'used', '2025-04-25 14:39:54'),
+(108, '517', '49', 'used', '2025-04-25 14:39:48'),
+(109, '528', '50', 'available', '2025-04-29 00:34:31'),
+(110, '524', '6', 'available', '2025-04-25 14:50:47'),
+(111, '524', '7', 'available', '2025-04-25 14:50:47'),
+(112, '524', '8', 'available', '2025-04-25 14:50:48'),
+(113, '524', '11', 'available', '2025-04-25 14:50:49'),
+(114, '524', '12', 'available', '2025-04-25 14:50:49'),
+(115, '526', '1', 'available', '2025-04-29 00:34:26'),
+(116, '524', '50', 'used', '2025-04-29 00:55:15'),
+(117, '524', '49', 'used', '2025-04-29 00:55:17'),
+(118, '524', '48', 'used', '2025-04-29 00:55:18'),
+(119, '524', '47', 'used', '2025-04-29 00:55:19'),
+(120, '524', '46', 'used', '2025-04-29 00:55:19'),
+(121, '524', '45', 'used', '2025-04-29 00:55:20');
 
 -- --------------------------------------------------------
 
@@ -325,19 +299,6 @@ CREATE TABLE `reservations` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `reservations`
---
-
-INSERT INTO `reservations` (`reservation_id`, `user_id`, `lab_room`, `pc_number`, `purpose`, `reservation_date`, `time_in`, `time_out`, `status`, `disapproval_reason`, `approved_by`, `created_at`, `updated_at`) VALUES
-(1, 1, '544', '20', 'Database', '2025-04-27', '09:00:00', NULL, 'completed', NULL, 1, '2025-04-25 02:35:07', '2025-04-25 02:46:47'),
-(2, 11, '517', '4', 'Project Management', '2025-04-28', '15:00:00', '04:56:24', 'completed', NULL, 1, '2025-04-25 02:55:29', '2025-04-25 02:56:24'),
-(3, 1, '544', '27', 'Other', '2025-04-28', '08:00:00', NULL, 'approved', NULL, 1, '2025-04-25 02:59:57', '2025-04-25 03:00:41'),
-(4, 1, '517', '9', 'Systems Integration & Architecture', '2025-04-26', '07:00:00', NULL, 'disapproved', 'Conflicting schedule', 1, '2025-04-25 04:23:27', '2025-04-25 04:28:30'),
-(5, 2, '524', '10', 'Embedded System & IOT', '2025-04-26', '08:00:00', NULL, 'approved', NULL, 1, '2025-04-25 04:24:06', '2025-04-25 04:28:53'),
-(6, 3, '544', '27', 'Computer Application', '2025-04-30', '09:00:00', NULL, 'approved', NULL, 1, '2025-04-25 04:24:49', '2025-04-25 04:29:17'),
-(7, 5, '517', '44', 'Computer Application', '2025-04-30', '11:00:00', NULL, 'approved', NULL, 1, '2025-04-25 04:25:31', '2025-04-25 04:44:13');
-
 -- --------------------------------------------------------
 
 --
@@ -365,7 +326,8 @@ INSERT INTO `sit_in_ratings` (`rating_id`, `sit_in_id`, `user_id`, `rating`, `fe
 (5, 4, 7, 4, 'Thank u So much', '2025-03-13 17:39:47'),
 (6, 6, 7, 3, 'Love it', '2025-03-13 17:41:57'),
 (7, 5, 7, 3, 'Great', '2025-03-13 17:42:07'),
-(8, 2, 7, 3, 'HAHAHAHAHHA', '2025-03-13 17:42:26');
+(8, 2, 7, 3, 'HAHAHAHAHHA', '2025-03-13 17:42:26'),
+(9, 1, 1, 5, 'Very Good', '2025-04-29 08:37:07');
 
 -- --------------------------------------------------------
 
@@ -383,6 +345,18 @@ CREATE TABLE `student_points` (
   `converted_to_session` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `student_points`
+--
+
+INSERT INTO `student_points` (`point_id`, `user_id`, `points_earned`, `points_reason`, `awarded_by`, `awarded_date`, `converted_to_session`) VALUES
+(1, 10, 3, 'Very Good', 'admin', '2025-04-28 23:22:03', 1),
+(2, 10, 3, 'Nice', 'admin', '2025-04-28 23:22:30', 1),
+(3, 10, 3, 'Effortless', 'admin', '2025-04-28 23:22:58', 1),
+(4, 10, 3, 'Nc ka one', 'admin', '2025-04-28 23:24:01', 1),
+(5, 4, 1, 'basic', 'admin', '2025-04-28 23:37:53', 1),
+(6, 4, 2, 'Nice one', 'admin', '2025-04-28 23:38:23', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -399,17 +373,17 @@ CREATE TABLE `stud_session` (
 --
 
 INSERT INTO `stud_session` (`id`, `session`) VALUES
-(1, 24),
+(1, 20),
 (2, 27),
-(3, 28),
-(4, 29),
+(3, 27),
+(4, 30),
 (5, 26),
 (6, 29),
-(7, 27),
-(8, 27),
-(9, 29),
-(10, 27),
-(11, 29);
+(7, 25),
+(8, 26),
+(9, 28),
+(10, 30),
+(11, 26);
 
 -- --------------------------------------------------------
 
@@ -541,13 +515,13 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `lab_computers`
 --
 ALTER TABLE `lab_computers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT for table `lab_schedules`
@@ -559,19 +533,19 @@ ALTER TABLE `lab_schedules`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`
 --
 ALTER TABLE `sit_in_ratings`
-  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `student_points`
 --
 ALTER TABLE `student_points`
-  MODIFY `point_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `point_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `stud_session`

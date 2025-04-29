@@ -677,7 +677,7 @@
                                                 <div class="text-sm font-medium text-gray-900">
                                                     <?php echo $student['total_points_earned']; ?>
                                                 </div>
-                                                <div class="text-xs text-gray-500">Total Points</div>
+                                                <div class="text-xs text-gray-500">Total Points Earned</div>
                                             </div>
                                             <div class="text-center">
                                                 <div class="text-sm font-medium text-gray-900">
