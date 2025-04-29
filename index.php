@@ -117,12 +117,12 @@ if ($result->num_rows > 0) {
                             <span>Home</span>
                             <div class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-200 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                         </a>
-                        <a href="login.php" class="text-white hover:text-blue-200 transition-colors px-2 py-1 rounded-md flex items-center group">
+                        <a href="user/login.php" class="text-white hover:text-blue-200 transition-colors px-2 py-1 rounded-md flex items-center group">
                             <i class="fas fa-sign-in-alt mr-2"></i>
                             <span>Login</span>
                             <div class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-200 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
                         </a>
-                        <a href="login.php?form=register" class="text-white hover:text-blue-200 transition-colors px-2 py-1 rounded-md flex items-center group">
+                        <a href="user/login.php?form=register" class="text-white hover:text-blue-200 transition-colors px-2 py-1 rounded-md flex items-center group">
                             <i class="fas fa-user-plus mr-2"></i>
                             <span>Register</span>
                             <div class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-200 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
@@ -233,7 +233,7 @@ if ($result->num_rows > 0) {
                 <!-- Card 1: University -->
                 <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative">
                     <div class="h-48 overflow-hidden flex items-center justify-center p-4 bg-gray-50">
-                        <img src="images/wbuclogo.png" alt="CCS Logo" class="max-h-full max-w-full object-contain">
+                        <img src="images/wbuclogo.png" alt="UC Logo" class="max-h-full max-w-full object-contain">
                     </div>
                     <div class="absolute inset-0 bg-gradient-to-t from-blue-900 via-blue-900/70 to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-500 flex items-center justify-center">
                         <div class="p-6 text-white transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 text-center">
@@ -269,7 +269,7 @@ if ($result->num_rows > 0) {
                 <!-- Card 3: Laboratory -->
                 <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative">
                     <div class="h-48 overflow-hidden flex items-center justify-center p-4 bg-gray-50">
-                        <img src="images/manpc.png" alt="CCS Logo" class="max-h-full max-w-full object-contain">
+                        <img src="images/manpc.png" alt="Congress Logo" class="max-h-full max-w-full object-contain">
                     </div>
                     <div class="absolute inset-0 bg-gradient-to-t from-green-900 via-green-900/70 to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-500 flex items-center justify-center">
                         <div class="p-6 text-white transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 text-center">

@@ -1,5 +1,5 @@
 <?php
-    include("connection/history_process.php");
+    include("../connection/history_process.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,9 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session History</title>
-    <link rel="icon" type="image/png" href="images/wbccs.png">
+    <link rel="icon" type="image/png" href="../images/wbccs.png">
     <!-- Tailwind CSS -->
-    <link href="css/tailwind.min.css" rel="stylesheet">
+    <link href="../css/tailwind.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">

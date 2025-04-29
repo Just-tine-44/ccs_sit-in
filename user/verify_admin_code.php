@@ -23,7 +23,7 @@ if (empty($code)) {
 
 try {
     // Connect to database
-    require 'conn/dbcon.php';
+    require '../conn/dbcon.php';
     
     // Get all admin passwords from database
     $stmt = $conn->prepare("SELECT password FROM admin");

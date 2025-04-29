@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'conn/dbcon.php'; 
+include '../conn/dbcon.php'; 
 
 // Get user data from session - handling both possible structures
 if (isset($_SESSION['user']) && is_array($_SESSION['user']) && isset($_SESSION['user']['idno'])) {

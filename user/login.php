@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-include 'connection/conn_login.php'; 
+include '../connection/conn_login.php'; 
 ?>
 
 <!DOCTYPE html>
@@ -11,14 +11,14 @@ include 'connection/conn_login.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UC-CCS Login</title>
-    <link rel="icon" type="image/png" href="images/ccswb.png">
-    <link href="css/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/ccswb.png">
+    <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen flex items-center justify-center p-4">
     <!-- Back to home link -->
-    <a href="index.php" class="absolute top-6 left-6 text-gray-500 hover:text-blue-600 transition-colors flex items-center gap-2">
+    <a href="../index.php" class="absolute top-6 left-6 text-gray-500 hover:text-blue-600 transition-colors flex items-center gap-2">
         <i class="fas fa-arrow-left"></i>
         <span>Back to Home</span>
     </a>
@@ -32,8 +32,8 @@ include 'connection/conn_login.php';
                 <div class="p-8">
                     <!-- Logo Header -->
                     <div class="flex justify-center gap-4 mb-6">
-                        <img src="images/uclogo.jpg" alt="UC Logo" class="h-16 w-16 object-contain">
-                        <img src="images/ccslogo.png" alt="CCS Logo" class="h-16 w-16 object-contain">
+                        <img src="../images/uclogo.jpg" alt="UC Logo" class="h-16 w-16 object-contain">
+                        <img src="../images/ccslogo.png" alt="CCS Logo" class="h-16 w-16 object-contain">
                     </div>
                     
                     <!-- Title -->
@@ -83,7 +83,7 @@ include 'connection/conn_login.php';
                     
                     <!-- Admin button -->
                     <div class="mt-6 text-center">
-                        <a href="admin/admin_login.php" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                        <a href="../admin/admin_login.php" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
                             <i class="fas fa-user-shield mr-2"></i>
                             Admin Panel
                         </a>

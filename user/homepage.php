@@ -7,7 +7,9 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 $user = $_SESSION['user'];
-$profileImg = isset($user['profileImg']) ? $user['profileImg'] : 'images/person.jpg';
+$profileImg = isset($user['profileImg']) && !empty($user['profileImg']) 
+    ? (strpos($user['profileImg'], '../') === 0 ? $user['profileImg'] : '../' . $user['profileImg'])
+    : '../images/person.jpg'; 
 $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : ['session' => 'N/A'];
 ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -25,7 +27,7 @@ $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : [
 <?php unset($_SESSION['just_logged_in']); endif; ?>
 
 <?php
-include('conn/dbcon.php'); // Adjust the path as necessary
+include('../conn/dbcon.php'); // Adjust the path as necessary
 
 // Fetch announcements from the database
 $announcements = [];
@@ -44,9 +46,9 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    <script src="script.js"></script>
-    <link rel="icon" type="image/png" href="images/wbccs.png">
-    <link href="css/tailwind.min.css" rel="stylesheet">
+    <script src="../js/script.js"></script>
+    <link rel="icon" type="image/png" href="../images/wbccs.png">
+    <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-gray-100">
@@ -262,13 +264,13 @@ if ($result->num_rows > 0) {
                 <div class="relative group">
                     <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full opacity-75 blur-sm group-hover:opacity-100 transition duration-300"></div>
                     <div class="relative bg-white p-1 rounded-full">
-                        <img src="images/logoucs.jpg" alt="UC Logo" class="h-20 w-20 rounded-full object-cover shadow-md transform group-hover:scale-105 transition duration-300">
+                        <img src="../images/logoucs.jpg" alt="UC Logo" class="h-20 w-20 rounded-full object-cover shadow-md transform group-hover:scale-105 transition duration-300">
                     </div>
                 </div>
                 <div class="relative group">
                     <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full opacity-75 blur-sm group-hover:opacity-100 transition duration-300"></div>
                     <div class="relative bg-white p-1 rounded-full">
-                        <img src="images/ccslogo.png" alt="CCS Logo" class="h-20 w-20 rounded-full object-cover shadow-md transform group-hover:scale-105 transition duration-300">
+                        <img src="../images/ccslogo.png" alt="CCS Logo" class="h-20 w-20 rounded-full object-cover shadow-md transform group-hover:scale-105 transition duration-300">
                     </div>
                 </div>
             </div>

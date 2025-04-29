@@ -36,7 +36,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] == 'true') {
         session_start();
     }
     session_destroy();
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 ?>

@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-include 'conn/dbcon.php';
+include '../conn/dbcon.php';
 ?>
 
 

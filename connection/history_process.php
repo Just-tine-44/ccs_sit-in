@@ -1,7 +1,7 @@
 <?php
 // filepath: /c:/xampp/htdocs/ccs_sit-in/history.php
 session_start();
-include 'connection/conn_login.php'; // Make sure this is the correct path to your DB connection
+include '../connection/conn_login.php'; // Make sure this is the correct path to your DB connection
 
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {

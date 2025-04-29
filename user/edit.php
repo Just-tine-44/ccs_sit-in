@@ -1,5 +1,5 @@
 <?php 
-    include("connection/profile_edit.php");
+    include("../connection/profile_edit.php");
     $stud_session = isset($_SESSION['stud_session']) ? $_SESSION['stud_session'] : ['session' => 'N/A'];
 ?>
 
@@ -9,9 +9,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
-    <link rel="icon" type="image/png" href="images/wbccs.png">
+    <link rel="icon" type="image/png" href="../images/wbccs.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/tailwind.min.css" rel="stylesheet">
+    <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -84,9 +84,15 @@
                             <div class="profile-pic-container relative group mb-6 mt-4">
                                 <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-md mx-auto">
                                     <img id="preview-image" 
-                                         src="<?php echo $user['profileImg'] ?? 'images/person.jpg'; ?>" 
-                                         alt="Profile Picture" 
-                                         class="w-full h-full object-cover">
+                                        src="<?php 
+                                            if (!empty($user['profileImg'])) {
+                                                echo strpos($user['profileImg'], '../') === 0 ? $user['profileImg'] : '../' . $user['profileImg'];
+                                            } else {
+                                                echo '../images/person.jpg';
+                                            }
+                                        ?>" 
+                                        alt="Profile Picture" 
+                                        class="w-full h-full object-cover">
                                 </div>
                                 <div class="absolute inset-0 profile-pic-upload-overlay rounded-full flex flex-col items-center justify-center text-white">
                                     <i class="fas fa-camera text-2xl mb-2"></i>

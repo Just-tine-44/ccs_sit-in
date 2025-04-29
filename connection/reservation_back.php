@@ -1,7 +1,7 @@
 <?php
 // Start session and include necessary connections/functions
 session_start();
-include('./conn/dbcon.php');
+include('../conn/dbcon.php');
 
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {

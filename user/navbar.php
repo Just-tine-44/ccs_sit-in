@@ -3,7 +3,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center py-4">
             <div class="flex items-center w-full md:w-auto justify-between">
             <div class="flex items-center">
-                <img src="images/ccslogo.png" alt="CCS Logo" class="h-8 w-auto mr-2">
+                <img src="../images/ccslogo.png" alt="CCS Logo" class="h-8 w-auto mr-2">
                 <?php
                     // Get current page
                     $currentPage = basename($_SERVER['PHP_SELF']);

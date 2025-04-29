@@ -1,5 +1,5 @@
 <?php 
-    include 'connection/new_pass.php';
+    include '../connection/new_pass.php';
 ?>
 <!-- Flash message alert section -->
 <?php if (isset($_SESSION['flash_message'])): ?>
@@ -37,8 +37,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Password</title>
-    <link rel="icon" type="image/png" href="images/wbccs.png">
-    <link href="css/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/wbccs.png">
+    <link href="../css/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
@@ -123,7 +123,12 @@
             <div class="p-5 bg-gray-50 border-b border-gray-100">
                 <div class="flex items-center">
                     <?php if (!empty($user['profileImg'])): ?>
-                        <img src="<?php echo $user['profileImg']; ?>" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm">
+                        <img src="<?php
+                            // Check if path already has "../" prefix
+                            echo strpos($user['profileImg'], '../') === 0 
+                                ? $user['profileImg'] 
+                                : '../' . $user['profileImg'];
+                        ?>" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm">
                     <?php else: ?>
                         <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white border-2 border-white shadow-sm">
                             <i class="fas fa-user"></i>

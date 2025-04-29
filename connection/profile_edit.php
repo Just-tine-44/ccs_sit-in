@@ -10,7 +10,7 @@ $user = $_SESSION['user'];
 
 
 // Include the connection file
-include 'connection/conn_login.php';
+include '../connection/conn_login.php';
 
 // Update profile functionality
 if (isset($_POST['update'])) {
@@ -25,7 +25,7 @@ if (isset($_POST['update'])) {
 
     // Handle profile picture upload
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == UPLOAD_ERR_OK) {
-        $upload_dir = 'uploadimg/';
+        $upload_dir = '../uploadimg/';
         
         // Generate unique filename
         $file_extension = pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION);
@@ -33,7 +33,7 @@ if (isset($_POST['update'])) {
         $uploaded_file = $upload_dir . $unique_filename;
 
         if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploaded_file)) {
-            $profileImg = $uploaded_file;
+            $profileImg = str_replace('../', '', $uploaded_file); 
             $changes_made = true;
         }
     }
