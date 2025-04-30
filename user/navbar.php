@@ -40,7 +40,7 @@
                 <div class="relative w-full md:w-auto">
                     <button onclick="navToggleDropdown()" class="notification-btn flex items-center w-full md:w-auto justify-center md:justify-start text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md transition-colors duration-200 group">
                         <i class="fas fa-bell mr-1 relative">
-                            <span class="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">2</span>
+                            <span id="notificationBadge" class="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">0</span>
                         </i>
                         <span class="inline">Notifications</span>
                         <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200" id="navNotifArrow"></i>
@@ -50,70 +50,15 @@
                         <div class="bg-gray-50 px-4 py-2 border-b border-gray-100">
                             <div class="flex justify-between items-center">
                                 <h3 class="font-medium text-gray-700">Recent Notifications</h3>
-                                <span class="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full">2 new</span>
+                                <span class="notification-header-count bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full">0 new</span>
                             </div>
                         </div>
-                        <div class="max-h-72 overflow-y-auto">
-                            <!-- Notification Item - Unread -->
-                            <a href="#" class="block px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 bg-blue-50">
-                                <div class="flex">
-                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
-                                        <i class="fas fa-clock"></i>
-                                    </div>
-                                    <div class="ml-3 flex-grow">
-                                        <p class="text-sm font-medium text-gray-900">Your session in Room 303 starts in 15 minutes</p>
-                                        <div class="flex justify-between items-center mt-1">
-                                            <p class="text-xs text-gray-500">5 minutes ago</p>
-                                            <span class="h-2 w-2 bg-blue-500 rounded-full"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            
-                            <!-- Notification Item - Unread -->
-                            <a href="#" class="block px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 bg-blue-50">
-                                <div class="flex">
-                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-500">
-                                        <i class="fas fa-check-circle"></i>
-                                    </div>
-                                    <div class="ml-3 flex-grow">
-                                        <p class="text-sm font-medium text-gray-900">Your reservation for Room 202 was approved</p>
-                                        <div class="flex justify-between items-center mt-1">
-                                            <p class="text-xs text-gray-500">1 hour ago</p>
-                                            <span class="h-2 w-2 bg-blue-500 rounded-full"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            
-                            <!-- Notification Item - Read -->
-                            <a href="#" class="block px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100">
-                                <div class="flex">
-                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="text-sm font-medium text-gray-700">Your session count is running low (5 remaining)</p>
-                                        <p class="text-xs text-gray-500">Yesterday at 4:30 PM</p>
-                                    </div>
-                                </div>
-                            </a>
-                            
-                            <!-- Notification Item - Read -->
-                            <a href="#" class="block px-4 py-3 hover:bg-gray-50 transition-colors duration-150">
-                                <div class="flex">
-                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500">
-                                        <i class="fas fa-info-circle"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="text-sm font-medium text-gray-700">System maintenance scheduled for Saturday</p>
-                                        <p class="text-xs text-gray-500">3 days ago</p>
-                                    </div>
-                                </div>
-                            </a>
+                        <div class="max-h-72 overflow-y-auto" id="notificationContainer">
+                            <!-- Notification Items will be dynamically loaded here -->
                         </div>
-                        <a href="#" class="block bg-gray-50 text-center text-sm font-medium text-blue-600 hover:text-blue-700 py-2 border-t border-gray-100">
-                            View all notifications
+                        
+                        <a href="javascript:void(0);" onclick="notificationsSystem.markAllAsRead()" class="block bg-gray-50 text-center text-sm font-medium text-blue-600 hover:text-blue-700 py-2 border-t border-gray-100">
+                            Mark all as read
                         </a>
                     </div>
                 </div>

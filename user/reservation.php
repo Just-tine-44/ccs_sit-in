@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/notifications.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -487,7 +488,7 @@
                 pcNumberInput.value = '';
                 
                 // Fetch available PCs via AJAX
-                fetch(`reservation.php?get_available_pcs=1&lab_room=${labRoom}&date=${date}&time=${timeIn}`)
+                fetch(`../connection/reservation_back.php?get_available_pcs=1&lab_room=${labRoom}&date=${date}&time=${timeIn}`)
                     .then(response => response.json())
                     .then(result => {
                         if (result.success) {
@@ -503,6 +504,7 @@
                                     <p>No computers are available in this lab room at the selected time.</p>
                                     <p class="text-sm mt-2">Please try a different time or lab.</p>
                                 `;
+                                pcSelectionMessage.style.display = 'block';
                                 return;
                             }
                             
@@ -544,6 +546,7 @@
                                 <p>Error loading available computers:</p>
                                 <p class="text-sm mt-2">${result.message}</p>
                             `;
+                            pcSelectionMessage.style.display = 'block';
                         }
                     })
                     .catch(error => {
@@ -554,6 +557,7 @@
                             <p>Error loading available computers.</p>
                             <p class="text-sm mt-2">Please try again later.</p>
                         `;
+                        pcSelectionMessage.style.display = 'block';
                     });
             }
             
@@ -660,7 +664,7 @@
                 `;
                 
                 // Submit via AJAX
-                fetch('reservation.php', {
+                fetch('../connection/reservation_back.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -671,6 +675,23 @@
                     submitBtn.innerHTML = originalBtnContent;
                     
                     if (result.success) {
+                        // Check if notification data is included and create notification
+                        if (result.notification && typeof notificationsSystem !== 'undefined') {
+                            notificationsSystem.addNotification(
+                                result.notification.title,
+                                result.notification.message,
+                                result.notification.type,
+                                result.notification.id
+                            );
+                        } else {
+                            // Fallback if notifications system isn't available
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Reservation submitted successfully!'
+                            });
+                        }
+                        
+
                         // Format time for display in 12-hour format
                         let displayHours = hours % 12;
                         if (displayHours === 0) displayHours = 12;

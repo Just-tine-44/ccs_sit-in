@@ -283,7 +283,7 @@ include '../connection/conn_login.php';
             }
             
             // Admin authentication
-            const adminLink = document.querySelector('a[href="admin/admin_login.php"]');
+            const adminLink = document.querySelector('a[href="../admin/admin_login.php"]');
             
             if (adminLink) {
                 adminLink.addEventListener('click', function(e) {
@@ -350,7 +350,7 @@ include '../connection/conn_login.php';
                                     popup: 'rounded-lg shadow-md border-l-4 border-green-500'
                                 }
                             }).then(() => {
-                                window.location.href = 'admin/admin_login.php';
+                                window.location.href = '../admin/admin_login.php';
                             });
                         }
                     });

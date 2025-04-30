@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['create_admin'])) {
 }
 
 if (!isset($_SESSION['auth_verified']) || $_SESSION['auth_verified'] !== true) {
-    header("Location: ../login.php");
+    header("Location: ../user/login.php");
     exit();
 }
 

@@ -88,12 +88,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_reservation'])
         $stmt->bind_param("isssss", $user_id, $lab_room, $pc_number, $purpose, $date, $time_in);
         
         if ($stmt->execute()) {
+            // Get the new reservation ID
+            $reservation_id = $conn->insert_id;
+            
             // Commit transaction
             $conn->commit();
             
-            // Set success response
+            // Set success response with notification data
             $response['success'] = true;
             $response['message'] = 'Reservation submitted successfully!';
+            $response['notification'] = [
+                'title' => 'Reservation Submitted',
+                'message' => "Your reservation request for Room {$lab_room}, PC {$pc_number} has been submitted successfully.",
+                'type' => 'info',
+                'id' => $reservation_id
+            ];
         } else {
             throw new Exception("Failed to save reservation");
         }
@@ -107,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_reservation'])
     echo json_encode($response);
     exit;
 }
+
 
 // AJAX handler for getting available PCs
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['get_available_pcs'])) {
@@ -123,45 +133,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['get_available_pcs'])) {
         // Get time for query
         $time_in = $time . ':00';
         
-        // MODIFIED: Remove the time_out constraint since we don't know how long sessions will be
-        // Instead, look for any reservations that start at or before the requested time
-        // but haven't ended yet (or don't have an end time)
-        $sql = "SELECT c.pc_number, c.status
-                FROM lab_computers c
-                WHERE c.lab_room = ?
-                AND c.status = 'available'
-                AND NOT EXISTS (
-                    SELECT 1 FROM reservations r
-                    WHERE r.lab_room = c.lab_room
-                    AND r.pc_number = c.pc_number
-                    AND r.reservation_date = ?
-                    AND r.status IN ('pending', 'approved')
-                    AND (
-                        /* Check if this reservation starts at the exact same time */
-                        r.time_in = ? 
-                        OR 
-                        /* Check if there's an approved session with no end time */
-                        (r.status = 'approved' AND r.time_out IS NULL)
-                        OR
-                        /* Check if there's an approved session that hasn't ended yet */
-                        (r.time_in < ? AND (r.time_out IS NULL OR r.time_out > ?))
-                    )
-                )
-                ORDER BY c.pc_number";
+        // Get all existing computers for this lab from the database
+        $sql = "SELECT pc_number, status
+                FROM lab_computers 
+                WHERE lab_room = ?
+                ORDER BY pc_number";
                 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssss", $lab_room, $date, $time_in, $time_in, $time_in);
+        $stmt->bind_param("s", $lab_room);
         $stmt->execute();
         $result = $stmt->get_result();
         
-        $available_pcs = [];
+        // Collect all PCs in this lab and normalize status
+        $all_pcs = [];
         while ($row = $result->fetch_assoc()) {
-            $available_pcs[] = $row;
+            $status = $row['status'];
+            // Convert unknown to available (match admin side behavior)
+            if ($status === 'unknown' || empty($status)) {
+                $status = 'available';
+            }
+            $all_pcs[$row['pc_number']] = [
+                'pc_number' => $row['pc_number'],
+                'status' => $status
+            ];
         }
+        
+        // Ensure PCs 1-50 exist with default 'available' status
+        for ($i = 1; $i <= 50; $i++) {
+            if (!isset($all_pcs[$i])) {
+                $all_pcs[$i] = [
+                    'pc_number' => $i,
+                    'status' => 'available'
+                ];
+            }
+        }
+        
+        // Now check reservations to exclude PCs that are reserved
+        $reservation_sql = "SELECT pc_number 
+                           FROM reservations 
+                           WHERE lab_room = ? 
+                           AND reservation_date = ?
+                           AND status IN ('pending', 'approved')
+                           AND (
+                               /* Check if this reservation starts at the exact same time */
+                               time_in = ? 
+                               OR 
+                               /* Check if there's an approved session with no end time */
+                               (status = 'approved' AND time_out IS NULL)
+                               OR
+                               /* Check if there's an approved session that hasn't ended yet */
+                               (time_in < ? AND (time_out IS NULL OR time_out > ?))
+                           )";
+        
+        $stmt = $conn->prepare($reservation_sql);
+        $stmt->bind_param("sssss", $lab_room, $date, $time_in, $time_in, $time_in);
+        $stmt->execute();
+        $reservation_result = $stmt->get_result();
+        
+        // Mark reserved PCs
+        while ($row = $reservation_result->fetch_assoc()) {
+            if (isset($all_pcs[$row['pc_number']])) {
+                // Remove PCs that are reserved or in use
+                unset($all_pcs[$row['pc_number']]);
+            }
+        }
+        
+        // Filter out non-available PCs
+        $available_pcs = [];
+        foreach ($all_pcs as $pc) {
+            if ($pc['status'] === 'available') {
+                $available_pcs[] = $pc;
+            }
+        }
+        
+        // Sort by PC number
+        usort($available_pcs, function($a, $b) {
+            return $a['pc_number'] - $b['pc_number'];
+        });
         
         echo json_encode([
             'success' => true, 
-            'data' => $available_pcs
+            'data' => array_values($available_pcs)
         ]);
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
