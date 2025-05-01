@@ -207,8 +207,75 @@ const adminNotificationSystem = {
         return 'just now';
     },
     
+    // Check for new reservation requests
+    checkNewReservations: function() {
+        // Get the last check time from localStorage
+        const lastCheck = localStorage.getItem('lastReservationCheck') || '0';
+        
+        // Get list of already shown notification IDs
+        const shownNotifications = localStorage.getItem('shownNotificationIds') || '[]';
+        const shownIds = JSON.parse(shownNotifications);
+        
+        // Include the already shown IDs in the request to filter them out
+        fetch(`conn_back/check_reservations.php?last_check=${lastCheck}&shown_ids=${encodeURIComponent(JSON.stringify(shownIds))}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update last check time
+                localStorage.setItem('lastReservationCheck', data.currentTime);
+                
+                // Process each new notification from server
+                if (data.notifications && data.notifications.length > 0) {
+                    // Track the new IDs we're about to show
+                    const newIds = data.notifications.map(n => n.id);
+                    
+                    // Update the list of shown IDs
+                    const updatedShownIds = [...shownIds, ...newIds];
+                    localStorage.setItem('shownNotificationIds', JSON.stringify(updatedShownIds));
+                    
+                    // Add each notification to the system
+                    data.notifications.forEach(notification => {
+                        this.addNotification(
+                            notification.title,
+                            notification.message,
+                            notification.type || 'info',
+                            notification.id
+                        );
+                    });
+                    
+                    // OPTIONAL: Show a summary notification if there are multiple
+                    if (data.notifications.length > 1) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: `${data.notifications.length} New Reservation Requests`,
+                            text: 'You have multiple new reservation requests to review',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true
+                        });
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error checking for new reservations:', error);
+        });
+    },
+    
+    // Clear all notifications
+    clearAllNotifications: function() {
+        if (confirm('Are you sure you want to clear all notifications?')) {
+            localStorage.removeItem('adminNotifications');
+            this.updateNotificationBadge();
+            this.renderNotifications();
+        }
+    },
+    
     // Initialize notifications system
     init: function() {
+        console.log('Initializing admin notification system...');
         this.updateNotificationBadge();
         this.renderNotifications();
         
@@ -230,6 +297,14 @@ const adminNotificationSystem = {
                 }
             });
         }
+        
+        // Check for new reservations immediately
+        this.checkNewReservations();
+        
+        // Set up polling to check for new reservations every 30 seconds
+        setInterval(() => {
+            this.checkNewReservations();
+        }, 30000);
     }
 };
 

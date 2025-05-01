@@ -3,7 +3,7 @@ session_start();
 
 if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) || 
     !isset($_SESSION['auth_verified']) || $_SESSION['auth_verified'] !== true) {
-    header("Location: ../login.php");
+    header("Location: .././user/login.php");
     exit();
 }
 

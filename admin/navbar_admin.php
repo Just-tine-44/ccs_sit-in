@@ -75,6 +75,12 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
                     
                     <!-- Notification Dropdown Content -->
                     <div id="adminNotificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50 border border-gray-200 overflow-hidden">
+                        <div class="relative">
+                            <button class="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span id="adminNotificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center" style="display: none;">0</span>
+                            </button>
+                        </div>
                         <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
                             <div class="flex justify-between items-center">
                                 <h3 class="font-medium text-gray-700">Admin Notifications</h3>
