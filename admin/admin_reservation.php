@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/admin_notifications.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -868,43 +869,39 @@
                             });
                         })
                         .then(data => {
-                            if (data.success) {
-                                // Get the PC button element in the grid
-                                const pcButton = document.querySelector(`.toggle-pc-btn[data-pc-id="${data.pc_number}"][data-lab-room="${data.lab_room}"]`);
-                                
-                                if (pcButton) {
-                                    // Update the button's appearance to match the reserved status
-                                    const parentItem = pcButton.closest('.pc-item');
+                                if (data.success) {
+                                    // Get the PC button element in the grid
+                                    const pcButton = document.querySelector(`.toggle-pc-btn[data-pc-id="${data.pc_number}"][data-lab-room="${data.lab_room}"]`);
                                     
-                                    // Remove all status classes
-                                    pcButton.classList.remove('bg-green-500', 'bg-red-500', 'bg-purple-500', 'bg-gray-400');
-                                    pcButton.classList.remove('hover:bg-green-600', 'hover:bg-red-600', 'hover:bg-purple-600', 'hover:bg-gray-500');
+                                    // Your existing PC button updating code...
                                     
-                                    // Add the appropriate class based on returned status
-                                    pcButton.classList.add('bg-purple-500', 'hover:bg-purple-600');
-                                    const icon = pcButton.querySelector('i');
-                                    icon.className = 'fas fa-calendar-check mb-1 text-lg';
-                                    pcButton.setAttribute('data-new-status', 'available');
-                                    parentItem.setAttribute('data-status', 'reserved');
+                                    // Process the notification from the response
+                                    if (data.notification && typeof adminNotificationSystem !== 'undefined') {
+                                        adminNotificationSystem.addNotification(
+                                            data.notification.title,
+                                            data.notification.message,
+                                            data.notification.type,
+                                            data.notification.relatedId
+                                        );
+                                    }
+                                    
+                                    Swal.fire({
+                                        title: 'Approved!',
+                                        text: 'The reservation has been approved successfully.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#3085d6'
+                                    }).then(() => {
+                                        // Instead of a full page reload, we'll reload with a PC status parameter
+                                        window.location.href = window.location.href + 
+                                            (window.location.href.includes('?') ? '&' : '?') + 
+                                            'preserve_pc=' + data.pc_number + 
+                                            '&preserve_lab=' + data.lab_room + 
+                                            '&preserve_status=reserved';
+                                    });
+                                } else {
+                                    showAlert('Error', data.message || 'An error occurred while approving the reservation.', 'error');
                                 }
-                                
-                                Swal.fire({
-                                    title: 'Approved!',
-                                    text: 'The reservation has been approved successfully.',
-                                    icon: 'success',
-                                    confirmButtonColor: '#3085d6'
-                                }).then(() => {
-                                    // Instead of a full page reload, we'll reload with a PC status parameter
-                                    window.location.href = window.location.href + 
-                                        (window.location.href.includes('?') ? '&' : '?') + 
-                                        'preserve_pc=' + data.pc_number + 
-                                        '&preserve_lab=' + data.lab_room + 
-                                        '&preserve_status=reserved';
-                                });
-                            } else {
-                                showAlert('Error', data.message || 'An error occurred while approving the reservation.', 'error');
-                            }
-                        })
+                            })
                         .catch(error => {
                             console.error('Error:', error);
                             showAlert('Error', 'An unexpected error occurred. Please try again.', 'error');
@@ -1036,6 +1033,32 @@
                 location.reload();
             }, 300);
         });
+
+        function checkForNewReservations() {
+            const currentCount = document.querySelectorAll('.request-item').length;
+            fetch('admin_reservation.php?check_new=1', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.count > currentCount) {
+                    const newCount = data.count - currentCount;
+                    adminNotificationSystem.addNotification(
+                        'New Reservation Requests',
+                        `${newCount} new reservation request${newCount > 1 ? 's' : ''} received. Review them now.`,
+                        'info'
+                    );
+                }
+            })
+            .catch(error => console.error('Error checking for new reservations:', error));
+        }
+
+        // Check initially and then every 30 seconds
+        setTimeout(checkForNewReservations, 5000);
+        setInterval(checkForNewReservations, 30000);
+        
     });
 
     // Helper function to create PC buttons

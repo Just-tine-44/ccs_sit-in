@@ -675,20 +675,18 @@
                     submitBtn.innerHTML = originalBtnContent;
                     
                     if (result.success) {
-                        // Check if notification data is included and create notification
-                        if (result.notification && typeof notificationsSystem !== 'undefined') {
-                            notificationsSystem.addNotification(
-                                result.notification.title,
-                                result.notification.message,
-                                result.notification.type,
-                                result.notification.id
+                        // Create client-side notification first for reservation request
+                        if (typeof window.notificationsSystem !== 'undefined') {
+                            // Give this a unique ID with Date.now() to ensure it doesn't conflict with server notifications
+                            window.notificationsSystem.addNotification(
+                                "Reservation Requested",
+                                `You've requested PC ${pcNumber} in Lab ${labRoom} on ${new Date(date).toLocaleDateString()} at ${timeIn}`,
+                                "info",
+                                Date.now() // Use current timestamp as ID
                             );
-                        } else {
-                            // Fallback if notifications system isn't available
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Reservation submitted successfully!'
-                            });
+                            
+                            // Now fetch from server to get any server-side notifications as well
+                            window.notificationsSystem.fetchNotifications();
                         }
                         
 

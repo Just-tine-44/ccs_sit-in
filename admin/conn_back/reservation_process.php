@@ -20,6 +20,22 @@ if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) ||
 
 include(__DIR__ . '/../../conn/dbcon.php');
 
+// Handle AJAX check for new reservations
+if (isset($_GET['check_new']) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+    // Clean output buffer
+    ob_clean();
+    
+    // Set proper content type
+    header('Content-Type: application/json');
+    
+    $count_query = "SELECT COUNT(*) as count FROM reservations WHERE status = 'pending'";
+    $count_result = $conn->query($count_query);
+    $count = $count_result->fetch_assoc()['count'];
+    
+    echo json_encode(['success' => true, 'count' => (int)$count]);
+    exit;
+}
+
 // Handle AJAX request for computers in a specific lab
 if (isset($_GET['ajax']) && isset($_GET['lab'])) {
     // Clean output buffer
@@ -136,9 +152,17 @@ if (isset($_POST['toggle_pc'])) {
         $insert_stmt->execute();
     }
     
-    // Return JSON response for AJAX requests
+    // Add notification for status change
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-        echo json_encode(['success' => true, 'status' => $new_status]);
+        echo json_encode([
+            'success' => true, 
+            'status' => $new_status,
+            'notification' => [
+                'title' => 'PC Status Updated',
+                'message' => 'PC ' . $pc_id . ' in Lab ' . $lab_room . ' is now ' . ucfirst($new_status),
+                'type' => 'info'
+            ]
+        ]);
         exit;
     }
     
@@ -301,7 +325,10 @@ if (isset($_POST['approve_request'])) {
         }
         
         // Get reservation details and check if it's for today or future
-        $get_res_query = "SELECT lab_room, pc_number, reservation_date, time_in FROM reservations WHERE reservation_id = ?";
+        $get_res_query = "SELECT r.lab_room, r.pc_number, r.reservation_date, r.time_in, u.firstname, u.lastname 
+                          FROM reservations r 
+                          JOIN users u ON r.user_id = u.id 
+                          WHERE r.reservation_id = ?";
         $get_res_stmt = $conn->prepare($get_res_query);
         if (!$get_res_stmt) {
             throw new Exception("Failed to prepare statement: " . $conn->error);
@@ -323,6 +350,7 @@ if (isset($_POST['approve_request'])) {
         $pc_number = $res_data['pc_number'];
         $reservation_date = $res_data['reservation_date'];
         $reservation_time = $res_data['time_in'];
+        $student_name = $res_data['firstname'] . ' ' . $res_data['lastname'];
 
         error_log("Retrieved reservation data - Lab: $lab_room, PC: $pc_number, Date: $reservation_date, Time: $reservation_time");
 
@@ -367,6 +395,39 @@ if (isset($_POST['approve_request'])) {
             }
         }
         
+        // Create notification for the user - NEW CODE
+        // First, check if notifications table exists, create it if not
+        $check_table_sql = "SHOW TABLES LIKE 'notifications'";
+        $table_exists = $conn->query($check_table_sql)->num_rows > 0;
+        
+        if (!$table_exists) {
+            $create_table_sql = "CREATE TABLE notifications (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                message TEXT NOT NULL,
+                type VARCHAR(50) NOT NULL DEFAULT 'info',
+                is_read TINYINT(1) NOT NULL DEFAULT 0,
+                related_id INT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX (user_id),
+                INDEX (is_read)
+            )";
+            $conn->query($create_table_sql);
+        }
+        
+        // Now create the notification
+        $notification_query = "INSERT INTO notifications (user_id, title, message, type, related_id, created_at) 
+                             VALUES (?, 'Reservation Approved', ?, 'success', ?, NOW())";
+        $notification_stmt = $conn->prepare($notification_query);
+        $message = "Your reservation for Lab $lab_room, PC $pc_number on $reservation_date at $reservation_time has been approved.";
+        $notification_stmt->bind_param("isi", $user_id, $message, $request_id);
+        
+        if (!$notification_stmt->execute()) {
+            error_log("Failed to create user notification: " . $notification_stmt->error);
+            // Don't throw exception here, as this is not critical for the approval process
+        }
+        
         // Commit the transaction
         $conn->commit();
         
@@ -380,12 +441,20 @@ if (isset($_POST['approve_request'])) {
                         $admin_username_result->fetch_assoc()['username'] : "Unknown";
         
         error_log("Approval successful for reservation #$request_id by admin: $admin_username (ID: $admin_id)");
+        
+        // Return notification data as part of the JSON response instead of a script tag
         echo json_encode([
             'success' => true, 
             'pc_status' => $pc_status, 
             'lab_room' => $lab_room,
             'pc_number' => $pc_number,
-            'tooltipText' => 'Reserved for Future Use - This PC is booked for an upcoming reservation' // Add explicit tooltip text
+            'tooltipText' => 'Reserved for Future Use - This PC is booked for an upcoming reservation',
+            'notification' => [
+                'title' => 'Reservation Approved',
+                'message' => 'You approved ' . $student_name . '\'s reservation for Lab ' . $lab_room . ', PC ' . $pc_number . '.',
+                'type' => 'success',
+                'relatedId' => $request_id
+            ]
         ]);
         exit;
         
@@ -489,6 +558,21 @@ if (isset($_POST['disapprove_request'])) {
         // Begin transaction
         $conn->begin_transaction();
         
+        // Get student name for notification
+        $student_query = "SELECT r.user_id, u.firstname, u.lastname, r.lab_room, r.pc_number 
+                          FROM reservations r 
+                          JOIN users u ON r.user_id = u.id 
+                          WHERE r.reservation_id = ?";
+        $student_stmt = $conn->prepare($student_query);
+        $student_stmt->bind_param("i", $request_id);
+        $student_stmt->execute();
+        $student_result = $student_stmt->get_result();
+        $student_data = $student_result->fetch_assoc();
+        $student_name = $student_data['firstname'] . ' ' . $student_data['lastname'];
+        $lab_room = $student_data['lab_room'];
+        $pc_number = $student_data['pc_number'];
+        $user_id = $student_data['user_id'];
+        
         // Update the reservation status
         $disapprove_query = "UPDATE reservations SET status = 'disapproved', disapproval_reason = ?, approved_by = ?, updated_at = NOW() WHERE reservation_id = ?";
         $disapprove_stmt = $conn->prepare($disapprove_query);
@@ -505,6 +589,39 @@ if (isset($_POST['disapprove_request'])) {
             throw new Exception("No reservation found with ID: $request_id");
         }
         
+        // Create notification for the user about disapproval - NEW CODE
+        // First, check if notifications table exists, create it if not
+        $check_table_sql = "SHOW TABLES LIKE 'notifications'";
+        $table_exists = $conn->query($check_table_sql)->num_rows > 0;
+        
+        if (!$table_exists) {
+            $create_table_sql = "CREATE TABLE notifications (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                message TEXT NOT NULL,
+                type VARCHAR(50) NOT NULL DEFAULT 'info',
+                is_read TINYINT(1) NOT NULL DEFAULT 0,
+                related_id INT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX (user_id),
+                INDEX (is_read)
+            )";
+            $conn->query($create_table_sql);
+        }
+        
+        // Now create the notification for disapproval
+        $notification_query = "INSERT INTO notifications (user_id, title, message, type, related_id, created_at) 
+                             VALUES (?, 'Reservation Disapproved', ?, 'warning', ?, NOW())";
+        $notification_stmt = $conn->prepare($notification_query);
+        $message = "Your reservation for Lab $lab_room, PC $pc_number has been disapproved. Reason: $reason";
+        $notification_stmt->bind_param("isi", $user_id, $message, $request_id);
+        
+        if (!$notification_stmt->execute()) {
+            error_log("Failed to create user notification for disapproval: " . $notification_stmt->error);
+            // Don't throw exception, as this is not critical
+        }
+        
         // Commit the transaction
         $conn->commit();
         
@@ -518,7 +635,17 @@ if (isset($_POST['disapprove_request'])) {
                           $admin_username_result->fetch_assoc()['username'] : "Unknown";
         
         error_log("Disapproval successful for reservation #$request_id by admin: $admin_username (ID: $admin_id) with reason: $reason");
-        echo json_encode(['success' => true]);
+        
+        // Return notification data as part of the JSON response instead of a script tag
+        echo json_encode([
+            'success' => true,
+            'notification' => [
+                'title' => 'Reservation Disapproved',
+                'message' => 'You disapproved ' . $student_name . '\'s reservation for Lab ' . $lab_room . ', PC ' . $pc_number . '. Reason: ' . $reason,
+                'type' => 'warning',
+                'relatedId' => $request_id
+            ]
+        ]);
         exit;
         
     } catch (Exception $e) {

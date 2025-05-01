@@ -1,3 +1,4 @@
+<script src="../js/notifications.js"></script>
 <nav class="bg-white shadow mb-8 font-sans">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row justify-between items-center py-4">
@@ -46,20 +47,21 @@
                         <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200" id="navNotifArrow"></i>
                         <span class="hidden md:block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-blue-600 absolute bottom-0 left-0 right-0"></span>
                     </button>
-                    <div id="navNotificationDropdown" class="hidden absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 overflow-hidden w-80 md:w-80 sm:w-full">
-                        <div class="bg-gray-50 px-4 py-2 border-b border-gray-100">
+                    <div id="navNotificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50 border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-medium text-gray-700">Recent Notifications</h3>
+                                <h3 class="font-medium text-gray-700">Notifications</h3>
                                 <span class="notification-header-count bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full">0 new</span>
                             </div>
                         </div>
-                        <div class="max-h-72 overflow-y-auto" id="notificationContainer">
-                            <!-- Notification Items will be dynamically loaded here -->
+                        <div id="notificationContainer" class="max-h-72 overflow-y-auto">
+                            <!-- Notifications will be loaded here -->
                         </div>
-                        
-                        <a href="javascript:void(0);" onclick="notificationsSystem.markAllAsRead()" class="block bg-gray-50 text-center text-sm font-medium text-blue-600 hover:text-blue-700 py-2 border-t border-gray-100">
-                            Mark all as read
-                        </a>
+                        <div class="p-2 bg-gray-50 border-t border-gray-200">
+                            <button onclick="window.notificationsSystem.markAllAsRead()" class="w-full text-center text-sm text-blue-600 hover:text-blue-700 py-1">
+                                Mark all as read
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
@@ -271,9 +273,15 @@ function initNavbar() {
     });
 }
 
+
+// Replace your navToggleDropdown function with this
+
 function navToggleDropdown() {
     const dropdown = document.getElementById("navNotificationDropdown");
-    if (!dropdown) return;
+    if (!dropdown) {
+        console.error("Notification dropdown element not found");
+        return;
+    }
     
     const arrow = document.getElementById("navNotifArrow");
     
@@ -281,6 +289,34 @@ function navToggleDropdown() {
     
     if (!dropdown.classList.contains("hidden")) {
         if (arrow) arrow.style.transform = "rotate(180deg)";
+        
+        console.log("Opening notifications dropdown");
+        
+        // Refresh notifications when dropdown is opened
+        if (typeof window.notificationsSystem !== 'undefined') {
+            console.log("Refreshing notifications via system");
+            
+            // Check if fetchNotifications is available as a function
+            if (typeof window.notificationsSystem.fetchNotifications === 'function') {
+                try {
+                    window.notificationsSystem.fetchNotifications();
+                } catch (e) {
+                    console.error("Error fetching notifications:", e);
+                }
+            } else {
+                console.error("fetchNotifications is not a function");
+                console.log(window.notificationsSystem);
+            }
+        } else {
+            console.error("Notification system not available");
+            
+            // Try to initialize if possible
+            if (typeof initNotificationsSystem === 'function') {
+                console.log("Trying to initialize notification system");
+                initNotificationsSystem();
+            }
+        }
+        
         // Handle mobile positioning
         if (window.innerWidth < 768) {
             dropdown.style.width = "calc(100vw - 2rem)";

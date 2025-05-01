@@ -66,6 +66,38 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
             
             <!-- Navigation Links -->
             <div id="nav-links" class="hidden md:flex md:items-center md:space-x-0.5 lg:space-x-2 flex-col md:flex-row w-full md:w-auto mt-4 md:mt-0">
+                <!-- Notifications Dropdown -->
+                <div class="relative ml-0 md:ml-2 mt-2 md:mt-0">
+                    <button id="notificationDropdownBtn" class="flex items-center justify-center space-x-1 px-3 py-2 bg-white text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors duration-200 border border-gray-200 relative">
+                        <i class="fas fa-bell"></i>
+                        <span id="adminNotificationBadge" class="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-xs text-white" style="display: none;">0</span>
+                    </button>
+                    
+                    <!-- Notification Dropdown Content -->
+                    <div id="adminNotificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50 border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-medium text-gray-700">Admin Notifications</h3>
+                                <span id="adminNotificationHeaderCount" class="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full">0 new</span>
+                            </div>
+                        </div>
+                        <div id="adminNotificationContainer" class="max-h-72 overflow-y-auto">
+                            <!-- Notifications will be loaded here -->
+                        </div>
+                        <div class="p-2 bg-gray-50 border-t border-gray-200">
+                            <button onclick="adminNotificationSystem.markAllAsRead()" class="w-full text-center text-sm text-blue-600 hover:text-blue-700 py-1">
+                                Mark all as read
+                            </button>
+                        </div>
+                        <div class="text-center p-2 border-t border-gray-200">
+                            <button onclick="localStorage.clear(); location.reload();" class="w-full px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs hover:bg-red-200 transition-colors duration-200 flex items-center justify-center">
+                                <i class="fas fa-trash-alt mr-1"></i>
+                                Clear Notifications Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <a href="admin_home.php" class="nav-link group px-2 py-2 rounded-lg flex items-center text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-home mr-1 text-gray-400 group-hover:text-blue-500"></i>
                     <span>Home</span>
@@ -126,6 +158,8 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
         </div>
     </div>
 </nav>
+
+<script src="js/admin_notifications.js"></script>
 
 <script>
     // Mobile menu toggle
@@ -585,4 +619,4 @@ $icon = isset($pageIcons[$currentFile]) ? $pageIcons[$currentFile] : 'fa-laptop-
     });
 </script>
 
-<script src="theme.js"></script>
+<script src="js/theme.js"></script>
