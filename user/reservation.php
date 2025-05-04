@@ -392,7 +392,6 @@
                                     id="date" 
                                     name="date" 
                                     min="<?php echo date('Y-m-d'); ?>"
-                                    max="<?php echo date('Y-m-d', strtotime('+7 days')); ?>"
                                     class="pl-11 pr-4 py-3 block w-full border border-gray-300 rounded-lg text-gray-700 input-focus"
                                     required
                                 >
@@ -400,6 +399,9 @@
                                     <i class="fas fa-calendar-alt input-icon"></i>
                                 </div>
                             </div>
+                            <p class="text-xs text-gray-500 mt-1">
+                                <i class="fas fa-info-circle mr-1"></i> Sundays are not available for reservations
+                            </p>
                         </div>
                         
                         <!-- Time In (Modified to remove end time assumptions) -->
@@ -465,6 +467,25 @@
             const pcSelectionMessage = document.getElementById('pcSelectionMessage');
             const pcNumberInput = document.getElementById('pcNumber');
             const remainingSessions = <?php echo $remaining_sessions; ?>;
+
+            // Function to check if a date is Sunday
+            function isSunday(dateString) {
+                const date = new Date(dateString);
+                return date.getDay() === 0; 
+            }
+
+            // Add event listener to validate date selection
+            dateInput.addEventListener('input', function() {
+                if (isSunday(this.value)) {
+                    Swal.fire({
+                        title: 'Invalid Date',
+                        text: 'Reservations are not available on Sundays. Please select another day.',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    this.value = ''; // Clear the invalid date
+                }
+            });
             
             // Function to check PC availability and show PC selection grid
             function checkAvailablePCs() {
