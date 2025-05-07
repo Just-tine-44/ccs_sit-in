@@ -214,7 +214,7 @@ if ($selected_lab) {
                                         </div>
                                     </div>
                                     
-                                    <a href="uploads/schedules/<?= $schedule['schedule_image'] ?>" download class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200 font-medium px-4 py-3 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-transform">
+                                    <a href="../uploads/schedules/<?= $schedule['schedule_image'] ?>" download class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200 font-medium px-4 py-3 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-transform">
                                         <i class="fas fa-download mr-2"></i> Download Schedule
                                     </a>
                                 </div>
@@ -223,7 +223,7 @@ if ($selected_lab) {
                                     <div class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                                         <div class="relative group">
                                             <img 
-                                                src="uploads/schedules/<?= $schedule['schedule_image'] ?>" 
+                                                src="../uploads/schedules/<?= $schedule['schedule_image'] ?>" 
                                                 alt="<?= htmlspecialchars($schedule['title']) ?>"
                                                 class="w-full h-auto max-h-[500px] object-contain p-2"
                                             >
@@ -305,12 +305,12 @@ if ($selected_lab) {
             </h3>
         </div>
         <div class="absolute bottom-4 right-4">
-            <a href="uploads/schedules/<?= $schedule['schedule_image'] ?>" download class="glass-effect text-gray-800 flex items-center px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-80 transition-colors duration-200">
+            <a href="../uploads/schedules/<?= $schedule['schedule_image'] ?>" download class="glass-effect text-gray-800 flex items-center px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-80 transition-colors duration-200">
                 <i class="fas fa-download text-blue-500 mr-2"></i> Download Image
             </a>
         </div>
         <img 
-            src="uploads/schedules/<?= $schedule['schedule_image'] ?>" 
+            src="../uploads/schedules/<?= $schedule['schedule_image'] ?>" 
             alt="<?= htmlspecialchars($schedule['title']) ?>"
             class="max-w-full max-h-screen p-4 object-contain"
         >

@@ -1,6 +1,18 @@
 <?php 
     include('./conn_back/labsched_process.php');
 ?>
+<?php if ($sweetAlert): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: '<?php echo $alertType; ?>',
+            title: '<?php echo $alertTitle; ?>',
+            text: '<?php echo $alertText; ?>',
+            confirmButtonColor: '#7C3AED'
+        });
+    });
+</script>
+<?php endif; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +22,7 @@
     <title>Lab Schedule Management</title>
     <link rel="icon" type="image/png" href="../images/wbccs.png">
     <link href="../css/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">

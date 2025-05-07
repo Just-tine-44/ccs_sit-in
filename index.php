@@ -604,7 +604,7 @@ if ($result->num_rows > 0) {
                             backdrop: `rgba(38, 55, 130, 0.4)`
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "login.php";
+                                window.location.href = "user/login.php";
                             }
                         });
                     }
