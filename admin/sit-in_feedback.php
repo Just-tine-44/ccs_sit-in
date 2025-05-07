@@ -307,7 +307,22 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-9 w-9">
-                                                <?php $profileImg = !empty($row['profileImg']) ? '../' . $row['profileImg'] : '../images/person.jpg'; ?>
+                                                <?php 
+                                                    // Fix image path construction to handle both formats
+                                                    $profileImg = '';
+                                                    if (!empty($row['profileImg'])) {
+                                                        // Check if the path already starts with "../" or "/"
+                                                        if (strpos($row['profileImg'], '../') === 0) {
+                                                            $profileImg = $row['profileImg'];
+                                                        } else if (strpos($row['profileImg'], '/') === 0) {
+                                                            $profileImg = '.' . $row['profileImg'];
+                                                        } else {
+                                                            $profileImg = '../' . $row['profileImg'];
+                                                        }
+                                                    } else {
+                                                        $profileImg = '../images/person.jpg';
+                                                    }
+                                                ?>
                                                 <img class="h-9 w-9 rounded-full object-cover" src="<?php echo $profileImg; ?>" alt="">
                                             </div>
                                             <div class="ml-3">
