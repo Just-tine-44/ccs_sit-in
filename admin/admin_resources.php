@@ -597,7 +597,7 @@
                                     <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">
                                         <div class="flex space-x-4">
                                             <?php if (!empty($resource['file_path'])): ?>
-                                                <a href="../<?php echo htmlspecialchars($resource['file_path']); ?>" target="_blank" class="text-blue-600 hover:text-blue-900 transition-colors flex items-center" title="View File">
+                                                <a href="/login/<?php echo htmlspecialchars($resource['file_path']); ?>" target="_blank" class="text-blue-600 hover:text-blue-900 transition-colors flex items-center" title="View File">
                                                     <span class="w-8 h-8 flex items-center justify-center bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
                                                         <i class="fas fa-eye"></i>
                                                     </span>

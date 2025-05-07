@@ -235,7 +235,7 @@ $debug['allResourcesCount'] = count($allResources);
                                         </div>
                                         <div>
                                             <?php if (!empty($resource['file_path'])): ?>
-                                                <a href="<?php echo htmlspecialchars($resource['file_path']); ?>" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                <a href="../<?php echo htmlspecialchars($resource['file_path']); ?>" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium">
                                                     <i class="fas fa-download mr-1"></i> Download
                                                 </a>
                                             <?php endif; ?>
