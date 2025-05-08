@@ -378,9 +378,25 @@ $totalHours = round($stats['total_hours'] / 60, 1);
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 mr-4">
                                                 <div class="relative">
+                                                <?php 
+                                                    // Fix image path construction to handle both formats
+                                                    $profileImg = '';
+                                                    if (!empty($student['profileImg'])) {
+                                                        // Check if the path already starts with "../" or "/"
+                                                        if (strpos($student['profileImg'], '../') === 0) {
+                                                            $profileImg = $student['profileImg'];
+                                                        } else if (strpos($student['profileImg'], '/') === 0) {
+                                                            $profileImg = '.' . $student['profileImg'];
+                                                        } else {
+                                                            $profileImg = '../' . $student['profileImg'];
+                                                        }
+                                                    } else {
+                                                        $profileImg = '../images/person.jpg';
+                                                    }
+                                                    ?>
                                                     <img class="h-14 w-14 rounded-full object-cover border-2 shadow-sm <?php echo $podiumClass; ?>" 
-                                                         src="../<?php echo !empty($student['profileImg']) ? $student['profileImg'] : 'images/person.jpg'; ?>" 
-                                                         alt="<?php echo htmlspecialchars($student['name']); ?>">
+                                                        src="<?php echo $profileImg; ?>" 
+                                                        alt="<?php echo htmlspecialchars($student['name']); ?>">
                                                     <span class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-white border-2 <?php echo $podiumClass; ?> flex items-center justify-center text-xs font-bold <?php echo $medalClass; ?> shadow-sm">
                                                         <?php echo $index + 1; ?>
                                                     </span>

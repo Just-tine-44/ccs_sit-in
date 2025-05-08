@@ -619,9 +619,25 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
+                                                <?php 
+                                                // Fix image path construction to handle both formats
+                                                $profileImg = '';
+                                                if (!empty($student['profileImg'])) {
+                                                    // Check if the path already starts with "../" or "/"
+                                                    if (strpos($student['profileImg'], '../') === 0) {
+                                                        $profileImg = $student['profileImg'];
+                                                    } else if (strpos($student['profileImg'], '/') === 0) {
+                                                        $profileImg = '.' . $student['profileImg'];
+                                                    } else {
+                                                        $profileImg = '../' . $student['profileImg'];
+                                                    }
+                                                } else {
+                                                    $profileImg = '../images/person.jpg';
+                                                }
+                                                ?>
                                                 <img class="h-10 w-10 rounded-full object-cover" 
-                                                     src="../<?php echo !empty($student['profileImg']) ? $student['profileImg'] : 'images/person.jpg'; ?>" 
-                                                     alt="<?php echo htmlspecialchars($student['name']); ?>">
+                                                    src="<?php echo $profileImg; ?>" 
+                                                    alt="<?php echo htmlspecialchars($student['name']); ?>">
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">
