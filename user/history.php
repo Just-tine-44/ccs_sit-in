@@ -84,6 +84,33 @@
         .table-container::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* Tab styling */
+        .tab-btn {
+            position: relative;
+        }
+        
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            color: #2563eb;
+        }
+        
+        .tab-btn.active::after {
+            background-color: #2563eb;
+            transform: scaleX(1);
+            transform-origin: left;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -97,7 +124,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Session History</h1>
-                <p class="text-sm text-gray-500 mt-1">View your previous lab sessions and provide feedback</p>
+                <p class="text-sm text-gray-500 mt-1">View your previous lab sessions and reservations</p>
             </div>
             
             <div class="flex flex-col sm:flex-row gap-3">
@@ -124,198 +151,378 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-blue-500 transform transition-transform hover:scale-[1.02] duration-300">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Total Sessions</p>
-                        <p class="text-2xl font-bold text-gray-800"><?php echo $stats['total_sessions']; ?></p>
-                    </div>
-                    <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                        <i class="fas fa-desktop"></i>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <span class="text-xs text-gray-500">
-                        <i class="fas fa-chart-line mr-1"></i> Session history
-                    </span>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-500 transform transition-transform hover:scale-[1.02] duration-300">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Total Hours</p>
-                        <p class="text-xl font-bold text-gray-800"><?php echo $totalHours; ?> hrs <?php echo $remainingMinutes; ?> min</p>
-                    </div>
-                    <div class="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-500">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <span class="text-xs text-gray-500">
-                        <i class="fas fa-calendar-alt mr-1"></i> All time usage
-                    </span>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-purple-500 transform transition-transform hover:scale-[1.02] duration-300">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Rated Sessions</p>
-                        <p class="text-2xl font-bold text-gray-800"><?php echo $stats['rated_sessions']; ?><span class="text-sm font-normal text-gray-500 ml-1">of <?php echo $stats['completed_sessions']; ?></span></p>
-                    </div>
-                    <div class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
-                        <i class="fas fa-star"></i>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <span class="text-xs text-gray-500">
-                        <i class="fas fa-comment-alt mr-1"></i> Feedback provided
-                    </span>
-                </div>
+
+        <!-- Tab Navigation -->
+        <div class="mb-6">
+            <div class="flex border-b border-gray-200">
+                <button id="tabSitIn" class="tab-btn px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none active">
+                    <i class="fas fa-desktop mr-2"></i> Direct Sit-in History
+                </button>
+                <button id="tabReservations" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">
+                    <i class="fas fa-calendar-alt mr-2"></i> Reservations
+                </button>
             </div>
         </div>
         
-        <!-- Main table -->
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
-                <h2 class="font-bold text-gray-700">Recent Sessions</h2>
-                <?php if ($historyResult->num_rows > 0): ?>
-                <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                    Showing <?php echo min($historyResult->num_rows, 10); ?> of <?php echo $historyResult->num_rows; ?> entries
-                </span>
-                <?php endif; ?>
-            </div>
-            
-            <?php if ($historyResult->num_rows > 0): ?>
-            <div class="table-container overflow-x-auto">
-                <table class="w-full history-table">
-                    <thead>
-                        <tr class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
-                            <th class="px-6 py-3 font-medium">Laboratory</th>
-                            <th class="px-6 py-3 font-medium">Purpose</th>
-                            <th class="px-6 py-3 font-medium">Login Time</th>
-                            <th class="px-6 py-3 font-medium">Logout Time</th>
-                            <th class="px-6 py-3 font-medium">Duration</th>
-                            <th class="px-6 py-3 font-medium">Status</th>
-                            <th class="px-6 py-3 font-medium">Rating</th>
-                            <th class="px-6 py-3 font-medium">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <?php while ($row = $historyResult->fetch_assoc()): 
-                            // Calculate duration
-                            $duration = "N/A";
-                            if ($row['check_out_time']) {
-                                $checkIn = new DateTime($row['check_in_time']);
-                                $checkOut = new DateTime($row['check_out_time']);
-                                $interval = $checkIn->diff($checkOut);
-                                $hours = $interval->h + ($interval->days * 24);
-                                $minutes = $interval->i;
-                                $duration = $hours . "h " . $minutes . "m";
-                            }
-                            
-                            // Determine status class
-                            $statusClass = $row['status'] == 'active' ? 
-                                'bg-green-50 text-green-700' : 
-                                'bg-gray-50 text-gray-700';
-                        ?>
-                            <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                <td class="px-6 py-4">
-                                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
-                                        <?php echo htmlspecialchars($row['laboratory']); ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600"><?php echo htmlspecialchars($row['purpose']); ?></td>
-                                <td class="px-6 py-4 text-sm text-gray-600"><?php echo date('M d, Y g:i A', strtotime($row['check_in_time'])); ?></td>
-                                <td class="px-6 py-4 text-sm text-gray-600">
-                                    <?php echo $row['check_out_time'] ? date('M d, Y g:i A', strtotime($row['check_out_time'])) : '<span class="text-green-500">Still Active</span>'; ?>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600"><?php echo $duration; ?></td>
-                                <td class="px-6 py-4">
-                                    <span class="text-xs font-medium px-2 py-1 rounded-full <?php echo $statusClass; ?>">
-                                        <?php echo ucfirst($row['status']); ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <?php if ($row['status'] == 'completed'): ?>
-                                        <?php if ($row['rating']): ?>
-                                            <div class="flex">
-                                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                    <i class="fas fa-star <?php echo $i <= $row['rating'] ? 'text-yellow-500' : 'text-gray-300'; ?>"></i>
-                                                <?php endfor; ?>
-                                            </div>
-                                        <?php else: ?>
-                                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-yellow-50 text-yellow-700">
-                                                Not Rated
-                                            </span>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <span class="text-xs text-gray-400">N/A</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <?php if ($row['status'] == 'completed'): ?>
-                                        <button onclick="openRatingModal(
-                                                    <?php echo $row['sit_in_id']; ?>, 
-                                                    '<?php echo htmlspecialchars($row['purpose']); ?>', 
-                                                    '<?php echo htmlspecialchars($row['laboratory']); ?>',
-                                                    <?php echo $row['rating'] ? $row['rating'] : 0; ?>,
-                                                    '<?php echo htmlspecialchars($row['feedback'] ?? ''); ?>'
-                                                )" 
-                                            class="feedback-btn bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-indigo-700 transition-colors duration-200">
-                                            <i class="fas fa-comment-alt mr-1"></i>
-                                            <span><?php echo $row['rating'] ? 'Edit Feedback' : 'Add Feedback'; ?></span>
-                                        </button>
-                                    <?php else: ?>
-                                        <span class="text-xs text-gray-400">--</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
-                <div class="hidden sm:block">
-                    <p class="text-sm text-gray-500">
-                        Showing <span class="font-medium">1</span> to <span class="font-medium"><?php echo min($historyResult->num_rows, 10); ?></span> of <span class="font-medium"><?php echo $historyResult->num_rows; ?></span> results
-                    </p>
-                </div>
-                <div class="flex space-x-2">
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    
-                    <button class="px-3 py-1 border rounded-md bg-blue-50 text-blue-600 font-medium">1</button>
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">2</button>
-                    
-                    <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-            <?php else: ?>
-            <div class="py-8 text-center">
-                <div class="inline-flex rounded-full bg-gray-100 p-4">
-                    <div class="rounded-full stroke-gray-500 bg-gray-200 p-4">
-                        <svg class="w-8 h-8" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14 2C7.373 2 2 7.373 2 14C2 20.627 7.373 26 14 26C20.627 26 26 20.627 26 14C26 7.373 20.627 2 14 2ZM14 24C8.486 24 4 19.514 4 14C4 8.486 8.486 4 14 4C19.514 4 24 8.486 24 14C24 19.514 19.514 24 14 24Z" fill="#A1A1AA"/>
-                            <path d="M14 10C14.5523 10 15 9.55228 15 9C15 8.44772 14.5523 8 14 8C13.4477 8 13 8.44772 13 9C13 9.55228 13.4477 10 14 10Z" fill="#A1A1AA"/>
-                            <path d="M13 12C13 11.4477 13.4477 11 14 11C14.5523 11 15 11.4477 15 12V19C15 19.5523 14.5523 20 14 20C13.4477 20 13 19.5523 13 19V12Z" fill="#A1A1AA"/>
-                        </svg>
+        <!-- Tab Contents -->
+        <div id="tabContentSitIn" class="tab-content">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-blue-500 transform transition-transform hover:scale-[1.02] duration-300">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Sessions</p>
+                            <p class="text-2xl font-bold text-gray-800"><?php echo $stats['total_sessions']; ?></p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-chart-line mr-1"></i> Session history
+                        </span>
                     </div>
                 </div>
                 
-                <h2 class="mt-4 text-lg font-medium text-gray-900">No history found</h2>
-                <p class="mt-2 text-sm text-gray-500">You haven't had any sit-in sessions yet.</p>
+                <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-500 transform transition-transform hover:scale-[1.02] duration-300">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Hours</p>
+                            <p class="text-xl font-bold text-gray-800"><?php echo $totalHours; ?> hrs <?php echo $remainingMinutes; ?> min</p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-calendar-alt mr-1"></i> All time usage
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-purple-500 transform transition-transform hover:scale-[1.02] duration-300">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Rated Sessions</p>
+                            <p class="text-2xl font-bold text-gray-800"><?php echo $stats['rated_sessions']; ?><span class="text-sm font-normal text-gray-500 ml-1">of <?php echo $stats['completed_sessions']; ?></span></p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-comment-alt mr-1"></i> Feedback provided
+                        </span>
+                    </div>
+                </div>
             </div>
-            <?php endif; ?>
+            
+            <!-- Main table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="font-bold text-gray-700">Recent Sessions</h2>
+                    <?php if ($historyResult->num_rows > 0): ?>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                        Showing <?php echo min($historyResult->num_rows, 10); ?> of <?php echo $historyResult->num_rows; ?> entries
+                    </span>
+                    <?php endif; ?>
+                </div>
+                
+                <?php if ($historyResult->num_rows > 0): ?>
+                <div class="table-container overflow-x-auto">
+                    <table class="w-full history-table">
+                        <thead>
+                            <tr class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 font-medium">Laboratory</th>
+                                <th class="px-6 py-3 font-medium">Purpose</th>
+                                <th class="px-6 py-3 font-medium">Login Time</th>
+                                <th class="px-6 py-3 font-medium">Logout Time</th>
+                                <th class="px-6 py-3 font-medium">Duration</th>
+                                <th class="px-6 py-3 font-medium">Status</th>
+                                <th class="px-6 py-3 font-medium">Rating</th>
+                                <th class="px-6 py-3 font-medium">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <?php while ($row = $historyResult->fetch_assoc()): 
+                                // Calculate duration
+                                $duration = "N/A";
+                                if ($row['check_out_time']) {
+                                    $checkIn = new DateTime($row['check_in_time']);
+                                    $checkOut = new DateTime($row['check_out_time']);
+                                    $interval = $checkIn->diff($checkOut);
+                                    $hours = $interval->h + ($interval->days * 24);
+                                    $minutes = $interval->i;
+                                    $duration = $hours . "h " . $minutes . "m";
+                                }
+                                
+                                // Determine status class
+                                $statusClass = $row['status'] == 'active' ? 
+                                    'bg-green-50 text-green-700' : 
+                                    'bg-gray-50 text-gray-700';
+                            ?>
+                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+                                            <?php echo htmlspecialchars($row['laboratory']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?php echo htmlspecialchars($row['purpose']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?php echo date('M d, Y g:i A', strtotime($row['check_in_time'])); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        <?php echo $row['check_out_time'] ? date('M d, Y g:i A', strtotime($row['check_out_time'])) : '<span class="text-green-500">Still Active</span>'; ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?php echo $duration; ?></td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-medium px-2 py-1 rounded-full <?php echo $statusClass; ?>">
+                                            <?php echo ucfirst($row['status']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php if ($row['status'] == 'completed'): ?>
+                                            <?php if ($row['rating']): ?>
+                                                <div class="flex">
+                                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                        <i class="fas fa-star <?php echo $i <= $row['rating'] ? 'text-yellow-500' : 'text-gray-300'; ?>"></i>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-yellow-50 text-yellow-700">
+                                                    Not Rated
+                                                </span>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <span class="text-xs text-gray-400">N/A</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php if ($row['status'] == 'completed'): ?>
+                                            <button onclick="openRatingModal(
+                                                        <?php echo $row['sit_in_id']; ?>, 
+                                                        '<?php echo htmlspecialchars($row['purpose']); ?>', 
+                                                        '<?php echo htmlspecialchars($row['laboratory']); ?>',
+                                                        <?php echo $row['rating'] ? $row['rating'] : 0; ?>,
+                                                        '<?php echo htmlspecialchars($row['feedback'] ?? ''); ?>'
+                                                    )" 
+                                                class="feedback-btn bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-md hover:bg-indigo-700 transition-colors duration-200">
+                                                <i class="fas fa-comment-alt mr-1"></i>
+                                                <span><?php echo $row['rating'] ? 'Edit Feedback' : 'Add Feedback'; ?></span>
+                                            </button>
+                                        <?php else: ?>
+                                            <span class="text-xs text-gray-400">--</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+                    <div class="hidden sm:block">
+                        <p class="text-sm text-gray-500">
+                            Showing <span class="font-medium">1</span> to <span class="font-medium"><?php echo min($historyResult->num_rows, 10); ?></span> of <span class="font-medium"><?php echo $historyResult->num_rows; ?></span> results
+                        </p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        
+                        <button class="px-3 py-1 border rounded-md bg-blue-50 text-blue-600 font-medium">1</button>
+                        
+                        <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="py-8 text-center">
+                    <div class="inline-flex rounded-full bg-gray-100 p-4">
+                        <div class="rounded-full stroke-gray-500 bg-gray-200 p-4">
+                            <svg class="w-8 h-8" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2C7.373 2 2 7.373 2 14C2 20.627 7.373 26 14 26C20.627 26 26 20.627 26 14C26 7.373 20.627 2 14 2ZM14 24C8.486 24 4 19.514 4 14C4 8.486 8.486 4 14 4C19.514 4 24 8.486 24 14C24 19.514 19.514 24 14 24Z" fill="#A1A1AA"/>
+                                <path d="M14 10C14.5523 10 15 9.55228 15 9C15 8.44772 14.5523 8 14 8C13.4477 8 13 8.44772 13 9C13 9.55228 13.4477 10 14 10Z" fill="#A1A1AA"/>
+                                <path d="M13 12C13 11.4477 13.4477 11 14 11C14.5523 11 15 11.4477 15 12V19C15 19.5523 14.5523 20 14 20C13.4477 20 13 19.5523 13 19V12Z" fill="#A1A1AA"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h2 class="mt-4 text-lg font-medium text-gray-900">No history found</h2>
+                    <p class="mt-2 text-sm text-gray-500">You haven't had any sit-in sessions yet.</p>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Reservations Tab Content -->
+        <div id="tabContentReservations" class="tab-content hidden">
+            <!-- Stats Cards for Reservations -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-blue-500 transform transition-transform hover:scale-[1.02] duration-300">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Reservations</p>
+                            <p class="text-2xl font-bold text-gray-800"><?php echo $reservationStats['total_reservations']; ?></p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-history mr-1"></i> All time reservations
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-500 transform transition-transform hover:scale-[1.02] duration-300">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Approved</p>
+                            <p class="text-2xl font-bold text-gray-800"><?php echo $reservationStats['approved_reservations']; ?><span class="text-sm font-normal text-gray-500 ml-1">of <?php echo $reservationStats['total_reservations']; ?></span></p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-thumbs-up mr-1"></i> Approved requests
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-4 border-l-4 border-purple-500 transform transition-transform hover:scale-[1.02] duration-300">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Completed</p>
+                            <p class="text-2xl font-bold text-gray-800"><?php echo $reservationStats['completed_reservations']; ?><span class="text-sm font-normal text-gray-500 ml-1">of <?php echo $reservationStats['approved_reservations']; ?> approved</span></p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-flag-checkered mr-1"></i> Completed reservations
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservations Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="font-bold text-gray-700">My Reservations</h2>
+                    <?php if ($reservationResult->num_rows > 0): ?>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                        Showing <?php echo min($reservationResult->num_rows, 10); ?> of <?php echo $reservationResult->num_rows; ?> entries
+                    </span>
+                    <?php endif; ?>
+                </div>
+                
+                <?php if ($reservationResult->num_rows > 0): ?>
+                <div class="table-container overflow-x-auto">
+                    <table class="w-full history-table">
+                        <thead>
+                            <tr class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 font-medium">Lab Room</th>
+                                <th class="px-6 py-3 font-medium">PC</th>
+                                <th class="px-6 py-3 font-medium">Purpose</th>
+                                <th class="px-6 py-3 font-medium">Date</th>
+                                <th class="px-6 py-3 font-medium">Time</th>
+                                <th class="px-6 py-3 font-medium">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <?php while ($row = $reservationResult->fetch_assoc()): 
+                                // Determine status class based on reservation status
+                                switch($row['status']) {
+                                    case 'approved':
+                                        $statusClass = 'bg-green-50 text-green-700';
+                                        break;
+                                    case 'pending':
+                                        $statusClass = 'bg-yellow-50 text-yellow-700';
+                                        break;
+                                    case 'cancelled':
+                                        $statusClass = 'bg-gray-50 text-gray-700';
+                                        break;
+                                    case 'completed':
+                                        $statusClass = 'bg-blue-50 text-blue-700';
+                                        break;
+                                    case 'disapproved':
+                                        $statusClass = 'bg-red-50 text-red-700';
+                                        break;
+                                    default:
+                                        $statusClass = 'bg-gray-50 text-gray-700';
+                                }
+
+                                // Format the reservation time
+                                $time = date('g:i A', strtotime($row['time_in'])) . ' - ' . 
+                                         ($row['time_out'] ? date('g:i A', strtotime($row['time_out'])) : 'N/A');
+                            ?>
+                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+                                            <?php echo htmlspecialchars($row['lab_room']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">PC <?php echo htmlspecialchars($row['pc_number']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?php echo htmlspecialchars($row['purpose']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?php echo date('M d, Y', strtotime($row['reservation_date'])); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><?php echo $time; ?></td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-medium px-2 py-1 rounded-full <?php echo $statusClass; ?>">
+                                            <?php echo ucfirst($row['status']); ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+                    <div class="hidden sm:block">
+                        <p class="text-sm text-gray-500">
+                            Showing <span class="font-medium">1</span> to <span class="font-medium"><?php echo min($reservationResult->num_rows, 10); ?></span> of <span class="font-medium"><?php echo $reservationResult->num_rows; ?></span> results
+                        </p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        
+                        <button class="px-3 py-1 border rounded-md bg-blue-50 text-blue-600 font-medium">1</button>
+                        
+                        <button class="px-3 py-1 border rounded-md text-gray-500 hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="py-8 text-center">
+                    <div class="inline-flex rounded-full bg-gray-100 p-4">
+                        <div class="rounded-full stroke-gray-500 bg-gray-200 p-4">
+                            <svg class="w-8 h-8" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2C7.373 2 2 7.373 2 14C2 20.627 7.373 26 14 26C20.627 26 26 20.627 26 14C26 7.373 20.627 2 14 2ZM14 24C8.486 24 4 19.514 4 14C4 8.486 8.486 4 14 4C19.514 4 24 8.486 24 14C24 19.514 19.514 24 14 24Z" fill="#A1A1AA"/>
+                                <path d="M14 10C14.5523 10 15 9.55228 15 9C15 8.44772 14.5523 8 14 8C13.4477 8 13 8.44772 13 9C13 9.55228 13.4477 10 14 10Z" fill="#A1A1AA"/>
+                                <path d="M13 12C13 11.4477 13.4477 11 14 11C14.5523 11 15 11.4477 15 12V19C15 19.5523 14.5523 20 14 20C13.4477 20 13 19.5523 13 19V12Z" fill="#A1A1AA"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h2 class="mt-4 text-lg font-medium text-gray-900">No reservations found</h2>
+                    <p class="mt-2 text-sm text-gray-500">You haven't made any reservations yet.</p>
+                </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
     
@@ -394,18 +601,47 @@
     <script>
         // Wait for the DOM to be fully loaded before attaching event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabSitIn = document.getElementById('tabSitIn');
+            const tabReservations = document.getElementById('tabReservations');
+            const tabContentSitIn = document.getElementById('tabContentSitIn');
+            const tabContentReservations = document.getElementById('tabContentReservations');
+            
+            tabSitIn.addEventListener('click', function() {
+                // Update tab buttons
+                tabSitIn.classList.add('text-blue-600', 'border-b-2', 'border-blue-600', 'active');
+                tabSitIn.classList.remove('text-gray-500');
+                tabReservations.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600', 'active');
+                tabReservations.classList.add('text-gray-500');
+                
+                // Update tab content
+                tabContentSitIn.classList.remove('hidden');
+                tabContentReservations.classList.add('hidden');
+            });
+            
+            tabReservations.addEventListener('click', function() {
+                // Update tab buttons
+                tabReservations.classList.add('text-blue-600', 'border-b-2', 'border-blue-600', 'active');
+                tabReservations.classList.remove('text-gray-500');
+                tabSitIn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600', 'active');
+                tabSitIn.classList.add('text-gray-500');
+                
+                // Update tab content
+                tabContentReservations.classList.remove('hidden');
+                tabContentSitIn.classList.add('hidden');
+            });
+            
             // Search functionality
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     const searchTerm = this.value.toLowerCase();
-                    const tableRows = document.querySelectorAll('tbody tr');
+                    const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                    const tableRows = activeTab.querySelectorAll('tbody tr');
                     
                     tableRows.forEach(row => {
-                        const laboratory = row.querySelector('td:first-child').textContent.toLowerCase();
-                        const purpose = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                        
-                        if (laboratory.includes(searchTerm) || purpose.includes(searchTerm)) {
+                        const textContent = row.textContent.toLowerCase();
+                        if (textContent.includes(searchTerm)) {
                             row.style.display = '';
                         } else {
                             row.style.display = 'none';
@@ -419,7 +655,8 @@
             if (filterSelect) {
                 filterSelect.addEventListener('change', function() {
                     const option = this.value;
-                    const tableRows = document.querySelectorAll('tbody tr');
+                    const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                    const tableRows = activeTab.querySelectorAll('tbody tr');
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
@@ -492,6 +729,16 @@
                     }
                 });
             }
+
+            // Show disapproval reason function (kept for disapproved reservations)
+            window.showDisapprovalReason = function(reason) {
+                Swal.fire({
+                    title: 'Reservation Disapproved',
+                    text: reason,
+                    icon: 'info',
+                    confirmButtonColor: '#3085d6'
+                });
+            };
         });
         
         function openRatingModal(sitInId, purpose, laboratory, rating, feedback) {

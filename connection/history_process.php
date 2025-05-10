@@ -1,5 +1,5 @@
 <?php
-// filepath: /c:/xampp/htdocs/ccs_sit-in/history.php
+// filepath: c:\xampp\htdocs\login\connection\history_process.php
 session_start();
 include '../connection/conn_login.php'; // Make sure this is the correct path to your DB connection
 
@@ -96,4 +96,38 @@ $totalMinutes = $hoursResult->fetch_assoc()['total_minutes'] ?? 0;
 $totalHours = floor($totalMinutes / 60);
 $remainingMinutes = $totalMinutes % 60;
 
+// Get user reservation history
+$reservationQuery = "SELECT r.reservation_id, r.lab_room, r.pc_number, r.purpose, 
+                        r.reservation_date, r.time_in, r.time_out, r.status,
+                        r.created_at, r.disapproval_reason
+                    FROM reservations r
+                    WHERE r.user_id = ?
+                    ORDER BY r.reservation_date DESC, r.time_in DESC";
+$reservationStmt = $conn->prepare($reservationQuery);
+$reservationStmt->bind_param("i", $userId);
+$reservationStmt->execute();
+$reservationResult = $reservationStmt->get_result();
+
+// Get reservation statistics
+$reservationStatsQuery = "SELECT 
+                        COUNT(*) as total_reservations,
+                        SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved_reservations,
+                        SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_reservations,
+                        SUM(CASE WHEN status = 'disapproved' THEN 1 ELSE 0 END) as rejected_reservations
+                      FROM reservations
+                      WHERE user_id = ?";
+$reservationStatsStmt = $conn->prepare($reservationStatsQuery);
+$reservationStatsStmt->bind_param("i", $userId);
+$reservationStatsStmt->execute();
+$reservationStats = $reservationStatsStmt->get_result()->fetch_assoc();
+
+// Set default values if no reservations exist
+if (!$reservationStats) {
+    $reservationStats = [
+        'total_reservations' => 0,
+        'approved_reservations' => 0,
+        'completed_reservations' => 0,
+        'rejected_reservations' => 0
+    ];
+}
 ?>
