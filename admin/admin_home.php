@@ -549,7 +549,7 @@
                 <textarea id="editMessage" name="edit_message" class="w-full border rounded-lg p-3 text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="6" required></textarea>
                 <input type="hidden" id="editId" name="edit_id">
                 <div class="flex justify-end mt-4 space-x-3">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium" onclick="closeEditModal()">Cancel</button>
+                    <button type="button" class="px-4 py-2 bg-red-600 dark:bg-red-700 text-white dark:text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors text-sm font-medium" onclick="closeEditModal()">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">Save Changes</button>
                 </div>
             </form>
