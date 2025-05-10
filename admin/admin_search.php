@@ -148,8 +148,8 @@
                                     <h3 class="text-xl font-bold text-gray-800"><?php echo htmlspecialchars($student['firstname'] . ' ' . $student['lastname']); ?></h3>
                                     <p class="text-blue-600 font-medium"><?php echo htmlspecialchars($student['idno']); ?></p>
                                     <div class="flex items-center justify-center mt-2">
-                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                                            Active Student
+                                        <span class="px-3 py-1 bg-green-100 dark:bg-green-700 text-green-700 dark:text-white rounded-full text-sm font-medium">
+                                            <i class="fas fa-check-circle mr-1"></i> Active Student
                                         </span>
                                     </div>
                                     
