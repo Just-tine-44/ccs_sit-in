@@ -106,9 +106,11 @@ if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
             $pc_number = $reservationDetails['pc_number'];
             $student_name = $reservationDetails['firstname'] . ' ' . $reservationDetails['lastname'];
             
-            // Get current time - this is the actual end time
+            // Get current time for display in 12-hour format
+            $formatted_time = date('g:i A');
+            
+            // For database storage, we'll still use the full datetime in 24-hour format
             $current_time = date('Y-m-d H:i:s');
-            $formatted_time = date('g:i A', strtotime($current_time));
             
             // Mark reservation as completed and set time_out to exact current time
             $completeQuery = "UPDATE reservations SET status = 'completed', time_out = ?, updated_at = NOW() WHERE reservation_id = ?";

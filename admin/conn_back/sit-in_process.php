@@ -97,13 +97,16 @@ if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
             $pc_number = $reservationDetails['pc_number'];
             $user_id = $reservationDetails['user_id'];
             
-            // Current time for the end time display
+            // Current time for the end time display in 12-hour format
             $current_time = date('g:i A');
             
+            // Get the current time for storing in database (still in 24-hour format for consistency)
+            $datetime_now = date('Y-m-d H:i:s');
+            
             // Mark reservation as completed and set time_out to current time
-            $completeQuery = "UPDATE reservations SET status = 'completed', time_out = NOW(), updated_at = NOW() WHERE reservation_id = ?";
+            $completeQuery = "UPDATE reservations SET status = 'completed', time_out = ?, updated_at = NOW() WHERE reservation_id = ?";
             $completeStmt = $conn->prepare($completeQuery);
-            $completeStmt->bind_param("i", $reservation_id);
+            $completeStmt->bind_param("si", $datetime_now, $reservation_id);
             $completeStmt->execute();
             
             // Update PC status to available
@@ -183,4 +186,22 @@ if ($reservationResult && $reservationResult->num_rows > 0) {
     // Reset the result to beginning so it can be used in sit_in.php
     $reservationResult = $conn->query($reservationQuery);
 }
+
+// ==============================================
+// HELPER FUNCTIONS FOR TIME FORMATTING
+// ==============================================
+
+// Function to format time from 24-hour to 12-hour format
+function formatTime($time) {
+    if (!$time) return '';
+    return date('g:i A', strtotime($time));
+}
+
+// Function to format database datetime to user-friendly format
+function formatDateTime($datetime) {
+    if (!$datetime) return '';
+    return date('M d, Y g:i A', strtotime($datetime));
+}
+
+// Make these functions available to the main sit_in.php file
 ?>

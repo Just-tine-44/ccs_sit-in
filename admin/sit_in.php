@@ -208,12 +208,16 @@
                                             PC <?php echo htmlspecialchars($row['pc_number']); ?>
                                         </span>
                                     </td>
-                                    <!-- New status column -->
+                                    <!-- Status column - Fixed to check both date and time -->
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <?php 
                                         $current_time = date('H:i:s');
+                                        $current_date = date('Y-m-d');
                                         $start_time = $row['time_in'];
-                                        $is_active = strtotime($current_time) >= strtotime($start_time);
+                                        $res_date = $row['reservation_date'];
+                                        
+                                        // A reservation is only active if it's today AND the current time is past the start time
+                                        $is_active = ($current_date == $res_date) && (strtotime($current_time) >= strtotime($start_time));
                                         ?>
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $is_active ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                             <?php echo $is_active ? 'Active' : 'Upcoming'; ?>
@@ -242,8 +246,12 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <?php 
                                         $current_time = date('H:i:s');
+                                        $current_date = date('Y-m-d');
                                         $start_time = $row['time_in'];
-                                        $is_active = strtotime($current_time) >= strtotime($start_time);
+                                        $res_date = $row['reservation_date'];
+                                        
+                                        // A reservation is only active if it's today AND the current time is past the start time
+                                        $is_active = ($current_date == $res_date) && (strtotime($current_time) >= strtotime($start_time));
                                         
                                         if ($is_active): ?>
                                             <button type="button" onclick="handleCheckout(<?php echo $row['reservation_id']; ?>, 'reservation')" 
@@ -396,7 +404,7 @@ function handleReservationEndSession(id) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // For reservations, show exact end time
+                    // The server should now send back a properly formatted time (g:i A)
                     let studentInfo = data.student_name ? `<span class="text-sm text-gray-600">Student: ${data.student_name}</span><br>` : '';
                     let endTimeDisplay = `<div class="mt-3 p-3 bg-gray-100 rounded text-center">
                         ${studentInfo}
