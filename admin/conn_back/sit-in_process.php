@@ -2,6 +2,9 @@
 // filepath: c:\xampp\htdocs\login\admin\conn_back\sit-in_process.php
 session_start();
 
+// Set timezone to ensure time comparisons work correctly
+date_default_timezone_set('Asia/Manila'); // Adjust to your local timezone
+
 if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) || 
     !isset($_SESSION['auth_verified']) || $_SESSION['auth_verified'] !== true) {
     header("Location: .././user/login.php");
@@ -39,10 +42,16 @@ if (isset($_POST['checkout']) && isset($_POST['sit_in_id'])) {
             $interval = $check_in->diff($now);
             $duration = $interval->format('%h hr %i min');
             
+            // Current time in 12-hour format
+            $current_time_display = date('g:i A');
+            
+            // Current time for database in 24-hour format
+            $current_datetime = date('Y-m-d H:i:s');
+            
             // 1. Update sit-in record to mark as completed with current time
-            $updateQuery = "UPDATE curr_sit_in SET check_out_time = NOW(), status = 'completed' WHERE sit_in_id = ?";
+            $updateQuery = "UPDATE curr_sit_in SET check_out_time = ?, status = 'completed' WHERE sit_in_id = ?";
             $updateStmt = $conn->prepare($updateQuery);
-            $updateStmt->bind_param("i", $sit_in_id);
+            $updateStmt->bind_param("si", $current_datetime, $sit_in_id);
             $updateStmt->execute();
             
             // 2. Decrement the session count
@@ -54,7 +63,7 @@ if (isset($_POST['checkout']) && isset($_POST['sit_in_id'])) {
             // If everything succeeds, commit the transaction
             $conn->commit();
             
-            $_SESSION['message'] = "Student checked out successfully. Session duration: " . $duration;
+            $_SESSION['message'] = "Student checked out successfully at $current_time_display. Session duration: " . $duration;
             $_SESSION['msg_type'] = "success";
         } catch (Exception $e) {
             // If any error occurs, rollback the transaction
@@ -97,16 +106,16 @@ if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
             $pc_number = $reservationDetails['pc_number'];
             $user_id = $reservationDetails['user_id'];
             
-            // Current time for the end time display in 12-hour format
-            $current_time = date('g:i A');
+            // Current time for display in 12-hour format
+            $current_time_display = date('g:i A');
             
-            // Get the current time for storing in database (still in 24-hour format for consistency)
-            $datetime_now = date('Y-m-d H:i:s');
+            // Current time for database in 24-hour format
+            $current_datetime = date('Y-m-d H:i:s');
             
             // Mark reservation as completed and set time_out to current time
             $completeQuery = "UPDATE reservations SET status = 'completed', time_out = ?, updated_at = NOW() WHERE reservation_id = ?";
             $completeStmt = $conn->prepare($completeQuery);
-            $completeStmt->bind_param("si", $datetime_now, $reservation_id);
+            $completeStmt->bind_param("si", $current_datetime, $reservation_id);
             $completeStmt->execute();
             
             // Update PC status to available
@@ -117,7 +126,7 @@ if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
             
             $conn->commit();
             
-            $_SESSION['message'] = "Reservation session ended successfully at " . $current_time;
+            $_SESSION['message'] = "Reservation session ended successfully at " . $current_time_display;
             $_SESSION['msg_type'] = "success";
         } else {
             throw new Exception("Reservation not found");
@@ -160,22 +169,30 @@ $reservationQuery = "SELECT r.reservation_id, r.lab_room, r.pc_number, r.purpose
 $reservationResult = $conn->query($reservationQuery);
 
 // ==============================================
-// ADDITIONAL STATUS INFO FOR DISPLAY
+// IMPROVED RESERVATION STATUS CHECK
 // ==============================================
 
-// Add additional status information for reservations (active or upcoming)
+// Calculate reservation status more accurately
 if ($reservationResult && $reservationResult->num_rows > 0) {
     $reservationData = [];
     while ($row = $reservationResult->fetch_assoc()) {
-        // Add a status indicator (active or upcoming)
-        $current_time = date('H:i:s');
+        // Get current date and time components
         $current_date = date('Y-m-d');
-        $start_time = $row['time_in'];
         $res_date = $row['reservation_date'];
         
-        // Check if reservation is for today and has started
-        if ($current_date == $res_date && $current_time >= $start_time) {
-            $row['session_status'] = 'active';
+        // For today's reservations, compare hours and minutes directly for more accuracy
+        $is_today = ($current_date == $res_date);
+        if ($is_today) {
+            $current_hour = (int)date('H');
+            $current_min = (int)date('i');
+            $res_hour = (int)date('H', strtotime($row['time_in']));
+            $res_min = (int)date('i', strtotime($row['time_in']));
+            
+            // Reservation is active if current time is at or past the reservation time
+            $is_active = (($current_hour > $res_hour) || 
+                         ($current_hour == $res_hour && $current_min >= $res_min));
+            
+            $row['session_status'] = $is_active ? 'active' : 'upcoming';
         } else {
             $row['session_status'] = 'upcoming';
         }
@@ -201,6 +218,29 @@ function formatTime($time) {
 function formatDateTime($datetime) {
     if (!$datetime) return '';
     return date('M d, Y g:i A', strtotime($datetime));
+}
+
+// Function to check if a reservation is active (for use in sit_in.php)
+function isReservationActive($reservation_date, $time_in) {
+    // Get current date and time components
+    $current_date = date('Y-m-d');
+    
+    // Check if reservation is for today
+    $is_today = ($current_date == $reservation_date);
+    
+    if ($is_today) {
+        // For today's reservations, compare hours and minutes directly
+        $current_hour = (int)date('H');
+        $current_min = (int)date('i');
+        $res_hour = (int)date('H', strtotime($time_in));
+        $res_min = (int)date('i', strtotime($time_in));
+        
+        // Reservation is active if current time is at or past the reservation time
+        return (($current_hour > $res_hour) || 
+               ($current_hour == $res_hour && $current_min >= $res_min));
+    }
+    
+    return false;
 }
 
 // Make these functions available to the main sit_in.php file

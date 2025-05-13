@@ -3,6 +3,9 @@
 session_start();
 header('Content-Type: application/json');
 
+// Set timezone to ensure consistent time display
+date_default_timezone_set('Asia/Manila');
+
 if (!isset($_SESSION['admin']) || empty($_SESSION['admin']) || 
     !isset($_SESSION['auth_verified']) || $_SESSION['auth_verified'] !== true) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
@@ -31,10 +34,13 @@ if (isset($_POST['checkout']) && isset($_POST['sit_in_id'])) {
         $conn->begin_transaction();
         
         try {
-            // 1. Update sit-in record to mark as completed (using NOW() for consistency with original code)
-            $updateQuery = "UPDATE curr_sit_in SET check_out_time = NOW(), status = 'completed' WHERE sit_in_id = ?";
+            // Current time for database in 24-hour format
+            $current_datetime = date('Y-m-d H:i:s');
+            
+            // 1. Update sit-in record to mark as completed with explicit timestamp
+            $updateQuery = "UPDATE curr_sit_in SET check_out_time = ?, status = 'completed' WHERE sit_in_id = ?";
             $updateStmt = $conn->prepare($updateQuery);
-            $updateStmt->bind_param("i", $sit_in_id);
+            $updateStmt->bind_param("si", $current_datetime, $sit_in_id);
             $updateStmt->execute();
             
             // 2. Decrement the session count
@@ -46,7 +52,7 @@ if (isset($_POST['checkout']) && isset($_POST['sit_in_id'])) {
             // If everything succeeds, commit the transaction
             $conn->commit();
             
-            // Format current time for display
+            // Format current time for display in 12-hour format
             $formatted_time = date('g:i A');
             
             // Get check-in and check-out times for duration calculation
@@ -106,16 +112,16 @@ if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
             $pc_number = $reservationDetails['pc_number'];
             $student_name = $reservationDetails['firstname'] . ' ' . $reservationDetails['lastname'];
             
-            // Get current time for display in 12-hour format
+            // Format current time for display in 12-hour format (with AM/PM)
             $formatted_time = date('g:i A');
             
-            // For database storage, we'll still use the full datetime in 24-hour format
-            $current_time = date('Y-m-d H:i:s');
+            // Current time for database storage (in 24-hour format)
+            $current_datetime = date('Y-m-d H:i:s');
             
             // Mark reservation as completed and set time_out to exact current time
             $completeQuery = "UPDATE reservations SET status = 'completed', time_out = ?, updated_at = NOW() WHERE reservation_id = ?";
             $completeStmt = $conn->prepare($completeQuery);
-            $completeStmt->bind_param("si", $current_time, $reservation_id);
+            $completeStmt->bind_param("si", $current_datetime, $reservation_id);
             $completeStmt->execute();
             
             // Update PC status to available
@@ -126,13 +132,16 @@ if (isset($_POST['checkout_reservation']) && isset($_POST['reservation_id'])) {
             
             $conn->commit();
             
-            // For reservations, only include end time (no duration calculation)
+            // For reservations, include end time and student name
             echo json_encode([
                 'success' => true, 
                 'message' => 'Reservation session ended successfully',
                 'end_time' => $formatted_time,
                 'student_name' => $student_name
             ]);
+            
+            // Debug output - can be removed once confirmed working
+            error_log("Reservation ended at: " . $formatted_time);
         } else {
             throw new Exception("Reservation not found");
         }

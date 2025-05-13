@@ -9,6 +9,9 @@ error_reporting(E_ALL); // But still log them to the error log
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_errors.log'); // Local error log file
 
+// Set timezone to Philippines explicitly
+date_default_timezone_set('Asia/Manila');
+
 // Start session and include necessary connections/functions
 session_start();
 
