@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2025 at 10:40 AM
+-- Generation Time: May 15, 2025 at 01:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,7 +90,9 @@ CREATE TABLE `curr_sit_in` (
 --
 
 INSERT INTO `curr_sit_in` (`sit_in_id`, `user_id`, `laboratory`, `purpose`, `check_in_time`, `check_out_time`, `status`) VALUES
-(1, 1, '517', 'Computer Application', '2025-04-29 06:56:33', '2025-04-29 07:00:29', 'completed');
+(1, 1, '517', 'Computer Application', '2025-04-29 06:56:33', '2025-04-29 07:00:29', 'completed'),
+(2, 2, '530', 'Embedded System % IOT', '2025-05-07 23:34:23', '2025-05-07 23:34:49', 'completed'),
+(3, 4, '530', 'Computer Application', '2025-05-13 10:07:23', '2025-05-13 10:08:03', 'completed');
 
 -- --------------------------------------------------------
 
@@ -114,7 +116,7 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (1, '524', '1', 'available', '2025-04-25 15:10:08'),
 (2, '524', '2', 'available', '2025-04-25 22:21:25'),
 (3, '524', '3', 'available', '2025-04-24 11:41:16'),
-(4, '517', '1', 'available', '2025-04-25 22:05:50'),
+(4, '517', '1', '', '2025-05-10 12:30:13'),
 (5, '517', '2', 'available', '2025-04-25 21:52:47'),
 (6, '517', '3', 'available', '2025-04-25 21:52:48'),
 (7, '517', '4', 'available', '2025-04-25 22:10:54'),
@@ -133,7 +135,7 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (20, '517', '17', 'available', '2025-04-30 16:33:07'),
 (21, '517', '18', 'available', '2025-04-30 16:33:07'),
 (22, '517', '19', 'available', '2025-04-30 16:33:07'),
-(23, '517', '20', 'available', '2025-04-30 16:33:08'),
+(23, '517', '20', '', '2025-05-01 09:20:35'),
 (24, '544', '1', 'available', '2025-04-24 16:21:04'),
 (25, '544', '2', 'available', '2025-04-25 22:16:30'),
 (26, '544', '3', 'available', '2025-04-25 00:34:03'),
@@ -185,12 +187,12 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (72, '544', '19', 'available', '2025-04-24 16:21:09'),
 (73, '544', '20', 'available', '2025-04-25 02:46:47'),
 (74, '517', '25', 'available', '2025-04-30 16:33:12'),
-(75, '517', '50', 'available', '2025-04-30 16:33:25'),
+(75, '517', '50', 'used', '2025-05-01 08:42:14'),
 (77, '524', '4', 'available', '2025-04-24 16:21:32'),
 (78, '524', '5', 'available', '2025-04-24 16:21:34'),
 (79, '524', '10', 'available', '2025-04-25 04:28:58'),
 (80, '524', '9', 'available', '2025-04-24 16:21:34'),
-(81, '517', '40', 'available', '2025-04-30 16:33:19'),
+(81, '517', '40', 'used', '2025-05-01 08:42:19'),
 (82, '517', '21', 'available', '2025-04-30 16:33:08'),
 (83, '517', '22', 'available', '2025-04-30 16:33:09'),
 (84, '517', '23', 'available', '2025-04-30 16:33:09'),
@@ -198,30 +200,30 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (86, '517', '26', 'available', '2025-04-30 16:33:12'),
 (87, '517', '27', 'available', '2025-04-30 16:33:12'),
 (88, '517', '28', 'available', '2025-04-30 16:33:14'),
-(89, '517', '32', 'available', '2025-04-30 16:33:16'),
-(90, '517', '31', 'available', '2025-04-30 16:33:15'),
+(89, '517', '32', 'used', '2025-05-01 08:42:24'),
+(90, '517', '31', 'used', '2025-05-01 08:42:25'),
 (91, '517', '30', 'available', '2025-04-30 16:33:15'),
 (92, '517', '29', 'available', '2025-04-30 16:33:15'),
-(93, '517', '33', 'available', '2025-04-30 16:33:17'),
-(94, '517', '34', 'available', '2025-04-30 16:33:17'),
-(95, '517', '35', 'available', '2025-04-30 16:33:17'),
-(96, '517', '36', 'available', '2025-04-30 16:33:18'),
-(97, '517', '37', 'available', '2025-04-30 16:33:18'),
-(98, '517', '38', 'available', '2025-04-30 16:33:18'),
-(99, '517', '39', 'available', '2025-04-30 16:33:19'),
-(100, '517', '44', 'available', '2025-04-30 16:33:22'),
-(101, '517', '43', 'available', '2025-04-30 16:33:21'),
-(102, '517', '42', 'available', '2025-04-30 16:33:21'),
-(103, '517', '41', 'available', '2025-04-30 16:33:20'),
-(104, '517', '45', 'available', '2025-04-30 16:33:22'),
-(105, '517', '47', 'available', '2025-04-30 16:33:23'),
-(106, '517', '46', 'available', '2025-04-30 16:33:23'),
-(107, '517', '48', 'available', '2025-04-30 16:33:24'),
-(108, '517', '49', 'available', '2025-04-30 16:33:25'),
+(93, '517', '33', 'used', '2025-05-01 08:42:23'),
+(94, '517', '34', 'used', '2025-05-01 08:42:22'),
+(95, '517', '35', 'used', '2025-05-01 08:42:22'),
+(96, '517', '36', 'used', '2025-05-01 08:42:22'),
+(97, '517', '37', 'used', '2025-05-01 08:42:21'),
+(98, '517', '38', 'used', '2025-05-01 08:42:19'),
+(99, '517', '39', 'used', '2025-05-01 08:42:20'),
+(100, '517', '44', 'used', '2025-05-01 08:42:16'),
+(101, '517', '43', 'used', '2025-05-01 08:42:17'),
+(102, '517', '42', 'used', '2025-05-01 08:42:17'),
+(103, '517', '41', 'used', '2025-05-01 08:42:17'),
+(104, '517', '45', 'used', '2025-05-01 08:42:15'),
+(105, '517', '47', 'used', '2025-05-01 08:42:15'),
+(106, '517', '46', 'used', '2025-05-01 08:42:15'),
+(107, '517', '48', 'used', '2025-05-01 08:42:14'),
+(108, '517', '49', 'used', '2025-05-01 08:42:14'),
 (109, '528', '50', 'available', '2025-04-29 00:34:31'),
 (110, '524', '6', 'available', '2025-04-25 14:50:47'),
 (111, '524', '7', 'available', '2025-04-25 14:50:47'),
-(112, '524', '8', 'available', '2025-04-25 14:50:48'),
+(112, '524', '8', 'available', '2025-05-13 01:53:27'),
 (113, '524', '11', 'available', '2025-04-25 14:50:49'),
 (114, '524', '12', 'available', '2025-04-25 14:50:49'),
 (115, '526', '1', 'available', '2025-04-29 00:34:26'),
@@ -234,9 +236,10 @@ INSERT INTO `lab_computers` (`id`, `lab_room`, `pc_number`, `status`, `last_upda
 (122, '530', '3', '', '2025-05-01 06:35:58'),
 (123, '542', '8', '', '2025-05-01 07:05:05'),
 (124, '528', '13', '', '2025-05-01 06:48:11'),
-(125, '530', '1', '', '2025-05-01 07:18:27'),
+(125, '530', '1', 'available', '2025-05-10 11:14:16'),
 (126, '530', '10', '', '2025-05-01 07:37:37'),
-(127, '542', '30', '', '2025-05-01 08:20:10');
+(127, '542', '30', '', '2025-05-01 08:20:10'),
+(128, '528', '10', 'available', '2025-05-13 02:06:34');
 
 -- --------------------------------------------------------
 
@@ -257,13 +260,6 @@ CREATE TABLE `lab_resources` (
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `resource_type` varchar(50) NOT NULL DEFAULT 'document'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `lab_resources`
---
-
-INSERT INTO `lab_resources` (`id`, `title`, `description`, `file_path`, `link_url`, `year_level`, `course`, `uploaded_by`, `upload_date`, `is_active`, `resource_type`) VALUES
-(0, 'Law 101 ', 'To enhance the knowledge towards law 101.', NULL, 'https://courses.lumenlearning.com/suny-monroe-law101/', '1st Year', 'AB PolSci', 'Admin', '2025-04-10 20:23:30', 1, 'link');
 
 -- --------------------------------------------------------
 
@@ -300,6 +296,17 @@ CREATE TABLE `notifications` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `type`, `is_read`, `related_id`, `created_at`) VALUES
+(1, 1, 'Reservation Approved', 'Your reservation for Lab 517, PC 20 on 2025-05-06 at 10:30:00 has been approved.', 'success', 1, 1, '2025-05-01 09:20:35'),
+(2, 1, 'Reservation Approved', 'Your reservation for Lab 530, PC 1 on 2025-05-10 at 07:30:00 has been approved.', 'success', 1, 1, '2025-05-07 16:43:19'),
+(3, 1, 'Reservation Approved', 'Your reservation for Lab 517, PC 1 on 2025-05-12 at 07:30:00 has been approved.', 'success', 0, 2, '2025-05-10 12:30:13'),
+(4, 1, 'Reservation Approved', 'Your reservation for Lab 524, PC 8 on 2025-05-13 at 09:38:00 has been approved.', 'success', 0, 3, '2025-05-13 01:37:26'),
+(5, 2, 'Reservation Approved', 'Your reservation for Lab 528, PC 10 on 2025-05-13 at 10:05:00 has been approved.', 'success', 0, 4, '2025-05-13 02:05:06');
+
 -- --------------------------------------------------------
 
 --
@@ -322,6 +329,16 @@ CREATE TABLE `reservations` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`reservation_id`, `user_id`, `lab_room`, `pc_number`, `purpose`, `reservation_date`, `time_in`, `time_out`, `status`, `disapproval_reason`, `approved_by`, `created_at`, `updated_at`) VALUES
+(1, 1, '530', '1', 'Python Programming', '2025-05-10', '07:30:00', '13:14:16', 'completed', NULL, 1, '2025-05-07 16:42:18', '2025-05-10 11:14:16'),
+(2, 1, '517', '1', 'Database', '2025-05-12', '07:30:00', NULL, 'approved', NULL, 1, '2025-05-10 11:26:51', '2025-05-10 12:30:13'),
+(3, 1, '524', '8', 'PHP', '2025-05-13', '09:38:00', '03:53:27', 'completed', NULL, 1, '2025-05-13 01:37:03', '2025-05-13 01:53:27'),
+(4, 2, '528', '10', 'Embedded System & IOT', '2025-05-13', '10:05:00', '10:06:34', 'completed', NULL, 1, '2025-05-13 02:04:25', '2025-05-13 02:06:34');
+
 -- --------------------------------------------------------
 
 --
@@ -342,15 +359,7 @@ CREATE TABLE `sit_in_ratings` (
 --
 
 INSERT INTO `sit_in_ratings` (`rating_id`, `sit_in_id`, `user_id`, `rating`, `feedback`, `created_at`) VALUES
-(1, 17, 1, 5, 'Its very nice and Good', '2025-03-13 12:29:01'),
-(2, 16, 1, 4, 'Very good and Nice', '2025-03-13 12:33:11'),
-(3, 15, 1, 3, 'Ana alexus', '2025-03-13 12:53:05'),
-(4, 9, 7, 5, 'Very Good', '2025-03-13 17:39:37'),
-(5, 4, 7, 4, 'Thank u So much', '2025-03-13 17:39:47'),
-(6, 6, 7, 3, 'Love it', '2025-03-13 17:41:57'),
-(7, 5, 7, 3, 'Great', '2025-03-13 17:42:07'),
-(8, 2, 7, 3, 'HAHAHAHAHHA', '2025-03-13 17:42:26'),
-(9, 1, 1, 5, 'Very Good!', '2025-04-29 08:37:07');
+(1, 1, 1, 2, 'Nc', '2025-05-07 23:49:32');
 
 -- --------------------------------------------------------
 
@@ -396,10 +405,10 @@ CREATE TABLE `stud_session` (
 --
 
 INSERT INTO `stud_session` (`id`, `session`) VALUES
-(1, 27),
-(2, 27),
+(1, 23),
+(2, 25),
 (3, 27),
-(4, 30),
+(4, 29),
 (5, 26),
 (6, 29),
 (7, 25),
@@ -546,13 +555,13 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `curr_sit_in`
 --
 ALTER TABLE `curr_sit_in`
-  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sit_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `lab_computers`
 --
 ALTER TABLE `lab_computers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 
 --
 -- AUTO_INCREMENT for table `lab_schedules`
@@ -564,19 +573,19 @@ ALTER TABLE `lab_schedules`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sit_in_ratings`
 --
 ALTER TABLE `sit_in_ratings`
-  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `student_points`
